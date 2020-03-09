@@ -27,6 +27,9 @@
             <TextBox x:Name="IpAddress" Width="150" Margin="5"/>
             <TextBox x:Name="Port" Width="50" Margin="5"/>
             <Button x:Name="ConnectToRobot" Content="Connect" Margin="5" Padding="5"/>
+            <Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5"/>
+            <TextBox x:Name="Script" Width="150" Margin="5"/>
+            <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5"/>
         </StackPanel>
 
         <Grid Grid.Row="2" Grid.Column="1">
@@ -45,27 +48,27 @@
                 <StackPanel Grid.Row="1">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="X" />
-                        <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.###}}" MinWidth="20" />
+                        <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" MinWidth="20" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Y" />
-                        <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.###}}" MinWidth="20" />
+                        <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" MinWidth="20" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Z" />
-                        <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.###}}" MinWidth="20" />
+                        <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" MinWidth="20" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Content="Rx" />
-                        <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.###}}" MinWidth="20" />
+                        <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" MinWidth="20" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" >
                         <Label Content="Ry" />
-                        <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.###}}" MinWidth="20" />
+                        <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.####}}" MinWidth="20" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Rz" />
-                        <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.###}}" MinWidth="20" />
+                        <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" MinWidth="20" />
                     </StackPanel>
                 </StackPanel>
             </Grid>
