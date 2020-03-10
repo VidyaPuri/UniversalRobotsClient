@@ -12,6 +12,7 @@
             <RowDefinition Height="20"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="20"></RowDefinition>
         </Grid.RowDefinitions>
@@ -25,14 +26,19 @@
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
             <Label Content="IP Address" Margin="5"/>
             <TextBox x:Name="IpAddress" Width="150" Margin="5"/>
+            <Label Content="Port" Margin="5"/>
             <TextBox x:Name="Port" Width="50" Margin="5"/>
             <Button x:Name="ConnectToRobot" Content="Connect" Margin="5" Padding="5"/>
             <Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5"/>
-            <TextBox x:Name="Script" Width="150" Margin="5"/>
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <TextBox x:Name="Script" Width="425" Margin="5"/>
             <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5"/>
         </StackPanel>
 
-        <Grid Grid.Row="2" Grid.Column="1">
+        <Grid Grid.Row="3" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -40,9 +46,15 @@
 
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
                 <Label Grid.Row="0" Content="UR Data" FontSize="18"/>
                 <StackPanel Grid.Row="1">
@@ -71,7 +83,24 @@
                         <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" MinWidth="20" />
                     </StackPanel>
                 </StackPanel>
+
+                <Label Grid.Row="0" Grid.Column="1" Content="Digital I/O" FontSize="18"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <CheckBox Content="0" Name="io0" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
+                        <CheckBox Content="1" Name="io1" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
+                        <CheckBox Content="2" Name="io2" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
+                        <CheckBox Content="3" Name="io3" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <CheckBox Content="4" Name="io4" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
+                        <CheckBox Content="5" Name="io5" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
+                        <CheckBox Content="6" Name="io6" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
+                        <CheckBox Content="7" Name="io7" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
+                    </StackPanel>
+                </StackPanel>
             </Grid>
         </Grid>
     </Grid>
+
 </Window>

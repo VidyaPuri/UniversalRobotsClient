@@ -16,15 +16,24 @@ namespace tcpClientWPF.ViewModels
 {
     public class ShellViewModel : Screen
     {
+        #region Private Members
+
         private Socket _socket;
         private byte[] _buffer;
 
+        #endregion 
+
+        #region Constructor
 
         public ShellViewModel()
         {
             //StartClient();
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
+
+        #endregion
+
+        #region Properties Initialisation
 
         private string _IpAddress = "192.168.58.101";
 
@@ -52,6 +61,22 @@ namespace tcpClientWPF.ViewModels
             set => Set(ref _RobotPose, value);
         }
 
+        private bool _io0;
+        public bool io0
+        {
+            get => _io0;
+            set
+            {
+                _io0 = value;
+                NotifyOfPropertyChange(() => io0);
+                SendIO(0, value);
+            }
+        }
+
+
+        #endregion
+
+        #region Socket Methods
 
         public void ConnectToRobot()
         {
@@ -178,11 +203,18 @@ namespace tcpClientWPF.ViewModels
             }
         }
 
+        private void SendIO(int io, bool value)
+        {
+            string data = $"set_digital_out({io},{value})";
+            Send(_socket, data);
+        }
+
         public void SendScript()
         {
             Send(_socket, Script);
         }
 
+        #endregion
     }
 
 }
