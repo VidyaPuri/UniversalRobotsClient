@@ -56,6 +56,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
+                <!-- UR Data-->
                 <Label Grid.Row="0" Content="UR Data" FontSize="18"/>
                 <StackPanel Grid.Row="1">
                     <StackPanel Orientation="Horizontal">
@@ -84,21 +85,32 @@
                     </StackPanel>
                 </StackPanel>
 
+                <!-- Digital I/O-->
                 <Label Grid.Row="0" Grid.Column="1" Content="Digital I/O" FontSize="18"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
                     <StackPanel Orientation="Vertical" Margin="5">
-                        <CheckBox Content="0" Name="io0" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
-                        <CheckBox Content="1" Name="io1" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
-                        <CheckBox Content="2" Name="io2" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
-                        <CheckBox Content="3" Name="io3" VerticalAlignment="Center" FlowDirection="RightToLeft"></CheckBox>
+                        <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="5">
-                        <CheckBox Content="4" Name="io4" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
-                        <CheckBox Content="5" Name="io5" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
-                        <CheckBox Content="6" Name="io6" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
-                        <CheckBox Content="7" Name="io7" VerticalAlignment="Center" FlowDirection="LeftToRight"></CheckBox>
+                        <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
                     </StackPanel>
                 </StackPanel>
+
+                <!-- Move-->
+                <Label Grid.Row="0" Grid.Column="2" Content="Move" FontSize="18"/>
+                <StackPanel Grid.Row="1" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal">
+                        <RepeatButton x:Name="J0Add" Content="J0+" Margin="5"></RepeatButton>
+                        <RepeatButton x:Name="J0Sub" Content="J0-" Margin="5"></RepeatButton>
+                    </StackPanel>
+                </StackPanel>
+
             </Grid>
         </Grid>
     </Grid>
