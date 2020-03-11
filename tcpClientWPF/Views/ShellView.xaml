@@ -5,137 +5,180 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:tcpClientWPF.Views"
         mc:Ignorable="d"
-        Title="TCP Client" Height="450" Width="800">
+        WindowState="{Binding WindowState}"
+        WindowStyle="None"   
+        Title="TCP Client" Height="450" Width="800" Background="#282828">
+    
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="20"/>
+    </WindowChrome.WindowChrome>
     <Grid>
-        <!-- Outer Shell-->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="20"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+        <Grid Margin="5" Background="#282828">
+            <!-- Outer Shell-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="35"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+            </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-            <Label Content="IP Address" Margin="5"/>
-            <TextBox x:Name="IpAddress" Width="150" Margin="5"/>
-            <Label Content="Port" Margin="5"/>
-            <TextBox x:Name="Port" Width="50" Margin="5"/>
-            <Button x:Name="ConnectToRobot" Content="Connect" Margin="5" Padding="5"/>
-            <Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5"/>
-
-        </StackPanel>
-
-        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-            <TextBox x:Name="Script" Width="425" Margin="5"/>
-            <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5"/>
-        </StackPanel>
-
-        <Grid Grid.Row="3" Grid.Column="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="20"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="20"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" WindowChrome.IsHitTestVisibleInChrome="True">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="MinimizeWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
+                        <Image Source="Styles/Icons/Minimize.png" Width="15"/>
+                    </Button>
 
+                    <ToggleButton x:Name="MaximizeWindow" Height="30" Width="30" Template="{DynamicResource UnMaksimize_Maximize_Button}">
+                        <ToggleButton.Resources>
+                            <DataTemplate x:Key="Unpressed">
+                                <Image Source="Styles/Icons/Maksimize.png" Width="15"/>
+                            </DataTemplate>
+                            <DataTemplate x:Key="Pressed">
+                                <Image Source="Styles/Icons/UnMaksimize.png" Width="15"/>
+                            </DataTemplate>
+                        </ToggleButton.Resources>
+                        <ToggleButton.Style>
+                            <Style TargetType="{x:Type ToggleButton}">
+                                <Setter Property="ContentTemplate" Value="{StaticResource Unpressed}"/>
+
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource Pressed}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+
+                    <Button x:Name="CloseWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
+                        <Image Source="Styles/Icons/Close.png" Width="15"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                <Label Content="IP Address" Margin="5"/>
+                <TextBox x:Name="IpAddress" Width="150" Margin="5"/>
+                <Label Content="Port" Margin="5"/>
+                <TextBox x:Name="Port" Width="50" Margin="5"/>
+                <Button x:Name="ConnectToRobot" Content="Connect" Margin="5" Padding="5"/>
+                <Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5"/>
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                <TextBox x:Name="Script" Width="425" Margin="5"/>
+                <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5"/>
+            </StackPanel>
+
+            <Grid Grid.Row="3" Grid.Column="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <!-- UR Data-->
-                <Label Grid.Row="0" Content="UR Data" FontSize="18"/>
-                <StackPanel Grid.Row="1">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="X" />
-                        <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" MinWidth="20" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Y" />
-                        <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" MinWidth="20" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Z" />
-                        <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" MinWidth="20" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Label Content="Rx" />
-                        <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" MinWidth="20" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <Label Content="Ry" />
-                        <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.####}}" MinWidth="20" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Rz" />
-                        <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" MinWidth="20" />
-                    </StackPanel>
-                </StackPanel>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
 
-                <!-- Digital I/O-->
-                <Label Grid.Row="0" Grid.Column="1" Content="Digital I/O" FontSize="18"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                    <StackPanel Orientation="Vertical" Margin="5">
-                        <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                        <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                        <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                        <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" Margin="5">
-                        <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                        <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                        <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                        <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
-                    </StackPanel>
-                </StackPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Move-->
-                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
-                    <Label  Content="Move" FontSize="18"/>
-                    <TextBox x:Name="MoveRate" ></TextBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="2">
-                    <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J0Add" Content="J0+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J0Sub" Content="J0-" Margin="5" MinWidth="25"></RepeatButton>
+                    <!-- UR Data-->
+                    <Label Grid.Row="0" Content="UR Data" FontSize="18"/>
+                    <StackPanel Grid.Row="1">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="X" />
+                            <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" MinWidth="20" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Y" />
+                            <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" MinWidth="20" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Z" />
+                            <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" MinWidth="20" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Label Content="Rx" />
+                            <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" MinWidth="20" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <Label Content="Ry" />
+                            <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.####}}" MinWidth="20" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Rz" />
+                            <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" MinWidth="20" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J1Add" Content="J1+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J1Sub" Content="J1-" Margin="5" MinWidth="25"></RepeatButton>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J2Add" Content="J2+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J2Sub" Content="J2-" Margin="5" MinWidth="25"></RepeatButton>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J3Add" Content="J3+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J3Sub" Content="J3-" Margin="5" MinWidth="25"></RepeatButton>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J4Add" Content="J4+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J4Sub" Content="J4-" Margin="5" MinWidth="25"></RepeatButton>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J5Add" Content="J5+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J5Sub" Content="J5-" Margin="5" MinWidth="25"></RepeatButton>
-                    </StackPanel>
-                </StackPanel>
 
+                    <!-- Digital I/O-->
+                    <Label Grid.Row="0" Grid.Column="1" Content="Digital I/O" FontSize="18"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                            <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                            <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                            <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                            <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                            <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                            <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Move-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
+                        <Label  Content="Move" FontSize="18"/>
+                        <TextBox x:Name="MoveRate" ></TextBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <StackPanel Orientation="Horizontal">
+                            <RepeatButton x:Name="J0Add" Content="J0+" Margin="5" MinWidth="25"></RepeatButton>
+                            <RepeatButton x:Name="J0Sub" Content="J0-" Margin="5" MinWidth="25"></RepeatButton>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RepeatButton x:Name="J1Add" Content="J1+" Margin="5" MinWidth="25"></RepeatButton>
+                            <RepeatButton x:Name="J1Sub" Content="J1-" Margin="5" MinWidth="25"></RepeatButton>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RepeatButton x:Name="J2Add" Content="J2+" Margin="5" MinWidth="25"></RepeatButton>
+                            <RepeatButton x:Name="J2Sub" Content="J2-" Margin="5" MinWidth="25"></RepeatButton>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RepeatButton x:Name="J3Add" Content="J3+" Margin="5" MinWidth="25"></RepeatButton>
+                            <RepeatButton x:Name="J3Sub" Content="J3-" Margin="5" MinWidth="25"></RepeatButton>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RepeatButton x:Name="J4Add" Content="J4+" Margin="5" MinWidth="25"></RepeatButton>
+                            <RepeatButton x:Name="J4Sub" Content="J4-" Margin="5" MinWidth="25"></RepeatButton>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RepeatButton x:Name="J5Add" Content="J5+" Margin="5" MinWidth="25"></RepeatButton>
+                            <RepeatButton x:Name="J5Sub" Content="J5-" Margin="5" MinWidth="25"></RepeatButton>
+                        </StackPanel>
+                    </StackPanel>
+
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
-
 </Window>
