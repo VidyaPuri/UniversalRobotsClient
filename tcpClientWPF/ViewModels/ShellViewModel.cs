@@ -25,6 +25,7 @@ namespace tcpClientWPF.ViewModels
         private string _IpAddress = "192.168.58.101";
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
         private bool _ConnectionStatus = false;
+        private double _MoveRate = 0.01;
 
         private bool _io0;
         private bool _io1;
@@ -86,6 +87,17 @@ namespace tcpClientWPF.ViewModels
             get { return _ConnectionStatus; }
             set => Set(ref _ConnectionStatus, value);
         }
+
+
+        /// <summary>
+        /// Rate of movement 
+        /// </summary>
+        public double MoveRate
+        {
+            get { return _MoveRate; }
+            set => Set(ref _MoveRate, value);
+        }
+
 
         #region I/O properties
 
@@ -414,41 +426,93 @@ namespace tcpClientWPF.ViewModels
 
         #region Move Methods
 
+        #region Button Methods
+
         public void J0Add()
         {
-            try
-            {
-                double x = RobotPose[0];
-                x += 0.02;
-
-                string msg = $"movej([" +
-                $"{x.ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[1].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[2].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[3].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[4].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[5].ToString(new CultureInfo("en-US"))}]," +
-                $" a = 2, v = 1)";
-
-                //msg = "movej([0.540518270502519, -2.35033018411227, -1.31663103726659, -2.277573660445824, 3.352832342366564, -1.229196745489491], a = 2, v = 1)";
-                Send(_socket, msg);
-
-            }
-            catch (SocketException ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            SendMoveCommand("+", 0);
         }
 
         public void J0Sub()
         {
-            try
-            {
-                double x = RobotPose[0];
-                x -= 0.02;
+            SendMoveCommand("-", 0);
+        }
 
+        public void J1Add()
+        {
+            SendMoveCommand("+",1);
+        }
+
+        public void J1Sub()
+        {
+            SendMoveCommand("-", 1);
+        }
+
+
+        public void J2Add()
+        {
+            SendMoveCommand("+", 2);
+        }
+
+        public void J2Sub()
+        {
+            SendMoveCommand("-", 2);
+        }
+
+        public void J3Add()
+        {
+            SendMoveCommand("+", 3);
+        }
+
+        public void J3Sub()
+        {
+            SendMoveCommand("-", 3);
+        }
+
+        public void J4Add()
+        {
+            SendMoveCommand("+", 4);
+        }
+
+        public void J4Sub()
+        {
+            SendMoveCommand("-", 4);
+        }
+
+        public void J5Add()
+        {
+            SendMoveCommand("+", 5);
+        }
+
+        public void J5Sub()
+        {
+            SendMoveCommand("-", 5);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Sending the move command to robot
+        /// </summary>
+        /// <param name="moveType"></param>
+        /// <param name="idx"></param>
+        private void SendMoveCommand(string moveType, int idx)
+        {
+            Task.Run(async () =>
+            {
+                // Check which operation is clicked
+                if (moveType == "+")
+                {
+                    RobotPose[idx] += MoveRate;
+                }
+                else if (moveType == "-")
+                {
+                    RobotPose[idx] -= MoveRate;
+                }
+
+                // Set the string
                 string msg = $"movej([" +
-                $"{x.ToString(new CultureInfo("en-US"))}, " +
+                $"{RobotPose[0].ToString(new CultureInfo("en-US"))}," +
                 $"{RobotPose[1].ToString(new CultureInfo("en-US"))}, " +
                 $"{RobotPose[2].ToString(new CultureInfo("en-US"))}, " +
                 $"{RobotPose[3].ToString(new CultureInfo("en-US"))}, " +
@@ -456,18 +520,17 @@ namespace tcpClientWPF.ViewModels
                 $"{RobotPose[5].ToString(new CultureInfo("en-US"))}]," +
                 $" a = 2, v = 1)";
 
-                //msg = "movej([0.540518270502519, -2.35033018411227, -1.31663103726659, -2.277573660445824, 3.352832342366564, -1.229196745489491], a = 2, v = 1)";
+                // Send command
                 Send(_socket, msg);
+                Task.Delay(100);
+            });
+            
+            
+            }
 
-            }
-            catch (SocketException ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+
+            #endregion
+
         }
-
-        #endregion
-
-    }
 
 }

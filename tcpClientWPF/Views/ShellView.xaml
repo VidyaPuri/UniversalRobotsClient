@@ -103,11 +103,34 @@
                 </StackPanel>
 
                 <!-- Move-->
-                <Label Grid.Row="0" Grid.Column="2" Content="Move" FontSize="18"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
+                    <Label  Content="Move" FontSize="18"/>
+                    <TextBox x:Name="MoveRate" ></TextBox>
+                </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="2">
                     <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J0Add" Content="J0+" Margin="5"></RepeatButton>
-                        <RepeatButton x:Name="J0Sub" Content="J0-" Margin="5"></RepeatButton>
+                        <RepeatButton x:Name="J0Add" Content="J0+" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J0Sub" Content="J0-" Margin="5" MinWidth="25"></RepeatButton>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <RepeatButton x:Name="J1Add" Content="J1+" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J1Sub" Content="J1-" Margin="5" MinWidth="25"></RepeatButton>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <RepeatButton x:Name="J2Add" Content="J2+" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J2Sub" Content="J2-" Margin="5" MinWidth="25"></RepeatButton>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <RepeatButton x:Name="J3Add" Content="J3+" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J3Sub" Content="J3-" Margin="5" MinWidth="25"></RepeatButton>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <RepeatButton x:Name="J4Add" Content="J4+" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J4Sub" Content="J4-" Margin="5" MinWidth="25"></RepeatButton>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <RepeatButton x:Name="J5Add" Content="J5+" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J5Sub" Content="J5-" Margin="5" MinWidth="25"></RepeatButton>
                     </StackPanel>
                 </StackPanel>
 
