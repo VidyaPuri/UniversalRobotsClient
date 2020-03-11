@@ -24,13 +24,13 @@ namespace AsynchronousSockeClient.Networking
             var t3 = BitConverter.ToDouble(packet, packetSize - 12 - 58 * off);
             var t4 = BitConverter.ToDouble(packet, packetSize - 12 - 59 * off);
             var t5 = BitConverter.ToDouble(packet, packetSize - 12 - 60 * off);
-            Console.WriteLine($"Received packet! Length: {messageSize}");
-            Console.WriteLine($"Received packet! q0: {q0}   t0:{t0}");
-            Console.WriteLine($"Received packet! q1: {q1}   t1:{t1}");
-            Console.WriteLine($"Received packet! q2: {q2}   t2:{t2}");
-            Console.WriteLine($"Received packet! q3: {q3}   t3:{t3}");
-            Console.WriteLine($"Received packet! q4: {q4}   t4:{t4}");
-            Console.WriteLine($"Received packet! q5: {q5}   t5:{t5}");
+            //Console.WriteLine($"Received packet! Length: {messageSize}");
+            //Console.WriteLine($"Received packet! q0: {q0}   t0:{t0}");
+            //Console.WriteLine($"Received packet! q1: {q1}   t1:{t1}");
+            //Console.WriteLine($"Received packet! q2: {q2}   t2:{t2}");
+            //Console.WriteLine($"Received packet! q3: {q3}   t3:{t3}");
+            //Console.WriteLine($"Received packet! q4: {q4}   t4:{t4}");
+            //Console.WriteLine($"Received packet! q5: {q5}   t5:{t5}");
 
             double[] output = { q0, q1, q2, q3, q4, q5 };
 

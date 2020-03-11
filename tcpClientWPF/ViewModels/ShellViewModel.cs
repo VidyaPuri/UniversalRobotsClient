@@ -522,7 +522,7 @@ namespace tcpClientWPF.ViewModels
 
                 // Send command
                 Send(_socket, msg);
-                Task.Delay(100);
+                await Task.Delay(1000);
             });
             
             
