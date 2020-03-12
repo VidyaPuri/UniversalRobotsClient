@@ -22,7 +22,7 @@ namespace tcpClientWPF.ViewModels
         private Socket _socket;
         private byte[] _buffer;
         private int _Port = 30003;
-        private string _IpAddress = "192.168.58.101";
+        private string _IpAddress = "192.168.56.101";
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
         private bool _ConnectionStatus = false;
         private double _MoveRate = 0.01;
@@ -44,6 +44,7 @@ namespace tcpClientWPF.ViewModels
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ConnectionStatus = _socket.Connected;
+            CanConnect = true;
         }
 
         #endregion
@@ -88,6 +89,16 @@ namespace tcpClientWPF.ViewModels
             set => Set(ref _ConnectionStatus, value);
         }
 
+        /// <summary>
+        /// Waiting for connection to finish or return false
+        /// </summary>
+        private bool  _CanConnect;
+
+        public bool  CanConnect
+        {
+            get { return _CanConnect; }
+            set => Set(ref _CanConnect, value);
+        }
 
         /// <summary>
         /// Rate of movement 
@@ -97,7 +108,6 @@ namespace tcpClientWPF.ViewModels
             get { return _MoveRate; }
             set => Set(ref _MoveRate, value);
         }
-
 
         #region I/O properties
 
@@ -229,7 +239,8 @@ namespace tcpClientWPF.ViewModels
 
             Task.Run(() =>
             {
-                Connect("192.168.56.101", 30003);
+                var ip = IpAddress;
+                Connect(ip, 30003);
             });
         }
 
@@ -242,10 +253,11 @@ namespace tcpClientWPF.ViewModels
         {
             try
             {
+                IPAddress ipa = IPAddress.Parse(ipAddress);
                 if (!_socket.Connected)
                 {
-                    _socket.BeginConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), ConnectCallback, null);
-                    Console.WriteLine("Connected to the server!");
+                    _socket.BeginConnect(new IPEndPoint(ipa, port), ConnectCallback, null   );
+                    CanConnect = false;
                 }
                 else
                 {
@@ -253,7 +265,7 @@ namespace tcpClientWPF.ViewModels
                 }
             } catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Connection exception message: {ex.Message}");
             }
         }
 
@@ -266,14 +278,15 @@ namespace tcpClientWPF.ViewModels
             {
                 _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
-                RobotPose = new double[] { 0, 0, 0, 0, 0, 0 };
-                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                ConnectionStatus = _socket.Connected;
             }
             catch (SocketException exception)
             {
-                Debug.WriteLine(exception.Message);
+                Debug.WriteLine($"Disconnect exception message: {exception.Message}");
             }
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            RobotPose = new double[] { 0, 0, 0, 0, 0, 0 };
+            ConnectionStatus = _socket.Connected;
+            CanConnect = true;
         }
 
         /// <summary>
@@ -282,6 +295,13 @@ namespace tcpClientWPF.ViewModels
         /// <param name="result"></param>
         private void ConnectCallback(IAsyncResult result)
         {
+            Console.WriteLine($"Status: {_socket.Connected.ToString()}");
+            CanConnect = true;
+
+            // If can not connect, call disconnect to reinitialize the socket
+            if (!_socket.Connected)
+                Disconnect();
+
             try
             {
                 if (_socket.Connected)
@@ -294,7 +314,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Connect callback exception message: {ex.Message}");
             }
         }
 
@@ -323,7 +343,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Received calback exception message: {ex.Message}");
             }
         }
 
@@ -349,8 +369,6 @@ namespace tcpClientWPF.ViewModels
             RobotPose = robotPose;
         }
 
-
-
         /// <summary>
         /// Send string command
         /// </summary>
@@ -371,7 +389,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch (SocketException ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Send exception message: {ex.Message}");
             }
         }
 
@@ -395,7 +413,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine($"Send callback exception message : {e.Message}");
             }
         }
 
@@ -413,7 +431,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch(SocketException ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"SendIO exception message: {ex.Message}");
             }
         }
 
@@ -498,17 +516,13 @@ namespace tcpClientWPF.ViewModels
         /// <param name="idx"></param>
         private void SendMoveCommand(string moveType, int idx)
         {
-            Task.Run(async () =>
+            Task.Run(() =>
             {
                 // Check which operation is clicked
                 if (moveType == "+")
-                {
                     RobotPose[idx] += MoveRate;
-                }
                 else if (moveType == "-")
-                {
                     RobotPose[idx] -= MoveRate;
-                }
 
                 // Set the string
                 string msg = $"movej([" +
@@ -522,15 +536,10 @@ namespace tcpClientWPF.ViewModels
 
                 // Send command
                 Send(_socket, msg);
-                await Task.Delay(1000);
             });
-            
-            
             }
-
 
             #endregion
 
         }
-
 }

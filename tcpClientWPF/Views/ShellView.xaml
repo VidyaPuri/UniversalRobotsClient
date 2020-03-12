@@ -28,13 +28,15 @@
             <TextBox x:Name="IpAddress" Width="150" Margin="5"/>
             <Label Content="Port" Margin="5"/>
             <TextBox x:Name="Port" Width="50" Margin="5"/>
-            <Button x:Name="ConnectToRobot" Content="Connect" Margin="5" Padding="5"/>
+            <Button x:Name="ConnectToRobot"
+                    Content="Connect" IsEnabled="{Binding CanConnect}"
+                    Margin="5" Padding="5"/>
             <Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5"/>
 
         </StackPanel>
 
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-            <TextBox x:Name="Script" Width="425" Margin="5"/>
+            <TextBox x:Name="Script" Width="425" Margin="5" IsEnabled="{Binding ConnectionStatus}"/>
             <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5"/>
         </StackPanel>
 
@@ -109,28 +111,63 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="2">
                     <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J0Add" Content="J0+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J0Sub" Content="J0-" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J0Add" Content="J0+" 
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J0Sub" Content="J0-"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J1Add" Content="J1+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J1Sub" Content="J1-" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J1Add" Content="J1+" 
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J1Sub" Content="J1-"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J2Add" Content="J2+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J2Sub" Content="J2-" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J2Add" Content="J2+"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J2Sub" Content="J2-"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J3Add" Content="J3+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J3Sub" Content="J3-" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J3Add" Content="J3+"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J3Sub" Content="J3-"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J4Add" Content="J4+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J4Sub" Content="J4-" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J4Add" Content="J4+"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J4Sub" Content="J4-"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <RepeatButton x:Name="J5Add" Content="J5+" Margin="5" MinWidth="25"></RepeatButton>
-                        <RepeatButton x:Name="J5Sub" Content="J5-" Margin="5" MinWidth="25"></RepeatButton>
+                        <RepeatButton x:Name="J5Add" Content="J5+"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J5Sub" Content="J5-"
+                                      IsEnabled="{Binding ConnectionStatus}"
+                                      Margin="5" MinWidth="25">
+                        </RepeatButton>
                     </StackPanel>
                 </StackPanel>
 
