@@ -1,48 +1,45 @@
 ﻿using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using tcpClientWPF.ViewModels;
+using tcpClientWPF.Models;
 
 namespace AsynchronousSockeClient.Networking
 {
     public static class PacketHandler
     {
-        public static double[] Handle(byte[] packet, int packetSize)
+        public static RobotOutputPackage Handle(byte[] packet, int packetSize)
         {
-            int off = 8;
-            int messageSize = packetSize;
-            var q0 = BitConverter.ToDouble(packet, packetSize - 12 - off);
-            var q1 = BitConverter.ToDouble(packet, packetSize - 12 - 2 * off);
-            var q2 = BitConverter.ToDouble(packet, packetSize - 12 - 3 * off);
-            var q3 = BitConverter.ToDouble(packet, packetSize - 12 - 4 * off);
-            var q4 = BitConverter.ToDouble(packet, packetSize - 12 - 5 * off);
-            var q5 = BitConverter.ToDouble(packet, packetSize - 12 - 6 * off);
-            var t0 = BitConverter.ToDouble(packet, packetSize - 12 - 55 * off);
-            var t1 = BitConverter.ToDouble(packet, packetSize - 12 - 56 * off);
-            var t2 = BitConverter.ToDouble(packet, packetSize - 12 - 57 * off);
-            var t3 = BitConverter.ToDouble(packet, packetSize - 12 - 58 * off);
-            var t4 = BitConverter.ToDouble(packet, packetSize - 12 - 59 * off);
-            var t5 = BitConverter.ToDouble(packet, packetSize - 12 - 60 * off);
-            //Console.WriteLine($"Received packet! Length: {messageSize}");
-            //Console.WriteLine($"Received packet! q0: {q0}   t0:{t0}");
-            //Console.WriteLine($"Received packet! q1: {q1}   t1:{t1}");
-            //Console.WriteLine($"Received packet! q2: {q2}   t2:{t2}");
-            //Console.WriteLine($"Received packet! q3: {q3}   t3:{t3}");
-            //Console.WriteLine($"Received packet! q4: {q4}   t4:{t4}");
-            //Console.WriteLine($"Received packet! q5: {q5}   t5:{t5}");
+            RobotOutputPackage output = new RobotOutputPackage();
 
-            double[] output = { q0, q1, q2, q3, q4, q5 };
+            // Lenght offset
+            int integerOffset = 4;
+            int doubleOffset = 8;
+
+            // Msg size 4bytes
+            var msgSize = BitConverter.ToUInt32(packet, packetSize - integerOffset);
+
+            // Time since start of robot
+            var time = BitConverter.ToDouble(packet, packetSize - integerOffset - 1 * doubleOffset);
+
+            // Joint values
+            var q0 = BitConverter.ToDouble(packet, packetSize - integerOffset - 2 * doubleOffset);
+            var q1 = BitConverter.ToDouble(packet, packetSize - integerOffset - 3 * doubleOffset);
+            var q2 = BitConverter.ToDouble(packet, packetSize - integerOffset - 4 * doubleOffset);
+            var q3 = BitConverter.ToDouble(packet, packetSize - integerOffset - 5 * doubleOffset);
+            var q4 = BitConverter.ToDouble(packet, packetSize - integerOffset - 6 * doubleOffset);
+            var q5 = BitConverter.ToDouble(packet, packetSize - integerOffset - 7 * doubleOffset);
+
+            // TCP values
+            var t0 = BitConverter.ToDouble(packet, packetSize - integerOffset - 56 * doubleOffset);
+            var t1 = BitConverter.ToDouble(packet, packetSize - integerOffset - 57 * doubleOffset);
+            var t2 = BitConverter.ToDouble(packet, packetSize - integerOffset - 58 * doubleOffset);
+            var t3 = BitConverter.ToDouble(packet, packetSize - integerOffset - 59 * doubleOffset);
+            var t4 = BitConverter.ToDouble(packet, packetSize - integerOffset - 60 * doubleOffset);
+            var t5 = BitConverter.ToDouble(packet, packetSize - integerOffset - 61 * doubleOffset);
+
+
+            output.RobotPose = new double[] { t0, t1, t2, t3, t4, t5 };
+            output.RobotJoints = new double[] { q0, q1, q2, q3, q4, q5 };
 
             return output;
-
-            //switch(packetType)
-            //{
-            //    case 2000:
-            //        Message msg = new Message(packet);
-            //        Console.WriteLine($"Server said: {msg.Text}");
-            //        break;
-            //}
         }
     }
 }
