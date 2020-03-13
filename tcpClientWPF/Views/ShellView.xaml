@@ -8,14 +8,14 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="336" Width="512" MinHeight="336" MinWidth="512" Background="#2B2F3D">
+        Title="TCP Client" Height="360" Width="512" MinHeight="360" MinWidth="512" Background="#2B2F3D">
 
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
 
-    <Grid>
+    <!--<Grid>-->
         <Grid Margin="5" Background="#fffcf9">
             <!-- Outer Shell-->
             <Grid.RowDefinitions>
@@ -36,15 +36,6 @@
                 <ColumnDefinition Width="5"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-            <Label Content="IP Address" Margin="5"/>
-            <TextBox x:Name="IpAddress" Width="150" Margin="5"/>
-            <Label Content="Port" Margin="5"/>
-            <TextBox x:Name="Port" Width="50" Margin="5"/>
-            <Button x:Name="ConnectToRobot"
-                    Content="Connect" IsEnabled="{Binding CanConnect}"
-                    Margin="5" Padding="5"/>
-            <Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5"/>
             <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="#466874">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button x:Name="MinimizeWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
@@ -86,7 +77,6 @@
                 <TextBox x:Name="Port" Width="50" Margin="5" VerticalContentAlignment="Center" />
                 <Button x:Name="ConnectToRobot" Content="Connect" Margin="5" Padding="5" VerticalContentAlignment="Center"/>
                 <Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5" VerticalContentAlignment="Center"/>
-
             </StackPanel>
 
             <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
@@ -112,7 +102,10 @@
                         <ColumnDefinition Width="5"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="5"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="5"></ColumnDefinition>
+
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
                 <!-- UR Data-->
@@ -172,15 +165,14 @@
                     </StackPanel>
                 </StackPanel>
                 
-
                 <!-- Move-->
-                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
                     <Label  Content="Move" FontSize="18"/>
                     <TextBox x:Name="MoveRate" MinWidth="30" VerticalAlignment="Center"></TextBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
                     <StackPanel >
-                        <Label Content="Pose"></Label>
+                        <Label Content="Joints"></Label>
                         <StackPanel Orientation="Horizontal">
                             <RepeatButton x:Name="J0Add" Content="J0+" 
                                       IsEnabled="{Binding ConnectionStatus}"
@@ -244,7 +236,7 @@
                     </StackPanel>
                     <Rectangle VerticalAlignment="Stretch" Fill="Black" Width="1"/>
                     <StackPanel>
-                        <Label Content="Joints"></Label>
+                        <Label Content="Pose"></Label>
                         <StackPanel Orientation="Horizontal">
                             <RepeatButton x:Name="TxAdd" Content="Tx+" 
                                       IsEnabled="{Binding ConnectionStatus}"
@@ -310,8 +302,8 @@
                
 
                 <!-- Digital I/O-->
-                <Label Grid.Row="0" Grid.Column="2" Content="Digital I/O" FontSize="18"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
+                <Label Grid.Row="0" Grid.Column="4" Content="Digital I/O" FontSize="18"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="4">
                     <StackPanel Orientation="Vertical" Margin="5">
                         <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>
                         <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatus}"></CheckBox>

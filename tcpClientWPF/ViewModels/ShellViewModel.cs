@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using AsynchronousSockeClient.Networking;
 using System.Globalization;
 using tcpClientWPF.Models;
+using System.Windows;
 
 namespace tcpClientWPF.ViewModels
 {
@@ -345,7 +346,9 @@ namespace tcpClientWPF.ViewModels
             }
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             RobotJoints = new double[] { 0, 0, 0, 0, 0, 0 };
-            ConnectionStatus = _socket.Connected;
+            RobotPose = new double[] { 0, 0, 0, 0, 0, 0 };
+
+        ConnectionStatus = _socket.Connected;
             CanConnect = true;
         }
 
