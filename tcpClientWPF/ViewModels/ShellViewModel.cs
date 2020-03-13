@@ -9,6 +9,8 @@ using AsynchronousSockeClient.Networking;
 using System.Globalization;
 using tcpClientWPF.Models;
 using System.Windows;
+using SharpDX.XInput;
+using System.Threading;
 
 namespace tcpClientWPF.ViewModels
 {
@@ -59,6 +61,10 @@ namespace tcpClientWPF.ViewModels
         private bool _ConnectionStatus = false;
         private double _MoveRate = 0.01;
 
+        private readonly Controller _controller = new Controller(UserIndex.One);
+        private Timer _timer;
+        private readonly int RefreshRate = 60;
+
         private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
@@ -81,6 +87,8 @@ namespace tcpClientWPF.ViewModels
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ConnectionStatus = _socket.Connected;
             CanConnect = true;
+            _timer = new Timer(obj => ControllerUpdate());
+            StartController();
         }
 
         #endregion
@@ -687,13 +695,123 @@ namespace tcpClientWPF.ViewModels
                     $" a = 2, v = 1)";
                 }
 
-
                 // Send command
                 Send(_socket, msg);
             });
-            }
-
-            #endregion
 
         }
+
+        #endregion
+
+        #region Controller
+
+        /// <summary>
+        /// Starts the update function and calls it in the set refresh rate
+        /// </summary>
+        public void StartController()
+        {
+            _timer.Change(0, 1000 / RefreshRate);
+        }
+
+        /// <summary>
+        /// Update function
+        /// </summary>
+        public void ControllerUpdate()
+        {
+            if(_controller.IsConnected)
+            {
+                var state = _controller.GetState();
+
+                #region Translation 
+
+                // Move robot in X axis
+                if (state.Gamepad.LeftThumbX >= Gamepad.LeftThumbDeadZone || state.Gamepad.LeftThumbX <= -Gamepad.LeftThumbDeadZone)
+                {
+                    if(state.Gamepad.LeftThumbX > 0)
+                    {
+                        TxAdd();
+                    }
+                    else if (state.Gamepad.LeftThumbX < 0)
+                    {
+                        TxSub();
+                    }
+                }
+
+                // Move robot in Y axis
+                if (state.Gamepad.LeftThumbY >= Gamepad.LeftThumbDeadZone || state.Gamepad.LeftThumbY <= -Gamepad.LeftThumbDeadZone)
+                {
+                    if (state.Gamepad.LeftThumbY > 0)
+                    {
+                        TyAdd();
+                    }
+                    else if (state.Gamepad.LeftThumbY < 0)
+                    {
+                        TySub();
+                    }
+                }
+
+                // Move robot in Z axis
+                if (state.Gamepad.LeftTrigger >= Gamepad.TriggerThreshold)
+                {
+                    if (state.Gamepad.LeftTrigger > 0)
+                    {
+                        TzAdd();
+                    }
+                }
+
+                if (state.Gamepad.RightTrigger >= Gamepad.TriggerThreshold)
+                {
+                    if (state.Gamepad.RightTrigger > 0)
+                    {
+                        TzSub();
+                    }
+                }
+
+                #endregion
+
+                #region Rotation
+
+                // Rotate TCP in X axis
+                if (state.Gamepad.RightThumbY >= Gamepad.RightThumbDeadZone || state.Gamepad.RightThumbY <= -Gamepad.RightThumbDeadZone)
+                {
+                    if (state.Gamepad.RightThumbY > 0)
+                    {
+                        RxAdd();
+                    }
+                    else if (state.Gamepad.RightThumbY < 0)
+                    {
+                        RxSub();
+                    }
+                }
+
+                // Rotate TCP in Y axis
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.LeftShoulder))
+                {
+                    RyAdd();
+                }
+
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.RightShoulder))
+                {
+                    RySub();
+                }
+
+                // Rotate TCP in Z axis
+                if (state.Gamepad.RightThumbX >= Gamepad.RightThumbDeadZone || state.Gamepad.RightThumbX <= -Gamepad.RightThumbDeadZone)
+                {
+                    if (state.Gamepad.RightThumbX > 0)
+                    {
+                        RzAdd();
+                    }
+                    else if (state.Gamepad.RightThumbX < 0)
+                    {
+                        RzSub();
+                    }
+                }
+                #endregion
+            }
+        }
+
+        #endregion
+
+    }
 }
