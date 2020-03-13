@@ -1,18 +1,13 @@
 ﻿using Caliburn.Micro;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-using AsynchronousSocketClient.Networking;
-using System.Windows;
-using System.Threading;
 using AsynchronousSockeClient.Networking;
 using System.Globalization;
-using System.Runtime.InteropServices;
+using tcpClientWPF.Models;
 
 namespace tcpClientWPF.ViewModels
 {
@@ -59,10 +54,13 @@ namespace tcpClientWPF.ViewModels
         private Socket _socket;
         private byte[] _buffer;
         private int _Port = 30003;
-        private string _IpAddress = "192.168.58.101";
-        private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
+        private string _IpAddress = "192.168.56.101";
         private bool _ConnectionStatus = false;
         private double _MoveRate = 0.01;
+
+        private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
+        private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
+        private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
 
         private bool _io0;
         private bool _io1;
@@ -81,11 +79,43 @@ namespace tcpClientWPF.ViewModels
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ConnectionStatus = _socket.Connected;
+            CanConnect = true;
         }
 
         #endregion
 
         #region Properties Initialisation
+
+        #region Robot Output Package
+
+        /// <summary>
+        /// Robot output package initialisation
+        /// </summary>
+        public RobotOutputPackage RobotOutputPackage
+        {
+            get { return _RobotOutputPackage; }
+            set => Set(ref _RobotOutputPackage, value);
+        }
+
+        /// <summary>
+        /// Robot pose initalisation
+        /// </summary>
+        public double[] RobotPose
+        {
+            get { return _RobotPose; }
+            set => Set(ref _RobotPose, value);
+        }
+
+        /// <summary>
+        /// RobotPose Initialisation
+        /// </summary>
+        public double[] RobotJoints
+        {
+            get => _RobotJoints;
+            set => Set(ref _RobotJoints, value);
+        }
+
+        #endregion
 
         /// <summary>
         /// Script (send command) Initialisation
@@ -111,20 +141,24 @@ namespace tcpClientWPF.ViewModels
         }
 
         /// <summary>
-        /// RobotPose Initialisation
+        /// Connection status initialisation
         /// </summary>
-        public double[] RobotPose
-        {
-            get => _RobotPose;
-            set => Set(ref _RobotPose, value);
-        }
-
         public bool ConnectionStatus
         {
             get { return _ConnectionStatus; }
             set => Set(ref _ConnectionStatus, value);
         }
 
+        /// <summary>
+        /// Waiting for connection to finish or return false
+        /// </summary>
+        private bool  _CanConnect;
+
+        public bool  CanConnect
+        {
+            get { return _CanConnect; }
+            set => Set(ref _CanConnect, value);
+        }
 
         /// <summary>
         /// Rate of movement 
@@ -134,7 +168,6 @@ namespace tcpClientWPF.ViewModels
             get { return _MoveRate; }
             set => Set(ref _MoveRate, value);
         }
-
 
         #region I/O properties
 
@@ -266,7 +299,8 @@ namespace tcpClientWPF.ViewModels
 
             Task.Run(() =>
             {
-                Connect("192.168.56.101", 30003);
+                var ip = IpAddress;
+                Connect(ip, 30003);
             });
         }
 
@@ -279,10 +313,11 @@ namespace tcpClientWPF.ViewModels
         {
             try
             {
+                IPAddress ipa = IPAddress.Parse(ipAddress);
                 if (!_socket.Connected)
                 {
-                    _socket.BeginConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), ConnectCallback, null);
-                    Console.WriteLine("Connected to the server!");
+                    _socket.BeginConnect(new IPEndPoint(ipa, port), ConnectCallback, null   );
+                    CanConnect = false;
                 }
                 else
                 {
@@ -290,7 +325,7 @@ namespace tcpClientWPF.ViewModels
                 }
             } catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Connection exception message: {ex.Message}");
             }
         }
 
@@ -303,14 +338,15 @@ namespace tcpClientWPF.ViewModels
             {
                 _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
-                RobotPose = new double[] { 0, 0, 0, 0, 0, 0 };
-                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                ConnectionStatus = _socket.Connected;
             }
             catch (SocketException exception)
             {
-                Debug.WriteLine(exception.Message);
+                Debug.WriteLine($"Disconnect exception message: {exception.Message}");
             }
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            RobotJoints = new double[] { 0, 0, 0, 0, 0, 0 };
+            ConnectionStatus = _socket.Connected;
+            CanConnect = true;
         }
 
         /// <summary>
@@ -319,6 +355,13 @@ namespace tcpClientWPF.ViewModels
         /// <param name="result"></param>
         private void ConnectCallback(IAsyncResult result)
         {
+            Console.WriteLine($"Status: {_socket.Connected.ToString()}");
+            CanConnect = true;
+
+            // If can not connect, call disconnect to reinitialize the socket
+            if (!_socket.Connected)
+                Disconnect();
+
             try
             {
                 if (_socket.Connected)
@@ -331,7 +374,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Connect callback exception message: {ex.Message}");
             }
         }
 
@@ -352,15 +395,17 @@ namespace tcpClientWPF.ViewModels
                     Array.Reverse(packet);
 
                 // Handle packet
+                RobotOutputPackage rop = PacketHandler.Handle(packet, packet.Length);
 
-                double[] rp = PacketHandler.Handle(packet, packet.Length);
+                // Update UI
+                UpdateUI(rop);
 
-                UpdateUI(rp);
+                // Start receiving next package
                 StartReceiving();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Received calback exception message: {ex.Message}");
             }
         }
 
@@ -381,12 +426,11 @@ namespace tcpClientWPF.ViewModels
         /// Update UI Values
         /// </summary>
         /// <param name="robotPose"></param>
-        public void UpdateUI(double[] robotPose)
+        public void UpdateUI(RobotOutputPackage robotPackage)
         {
-            RobotPose = robotPose;
+            RobotJoints = robotPackage.RobotJoints;
+            RobotPose = robotPackage.RobotPose;
         }
-
-
 
         /// <summary>
         /// Send string command
@@ -408,7 +452,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch (SocketException ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Send exception message: {ex.Message}");
             }
         }
 
@@ -426,13 +470,10 @@ namespace tcpClientWPF.ViewModels
                 // Complete sending the data to the remote device.  
                 int bytesSent = client.EndSend(ar);
                 Console.WriteLine("Sent {0} bytes to server.", bytesSent);
-
-                // Signal that all bytes have been sent.  
-                //sendDone.Set();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine($"Send callback exception message : {e.Message}");
             }
         }
 
@@ -450,7 +491,7 @@ namespace tcpClientWPF.ViewModels
             }
             catch(SocketException ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"SendIO exception message: {ex.Message}");
             }
         }
 
@@ -465,65 +506,131 @@ namespace tcpClientWPF.ViewModels
 
         #region Button Methods
 
+        /// <summary>
+        /// Joint Move Buttons
+        /// </summary>
         public void J0Add()
         {
-            SendMoveCommand("+", 0);
+            SendMoveCommand("+", 0, "joints");
         }
 
         public void J0Sub()
         {
-            SendMoveCommand("-", 0);
+            SendMoveCommand("-", 0, "joints");
         }
 
         public void J1Add()
         {
-            SendMoveCommand("+",1);
+            SendMoveCommand("+",1, "joints");
         }
 
         public void J1Sub()
         {
-            SendMoveCommand("-", 1);
+            SendMoveCommand("-", 1, "joints");
         }
-
 
         public void J2Add()
         {
-            SendMoveCommand("+", 2);
+            SendMoveCommand("+", 2, "joints");
         }
 
         public void J2Sub()
         {
-            SendMoveCommand("-", 2);
+            SendMoveCommand("-", 2, "joints");
         }
 
         public void J3Add()
         {
-            SendMoveCommand("+", 3);
+            SendMoveCommand("+", 3, "joints");
         }
 
         public void J3Sub()
         {
-            SendMoveCommand("-", 3);
+            SendMoveCommand("-", 3, "joints");
         }
 
         public void J4Add()
         {
-            SendMoveCommand("+", 4);
+            SendMoveCommand("+", 4, "joints");
         }
 
         public void J4Sub()
         {
-            SendMoveCommand("-", 4);
+            SendMoveCommand("-", 4, "joints");
         }
 
         public void J5Add()
         {
-            SendMoveCommand("+", 5);
+            SendMoveCommand("+", 5, "joints");
         }
 
         public void J5Sub()
         {
-            SendMoveCommand("-", 5);
+            SendMoveCommand("-", 5, "joints");
+        }
+
+        /// <summary>
+        /// TCP Move Buttons
+        /// </summary>
+        public void TxAdd()
+        {
+            SendMoveCommand("+", 0, "tcp");
+        }
+
+        public void TxSub()
+        {
+            SendMoveCommand("-", 0, "tcp");
+        }
+
+        public void TyAdd()
+        {
+            SendMoveCommand("+", 1, "tcp");
+        }
+
+        public void TySub()
+        {
+            SendMoveCommand("-", 1, "tcp");
+        }
+
+
+        public void TzAdd()
+        {
+            SendMoveCommand("+", 2, "tcp");
+        }
+
+        public void TzSub()
+        {
+            SendMoveCommand("-", 2, "tcp");
+        }
+
+        public void RxAdd()
+        {
+            SendMoveCommand("+", 3, "tcp");
+        }
+
+        public void RxSub()
+        {
+            SendMoveCommand("-", 3, "tcp");
+        }
+
+        public void RyAdd()
+        {
+            SendMoveCommand("+", 4, "tcp");
+        }
+
+        public void RySub()
+        {
+            SendMoveCommand("-", 4, "tcp");
+        }
+
+        public void RzAdd()
+        {
+            SendMoveCommand("+", 5, "tcp");
+        }
+
+        public void RzSub()
+        {
+            SendMoveCommand("-", 5, "tcp");
         }
 
         #endregion
@@ -531,43 +638,59 @@ namespace tcpClientWPF.ViewModels
         /// <summary>
         /// Sending the move command to robot
         /// </summary>
-        /// <param name="moveType"></param>
+        /// <param name="moveDirection"></param>
         /// <param name="idx"></param>
-        private void SendMoveCommand(string moveType, int idx)
+        private void SendMoveCommand(string moveDirection, int idx, string moveType)
         {
-            Task.Run(async () =>
+            Task.Run(() =>
             {
-                // Check which operation is clicked
-                if (moveType == "+")
+                string msg = "";
+
+                // Check the type of move
+                if(moveType == "joints")
                 {
-                    RobotPose[idx] += MoveRate;
-                }
-                else if (moveType == "-")
+                    // Check which operation is clicked
+                    if (moveDirection == "+")
+                        RobotJoints[idx] += MoveRate;
+                    else if (moveDirection == "-")
+                        RobotJoints[idx] -= MoveRate;
+
+                    // Set the string
+                    msg = $"movej([" +
+                    $"{RobotJoints[0].ToString(new CultureInfo("en-US"))}," +
+                    $"{RobotJoints[1].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotJoints[2].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotJoints[3].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotJoints[4].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotJoints[5].ToString(new CultureInfo("en-US"))}]," +
+                    $" a = 2, v = 1)";
+                } 
+                else if (moveType == "tcp")
                 {
-                    RobotPose[idx] -= MoveRate;
+                    // Check which operation is clicked
+                    if (moveDirection == "+")
+                        RobotPose[idx] += MoveRate;
+                    else if (moveDirection == "-")
+                        RobotPose[idx] -= MoveRate;
+
+                    // Set the string
+                    msg = $"movej(p[" +
+                    $"{RobotPose[0].ToString(new CultureInfo("en-US"))}," +
+                    $"{RobotPose[1].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotPose[2].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotPose[3].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotPose[4].ToString(new CultureInfo("en-US"))}, " +
+                    $"{RobotPose[5].ToString(new CultureInfo("en-US"))}]," +
+                    $" a = 2, v = 1)";
                 }
 
-                // Set the string
-                string msg = $"movej([" +
-                $"{RobotPose[0].ToString(new CultureInfo("en-US"))}," +
-                $"{RobotPose[1].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[2].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[3].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[4].ToString(new CultureInfo("en-US"))}, " +
-                $"{RobotPose[5].ToString(new CultureInfo("en-US"))}]," +
-                $" a = 2, v = 1)";
 
                 // Send command
                 Send(_socket, msg);
-                await Task.Delay(1000);
             });
-            
-            
             }
-
 
             #endregion
 
         }
-
 }
