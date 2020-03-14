@@ -363,6 +363,8 @@
                 <Label Content="{Binding ConnectionStatusStr}" Foreground="Gainsboro" FontSize="10"></Label>
                 <Label Content="Controller status: " Foreground="Gainsboro" FontSize="10"></Label>
                 <Label Content="{Binding ControllerConnectionStatusBool}" Foreground="Gainsboro" FontSize="10"></Label>
+                <Label Content="Controller move type: " Foreground="Gainsboro" FontSize="10"></Label>
+                <Label Content="{Binding ControllerMoveToggle}" Foreground="Gainsboro" FontSize="10"></Label>
             </StackPanel>
         </Grid>
     </Grid>

@@ -67,6 +67,7 @@ namespace RobotClient.ViewModels
 
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
+        private bool startButtonPressed = false;
 
         private readonly Controller _controller = new Controller(UserIndex.One);
         private readonly int RefreshRate = 60;
@@ -94,6 +95,8 @@ namespace RobotClient.ViewModels
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ConnectionStatusBool = _socket.Connected;
             CanConnect = true;
+            _ControllerMoveToggle = "TCP";
+
             _timer = new Timer(obj => ControllerUpdate());
             StartController();
         }
@@ -218,6 +221,15 @@ namespace RobotClient.ViewModels
             get { return _RotationRate; }
             set => Set(ref _RotationRate, value);
         }
+
+        private string _ControllerMoveToggle;
+
+        public string ControllerMoveToggle
+        {
+            get { return _ControllerMoveToggle; }
+            set => Set(ref _ControllerMoveToggle, value);
+        }
+
 
 
         #region I/O properties
@@ -811,6 +823,19 @@ namespace RobotClient.ViewModels
                         RotationRate = 0.01;
                 }
 
+                // Joints \ TCP Move Toggle
+                if(state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start) && !startButtonPressed)
+                {
+                    startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
+
+                    if (ControllerMoveToggle == "TCP")
+                        ControllerMoveToggle = "Joints";
+                    else
+                        ControllerMoveToggle = "TCP";
+                }
+
+                startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
+
                 #endregion
 
                 #region Translation 
@@ -820,11 +845,13 @@ namespace RobotClient.ViewModels
                 {
                     if(state.Gamepad.LeftThumbX > 0)
                     {
-                        TxAdd();
+                        if (ControllerMoveToggle == "TCP") TxAdd();
+                        if (ControllerMoveToggle == "Joints") J0Add();
                     }
                     else if (state.Gamepad.LeftThumbX < 0)
                     {
-                        TxSub();
+                        if (ControllerMoveToggle == "TCP") TxSub();
+                        if (ControllerMoveToggle == "Joints") J0Sub();
                     }
                 }
 
@@ -833,11 +860,13 @@ namespace RobotClient.ViewModels
                 {
                     if (state.Gamepad.LeftThumbY > 0)
                     {
-                        TyAdd();
+                        if (ControllerMoveToggle == "TCP") TyAdd();
+                        if (ControllerMoveToggle == "Joints") J1Add();
                     }
                     else if (state.Gamepad.LeftThumbY < 0)
                     {
-                        TySub();
+                        if (ControllerMoveToggle == "TCP") TySub();
+                        if (ControllerMoveToggle == "Joints") J1Sub();
                     }
                 }
 
@@ -846,7 +875,8 @@ namespace RobotClient.ViewModels
                 {
                     if (state.Gamepad.LeftTrigger > 0)
                     {
-                        TzAdd();
+                        if (ControllerMoveToggle == "TCP") TzAdd();
+                        if (ControllerMoveToggle == "Joints") J2Add();
                     }
                 }
 
@@ -854,7 +884,8 @@ namespace RobotClient.ViewModels
                 {
                     if (state.Gamepad.RightTrigger > 0)
                     {
-                        TzSub();
+                        if (ControllerMoveToggle == "TCP") TzSub();
+                        if (ControllerMoveToggle == "Joints") J2Sub();
                     }
                 }
 
@@ -867,23 +898,27 @@ namespace RobotClient.ViewModels
                 {
                     if (state.Gamepad.RightThumbY > 0)
                     {
-                        RxAdd();
+                        if (ControllerMoveToggle == "TCP") RxAdd();
+                        if (ControllerMoveToggle == "Joints") J3Add();
                     }
                     else if (state.Gamepad.RightThumbY < 0)
                     {
-                        RxSub();
+                        if (ControllerMoveToggle == "TCP") RxSub();
+                        if (ControllerMoveToggle == "Joints") J3Sub();
                     }
                 }
 
                 // Rotate TCP in Y axis
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.LeftShoulder))
                 {
-                    RyAdd();
+                    if (ControllerMoveToggle == "TCP") RyAdd();
+                    if (ControllerMoveToggle == "Joints") J4Add();
                 }
 
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.RightShoulder))
                 {
-                    RySub();
+                    if (ControllerMoveToggle == "TCP") RySub();
+                    if (ControllerMoveToggle == "Joints") J4Sub();
                 }
 
                 // Rotate TCP in Z axis
@@ -891,11 +926,13 @@ namespace RobotClient.ViewModels
                 {
                     if (state.Gamepad.RightThumbX > 0)
                     {
-                        RzAdd();
+                        if (ControllerMoveToggle == "TCP") RzAdd();
+                        if (ControllerMoveToggle == "Joints") J5Add();
                     }
                     else if (state.Gamepad.RightThumbX < 0)
                     {
-                        RzSub();
+                        if (ControllerMoveToggle == "TCP") RzSub();
+                        if (ControllerMoveToggle == "Joints") J5Sub();
                     }
                 }
                 #endregion
