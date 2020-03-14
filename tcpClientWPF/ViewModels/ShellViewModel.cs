@@ -67,9 +67,9 @@ namespace tcpClientWPF.ViewModels
 
         private double _MoveRate = 0.01;
 
-        private readonly Controller _controller = new Controller(UserIndex.Any);
+        private readonly Controller _controller = new Controller(UserIndex.One);
         private readonly int RefreshRate = 60;
-        private readonly Timer _timer;
+        private  Timer _timer;
 
         private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
@@ -857,10 +857,8 @@ namespace tcpClientWPF.ViewModels
             //    _controller = new Controller(UserIndex.One);
             //}
 
-            //ControllerConnectionStatusBool = _controller.IsConnected;
+            ControllerConnectionStatusBool = _controller.IsConnected;
         }
-
-
         
         #endregion
 
