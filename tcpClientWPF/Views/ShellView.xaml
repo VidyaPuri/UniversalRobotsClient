@@ -8,7 +8,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="388" Width="512" MinHeight="388" MinWidth="512" Background="#2B2F3D">
+        Title="TCP Client" Height="403" Width="512" MinHeight="403" MinWidth="512" Background="#2B2F3D">
 
 
     <WindowChrome.WindowChrome>
@@ -26,9 +26,9 @@
                 <RowDefinition Height="2"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
+                <RowDefinition Height="5"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+        </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5"></ColumnDefinition>
@@ -241,79 +241,79 @@
 
                     <!-- Move Tool data-->
 
-                    <Label Content="J0" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                    <Label Content="X" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
                     <TextBlock Text="mm" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J1" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                    <Label Content="Y" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
                     <TextBlock Text="mm" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J2" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                    <Label Content="Z" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
                     <TextBlock Text="mm" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J3" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                    <Label Content="Rx" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J4" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                    <Label Content="Ry" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J5" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                    <Label Content="Rz" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
 
                     <!-- Move Tool buttons-->
 
-                    <RepeatButton x:Name="TxAdd" Content="J0+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
-                    <RepeatButton x:Name="TxSub" Content="J0-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatus}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-
-                    <RepeatButton x:Name="TyAdd" Content="J1+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatus}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="TySub" Content="J1-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
 
-                    <RepeatButton x:Name="TzAdd" Content="J2+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="TyAdd" Content="Ty+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
-                    <RepeatButton x:Name="TzSub" Content="J2-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatus}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-
-                    <RepeatButton x:Name="RxAdd" Content="J3+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatus}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="RxSub" Content="J3-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
 
-                    <RepeatButton x:Name="RyAdd" Content="J4+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="TzAdd" Content="Tz+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
-                    <RepeatButton x:Name="RySub" Content="J4-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
 
-                    <RepeatButton x:Name="RzAdd" Content="J5+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="RxAdd" Content="Rx+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
-                    <RepeatButton x:Name="RzSub" Content="J5-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                    <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatus}"
+                            Margin="5" MinWidth="25">
+                    </RepeatButton>
+
+                    <RepeatButton x:Name="RyAdd" Content="Ry+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatus}"
+                            Margin="5" MinWidth="25">
+                    </RepeatButton>
+                    <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatus}"
+                            Margin="5" MinWidth="25">
+                    </RepeatButton>
+                    
+                    <RepeatButton x:Name="RzAdd" Content="Rz+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatus}"
+                            Margin="5" MinWidth="25">
+                    </RepeatButton>
+                    <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatus}"
                             Margin="5" MinWidth="25">
                     </RepeatButton>
@@ -352,6 +352,9 @@
                 </StackPanel>
 
             </Grid>
+        </Grid>
+        <Grid Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Background="#466874">
+            
         </Grid>
     </Grid>
 
