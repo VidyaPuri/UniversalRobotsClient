@@ -674,7 +674,7 @@ namespace tcpClientWPF.ViewModels
                     $"{RobotJoints[3].ToString(new CultureInfo("en-US"))}, " +
                     $"{RobotJoints[4].ToString(new CultureInfo("en-US"))}, " +
                     $"{RobotJoints[5].ToString(new CultureInfo("en-US"))}]," +
-                    $" a = 2, v = 1)";
+                    $" a = 2, v = 1, t = 0.1)";
                 } 
                 else if (moveType == "tcp")
                 {
@@ -692,7 +692,7 @@ namespace tcpClientWPF.ViewModels
                     $"{RobotPose[3].ToString(new CultureInfo("en-US"))}, " +
                     $"{RobotPose[4].ToString(new CultureInfo("en-US"))}, " +
                     $"{RobotPose[5].ToString(new CultureInfo("en-US"))}]," +
-                    $" a = 2, v = 1)";
+                    $" a = 2, v = 1, t = 0.1)";
                 }
 
                 // Send command
@@ -811,6 +811,8 @@ namespace tcpClientWPF.ViewModels
             }
         }
 
+
+        
         #endregion
 
     }
