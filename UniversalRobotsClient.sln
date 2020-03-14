@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tcpClientWPF", "tcpClientWPF\tcpClientWPF.csproj", "{8BC0ADC3-F1F9-4E76-BAC7-7E030FC23047}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotClient", "tcpClientWPF\RobotClient.csproj", "{8BC0ADC3-F1F9-4E76-BAC7-7E030FC23047}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
