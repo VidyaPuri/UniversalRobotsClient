@@ -87,6 +87,7 @@ namespace tcpClientWPF.ViewModels
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ConnectionStatus = _socket.Connected;
             CanConnect = true;
+            var con = _controller.IsConnected;
             _timer = new Timer(obj => ControllerUpdate());
             StartController();
         }
