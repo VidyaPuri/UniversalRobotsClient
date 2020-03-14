@@ -38,7 +38,8 @@
 
             <!-- Window Control-->
             <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="#466874">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
+            <Label Content="Robot TCP Client" Margin="5 0" FontWeight="Bold" FontSize="13" Foreground="Gainsboro"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button x:Name="MinimizeWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
                         <Image Source="Styles/Icons/Minimize.png" Width="15"/>
                     </Button>
