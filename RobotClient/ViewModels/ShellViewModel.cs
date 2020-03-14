@@ -7,12 +7,12 @@ using System.Net;
 using System.Net.Sockets;
 using AsynchronousSockeClient.Networking;
 using System.Globalization;
-using tcpClientWPF.Models;
+using RobotClient.Models;
 using System.Windows;
 using SharpDX.XInput;
 using System.Threading;
 
-namespace tcpClientWPF.ViewModels
+namespace RobotClient.ViewModels
 {
     public class ShellViewModel : Screen
     {

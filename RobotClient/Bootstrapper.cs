@@ -1,8 +1,8 @@
 ﻿using Caliburn.Micro;
 using System.Windows;
-using tcpClientWPF.ViewModels;
+using RobotClient.ViewModels;
 
-namespace tcpClientWPF
+namespace RobotClient
 {
     public class Bootstrapper : BootstrapperBase
     {

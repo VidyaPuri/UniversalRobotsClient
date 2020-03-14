@@ -1,7 +1,7 @@
-﻿<Application x:Class="tcpClientWPF.App"
+﻿<Application x:Class="RobotClient.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:tcpClientWPF">
+             xmlns:local="clr-namespace:RobotClient">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

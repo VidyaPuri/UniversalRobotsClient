@@ -1,5 +1,5 @@
 ﻿using System;
-using tcpClientWPF.Models;
+using RobotClient.Models;
 
 namespace AsynchronousSockeClient.Networking
 {
