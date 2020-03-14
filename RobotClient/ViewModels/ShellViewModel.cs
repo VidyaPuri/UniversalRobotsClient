@@ -65,7 +65,8 @@ namespace RobotClient.ViewModels
         private string _ConnectToggle = "Connect";
         private bool _CanConnect;
 
-        private double _MoveRate = 0.01;
+        private double _TranslationRate = 0.01;
+        private double _RotationRate = 0.01;
 
         private readonly Controller _controller = new Controller(UserIndex.One);
         private readonly int RefreshRate = 60;
@@ -201,13 +202,23 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// Rate of movement 
+        /// Rate of translation 
         /// </summary>
-        public double MoveRate
+        public double TranslationRate
         {
-            get { return _MoveRate; }
-            set => Set(ref _MoveRate, value);
+            get { return _TranslationRate; }
+            set => Set(ref _TranslationRate, value);
         }
+
+        /// <summary>
+        /// Rate of rotation
+        /// </summary>
+        public double  RotationRate
+        {
+            get { return _RotationRate; }
+            set => Set(ref _RotationRate, value);
+        }
+
 
         #region I/O properties
 
@@ -337,7 +348,7 @@ namespace RobotClient.ViewModels
             Debug.WriteLine($"IpAddress: { IpAddress}");
             Debug.WriteLine($"Port: { Port}");
 
-            if(!_socket.Connected)
+            if (!_socket.Connected)
             {
                 Task.Run(() =>
                 {
@@ -349,7 +360,6 @@ namespace RobotClient.ViewModels
             {
                 Disconnect();
             }
-            
         }
 
         /// <summary>
@@ -647,7 +657,6 @@ namespace RobotClient.ViewModels
             SendMoveCommand("-", 1, "tcp");
         }
 
-
         public void TzAdd()
         {
             SendMoveCommand("+", 2, "tcp");
@@ -706,9 +715,9 @@ namespace RobotClient.ViewModels
                 {
                     // Check which operation is clicked
                     if (moveDirection == "+")
-                        RobotJoints[idx] += MoveRate;
+                        RobotJoints[idx] += TranslationRate;
                     else if (moveDirection == "-")
-                        RobotJoints[idx] -= MoveRate;
+                        RobotJoints[idx] -= TranslationRate;
 
                     // Set the string
                     msg = $"movej([" +
@@ -722,11 +731,17 @@ namespace RobotClient.ViewModels
                 } 
                 else if (moveType == "tcp")
                 {
-                    // Check which operation is clicked
+                    // Check which operation is clicked and if it is a rotation or translation 
                     if (moveDirection == "+")
-                        RobotPose[idx] += MoveRate;
+                        if(idx < 3 )
+                            RobotPose[idx] += TranslationRate;
+                        else
+                            RobotPose[idx] += RotationRate;
                     else if (moveDirection == "-")
-                        RobotPose[idx] -= MoveRate;
+                        if (idx < 3)
+                            RobotPose[idx] -= TranslationRate;
+                        else
+                            RobotPose[idx] -= RotationRate;
 
                     // Set the string
                     msg = $"movej(p[" +
@@ -762,9 +777,41 @@ namespace RobotClient.ViewModels
         /// </summary>
         public void ControllerUpdate()
         {
-            if(_controller.IsConnected)
+            if (_controller.IsConnected)
             {
                 var state = _controller.GetState();
+
+                #region Buttons
+
+                // Increase \ decrease the translation rate
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadUp))
+                {
+                    TranslationRate += 0.002;
+                    if (TranslationRate >= 0.1)
+                        TranslationRate = 0.1;
+                }
+                else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadDown))
+                {
+                    TranslationRate -= 0.002;
+                    if (TranslationRate <= 0.01)
+                        TranslationRate = 0.01;
+                }
+
+                // Increase \ decrease the rotation rate
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadRight))
+                {
+                    RotationRate += 0.002;
+                    if (RotationRate >= 0.1)
+                        RotationRate = 0.1;
+                }
+                else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadLeft))
+                {
+                    RotationRate -= 0.002;
+                    if (RotationRate <= 0.01)
+                        RotationRate = 0.01;
+                }
+
+                #endregion
 
                 #region Translation 
 
@@ -812,6 +859,7 @@ namespace RobotClient.ViewModels
                 }
 
                 #endregion
+
                 #region Rotation
 
                 // Rotate TCP in X axis
