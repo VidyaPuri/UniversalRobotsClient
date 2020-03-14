@@ -365,7 +365,7 @@ namespace RobotClient.ViewModels
                 Task.Run(() =>
                 {
                     var ip = IpAddress;
-                    Connect(ip, 30003);
+                    Connect(ip, Port);
                 });
             }
             else if (_socket.Connected)
