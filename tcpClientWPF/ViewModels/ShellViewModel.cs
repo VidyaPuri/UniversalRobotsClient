@@ -58,12 +58,18 @@ namespace tcpClientWPF.ViewModels
         private byte[] _buffer;
         private int _Port = 30003;
         private string _IpAddress = "192.168.56.101";
-        private bool _ConnectionStatus = false;
+
+        private bool _ControllerConnectionStatusBool;
+        private bool _ConnectionStatusBool = false;
+        private string _ConnectionStatusStr = "Disconnected";
+        private string _ConnectToggle = "Connect";
+        private bool _CanConnect;
+
         private double _MoveRate = 0.01;
 
-        private readonly Controller _controller = new Controller(UserIndex.One);
-        private Timer _timer;
+        private readonly Controller _controller = new Controller(UserIndex.Any);
         private readonly int RefreshRate = 60;
+        private readonly Timer _timer;
 
         private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
@@ -85,7 +91,7 @@ namespace tcpClientWPF.ViewModels
         public ShellViewModel()
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ConnectionStatus = _socket.Connected;
+            ConnectionStatusBool = _socket.Connected;
             CanConnect = true;
             _timer = new Timer(obj => ControllerUpdate());
             StartController();
@@ -152,17 +158,42 @@ namespace tcpClientWPF.ViewModels
         /// <summary>
         /// Connection status initialisation
         /// </summary>
-        public bool ConnectionStatus
+        public bool ConnectionStatusBool
         {
-            get { return _ConnectionStatus; }
-            set => Set(ref _ConnectionStatus, value);
+            get { return _ConnectionStatusBool; }
+            set => Set(ref _ConnectionStatusBool, value);
+        }
+
+        /// <summary>
+        /// Controller connection status initialisation
+        /// </summary>
+        public bool ControllerConnectionStatusBool
+        {
+            get { return _ControllerConnectionStatusBool; }
+            set => Set(ref _ControllerConnectionStatusBool, value);
+        }
+
+        /// <summary>
+        /// Connection status string initialisation
+        /// </summary>
+        public string ConnectionStatusStr
+        {
+            get { return _ConnectionStatusStr; }
+            set => Set(ref _ConnectionStatusStr, value);
+        }
+
+        /// <summary>
+        /// Connection butt
+        /// </summary>
+        public string ConnectToggle
+        {
+            get { return _ConnectToggle; }
+            set => Set(ref _ConnectToggle, value);
         }
 
         /// <summary>
         /// Waiting for connection to finish or return false
         /// </summary>
-        private bool  _CanConnect;
-
         public bool  CanConnect
         {
             get { return _CanConnect; }
@@ -306,11 +337,19 @@ namespace tcpClientWPF.ViewModels
             Debug.WriteLine($"IpAddress: { IpAddress}");
             Debug.WriteLine($"Port: { Port}");
 
-            Task.Run(() =>
+            if(!_socket.Connected)
             {
-                var ip = IpAddress;
-                Connect(ip, 30003);
-            });
+                Task.Run(() =>
+                {
+                    var ip = IpAddress;
+                    Connect(ip, 30003);
+                });
+            }
+            else if (_socket.Connected)
+            {
+                Disconnect();
+            }
+            
         }
 
         /// <summary>
@@ -325,6 +364,7 @@ namespace tcpClientWPF.ViewModels
                 IPAddress ipa = IPAddress.Parse(ipAddress);
                 if (!_socket.Connected)
                 {
+                    ConnectionStatusStr = "Connecting";
                     _socket.BeginConnect(new IPEndPoint(ipa, port), ConnectCallback, null   );
                     CanConnect = false;
                 }
@@ -356,7 +396,9 @@ namespace tcpClientWPF.ViewModels
             RobotJoints = new double[] { 0, 0, 0, 0, 0, 0 };
             RobotPose = new double[] { 0, 0, 0, 0, 0, 0 };
 
-        ConnectionStatus = _socket.Connected;
+            ConnectionStatusBool = _socket.Connected;
+            ConnectionStatusStr = "Stopped";
+            ConnectToggle = "Connect";
             CanConnect = true;
         }
 
@@ -367,6 +409,7 @@ namespace tcpClientWPF.ViewModels
         private void ConnectCallback(IAsyncResult result)
         {
             Console.WriteLine($"Status: {_socket.Connected.ToString()}");
+            ConnectionStatusStr = "Running";
             CanConnect = true;
 
             // If can not connect, call disconnect to reinitialize the socket
@@ -377,7 +420,8 @@ namespace tcpClientWPF.ViewModels
             {
                 if (_socket.Connected)
                 {
-                    ConnectionStatus = _socket.Connected;
+                    ConnectToggle = "Disconnect";
+                    ConnectionStatusBool = _socket.Connected;
                     StartReceiving();
                 }
                 else
@@ -768,7 +812,6 @@ namespace tcpClientWPF.ViewModels
                 }
 
                 #endregion
-
                 #region Rotation
 
                 // Rotate TCP in X axis
@@ -809,6 +852,12 @@ namespace tcpClientWPF.ViewModels
                 }
                 #endregion
             }
+            //else
+            //{
+            //    _controller = new Controller(UserIndex.One);
+            //}
+
+            //ControllerConnectionStatusBool = _controller.IsConnected;
         }
 
 
