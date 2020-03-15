@@ -1,16 +1,7 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Sockets;
-using AsynchronousSockeClient.Networking;
-using System.Globalization;
 using RobotClient.Models;
 using System.Windows;
-using SharpDX.XInput;
-using System.Threading;
 using RobotClient.Networking;
 using RobotClient.Move;
 
@@ -69,18 +60,11 @@ namespace RobotClient.ViewModels
         private SocketClient _socketClient;
         private MoveCommand _moveCommand;
         private ControllerClass _controllerClass;
-        private Socket _socket;
 
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
-        private bool startButtonPressed = false;
-
-        private readonly Controller _controller = new Controller(UserIndex.One);
-        private readonly int RefreshRate = 60;
-        private  Timer _timer;
 
         private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
-        private ControllerSettingsModel moveRateModel = new ControllerSettingsModel();
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
 
@@ -110,7 +94,6 @@ namespace RobotClient.ViewModels
 
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
-
             
             _controllerClass.StartController();
         }
@@ -422,191 +405,6 @@ namespace RobotClient.ViewModels
 
         #endregion
 
-        #region Controller
-
-        /// <summary>
-        /// Starts the update function and calls it in the set refresh rate
-        /// </summary>
-        public void StartController()
-        {
-            _timer.Change(0, 1000 / RefreshRate);
-        }
-
-        /// <summary>
-        /// Update function
-        /// </summary>
-        public void ControllerUpdate()
-        {
-            if (_controller.IsConnected)
-            {
-                var state = _controller.GetState();
-
-                #region Buttons
-
-                // Increase \ decrease the translation rate
-                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadUp))
-                {
-                    TranslationRate += 0.002;
-                    if (TranslationRate >= 0.1)
-                        TranslationRate = 0.1;
-
-                    moveRateModel.TranslationRate = TranslationRate;
-                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
-                }
-                else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadDown))
-                {
-                    TranslationRate -= 0.002;
-                    if (TranslationRate <= 0.01)
-                        TranslationRate = 0.01;
-
-                    moveRateModel.TranslationRate = TranslationRate;
-                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
-                }
-
-                // Increase \ decrease the rotation rate
-                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadRight))
-                {
-                    RotationRate += 0.002;
-                    if (RotationRate >= 0.1)
-                        RotationRate = 0.1;
-
-                    moveRateModel.RotationRate = RotationRate;
-                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
-                }
-                else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadLeft))
-                {
-                    RotationRate -= 0.002;
-                    if (RotationRate <= 0.01)
-                        RotationRate = 0.01;
-
-                    moveRateModel.RotationRate = RotationRate;
-                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
-                }
-
-                // Joints \ TCP Move Toggle
-                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start) && !startButtonPressed)
-                {
-                    startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
-
-                    if (ControllerMoveToggle == "TCP")
-                        ControllerMoveToggle = "Joints";
-                    else
-                        ControllerMoveToggle = "TCP";
-
-                    moveRateModel.ControllerMoveToggle = ControllerMoveToggle;
-                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
-                }
-
-
-                startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
-
-                #endregion
-
-                #region Translation 
-
-                // Move robot in X axis
-                if (state.Gamepad.LeftThumbX >= Gamepad.LeftThumbDeadZone || state.Gamepad.LeftThumbX <= -Gamepad.LeftThumbDeadZone)
-                {
-                    if (state.Gamepad.LeftThumbX > 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") TxAdd();
-                        if (ControllerMoveToggle == "Joints") J0Add();
-                    }
-                    else if (state.Gamepad.LeftThumbX < 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") TxSub();
-                        if (ControllerMoveToggle == "Joints") J0Sub();
-                    }
-                }
-
-                // Move robot in Y axis
-                if (state.Gamepad.LeftThumbY >= Gamepad.LeftThumbDeadZone || state.Gamepad.LeftThumbY <= -Gamepad.LeftThumbDeadZone)
-                {
-                    if (state.Gamepad.LeftThumbY > 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") TyAdd();
-                        if (ControllerMoveToggle == "Joints") J1Add();
-                    }
-                    else if (state.Gamepad.LeftThumbY < 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") TySub();
-                        if (ControllerMoveToggle == "Joints") J1Sub();
-                    }
-                }
-
-                // Move robot in Z axis
-                if (state.Gamepad.LeftTrigger >= Gamepad.TriggerThreshold)
-                {
-                    if (state.Gamepad.LeftTrigger > 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") TzAdd();
-                        if (ControllerMoveToggle == "Joints") J2Add();
-                    }
-                }
-
-                if (state.Gamepad.RightTrigger >= Gamepad.TriggerThreshold)
-                {
-                    if (state.Gamepad.RightTrigger > 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") TzSub();
-                        if (ControllerMoveToggle == "Joints") J2Sub();
-                    }
-                }
-
-                #endregion
-
-                #region Rotation
-
-                // Rotate TCP in X axis
-                if (state.Gamepad.RightThumbY >= Gamepad.RightThumbDeadZone || state.Gamepad.RightThumbY <= -Gamepad.RightThumbDeadZone)
-                {
-                    if (state.Gamepad.RightThumbY > 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") RxAdd();
-                        if (ControllerMoveToggle == "Joints") J3Add();
-                    }
-                    else if (state.Gamepad.RightThumbY < 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") RxSub();
-                        if (ControllerMoveToggle == "Joints") J3Sub();
-                    }
-                }
-
-                // Rotate TCP in Y axis
-                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.LeftShoulder))
-                {
-                    if (ControllerMoveToggle == "TCP") RyAdd();
-                    if (ControllerMoveToggle == "Joints") J4Add();
-                }
-
-                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.RightShoulder))
-                {
-                    if (ControllerMoveToggle == "TCP") RySub();
-                    if (ControllerMoveToggle == "Joints") J4Sub();
-                }
-
-                // Rotate TCP in Z axis
-                if (state.Gamepad.RightThumbX >= Gamepad.RightThumbDeadZone || state.Gamepad.RightThumbX <= -Gamepad.RightThumbDeadZone)
-                {
-                    if (state.Gamepad.RightThumbX > 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") RzAdd();
-                        if (ControllerMoveToggle == "Joints") J5Add();
-                    }
-                    else if (state.Gamepad.RightThumbX < 0)
-                    {
-                        if (ControllerMoveToggle == "TCP") RzSub();
-                        if (ControllerMoveToggle == "Joints") J5Sub();
-                    }
-                }
-                #endregion
-            }
-
-            ControllerConnectionStatusBool = _controller.IsConnected;
-        }
-
-        #endregion
-
         #region Handlers
 
         /// <summary>
@@ -625,10 +423,10 @@ namespace RobotClient.ViewModels
         /// <param name="status"></param>
         public void Handle(ConnectionStatusModel status)
         {
+            CanConnect = status.CanConnect;
             ConnectToggle = status.ConnectToggle;
             ConnectionStatusBool = status.ConnectionStatusBool;
             ConnectionStatusStr = status.ConnectionStatusStr;
-            CanConnect = status.CanConnect;
         }
 
         /// <summary>
@@ -637,13 +435,12 @@ namespace RobotClient.ViewModels
         /// <param name="message"></param>
         public void Handle(ControllerSettingsModel message)
         {
-            TranslationRate = message.TranslationRate;
             RotationRate = message.RotationRate;
+            TranslationRate = message.TranslationRate;
             ControllerMoveToggle = message.ControllerMoveToggle;
             ControllerConnectionStatusBool = message.ControllerConnectionStatusBool;
         }
 
         #endregion
-
     }
 }

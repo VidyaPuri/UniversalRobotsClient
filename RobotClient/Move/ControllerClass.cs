@@ -22,8 +22,8 @@ namespace RobotClient.Move
         private ControllerSettingsModel moveRateModel = new ControllerSettingsModel();
         private MoveCommand _moveCommand;
 
-        private double _TranslationRate = 0.1;
-        private double _RotationRate = 0.1;
+        private double _TranslationRate = 0.01;
+        private double _RotationRate = 0.01;
         private string ControllerMoveToggle = "TCP";
 
         private bool startButtonPressed = false;
@@ -142,13 +142,13 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.LeftThumbX > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 0, "joints"); ;
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 0, "joints");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 0, "tcp"); ;
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("+", 0, "joints");
                     }
                     else if (state.Gamepad.LeftThumbX < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 1, "joints");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 1, "joints");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("-", 0, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 0, "joints");
                     }
                 }
 
@@ -157,13 +157,13 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.LeftThumbY > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 2, "joints");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 2, "joints");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 1, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("+", 1, "joints");
                     }
                     else if (state.Gamepad.LeftThumbY < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 3, "joints");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 3, "joints");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("-", 1, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 1, "joints");
                     }
                 }
 
@@ -172,8 +172,8 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.LeftTrigger > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 4, "joints");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 4, "joints");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 2, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("+", 2, "joints");
                     }
                 }
 
@@ -181,8 +181,8 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.RightTrigger > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 5, "joints");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 5, "joints");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("-", 2, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 2, "joints");
                     }
                 }
 
@@ -195,27 +195,27 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.RightThumbY > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 0, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 0, "tcp");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 3, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("+", 3, "joints");
                     }
                     else if (state.Gamepad.RightThumbY < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 1, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 1, "tcp");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("-", 3, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 3, "joints");
                     }
                 }
 
                 // Rotate TCP in Y axis
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.LeftShoulder))
                 {
-                    if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 2, "tcp");
-                    if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 2, "tcp");
+                    if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 4, "tcp");
+                    if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("+", 4, "joints");
                 }
 
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.RightShoulder))
                 {
-                    if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 3, "tcp");
-                    if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 3, "tcp");
+                    if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("-", 4, "tcp");
+                    if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 4, "joints");
                 }
 
                 // Rotate TCP in Z axis
@@ -223,13 +223,13 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.RightThumbX > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 4, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 4, "tcp");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 5, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("+", 5, "joints");
                     }
                     else if (state.Gamepad.RightThumbX < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("+", 5, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 5, "tcp");
+                        if (ControllerMoveToggle == "TCP") _moveCommand.SendMoveCommand("-", 5, "tcp");
+                        if (ControllerMoveToggle == "Joints") _moveCommand.SendMoveCommand("-", 5, "joints");
                     }
                 }
                 #endregion
@@ -237,6 +237,7 @@ namespace RobotClient.Move
                 // First time initialisation
                 if(!ControllerConnectionStatusBool)
                 {
+                    ControllerConnectionStatusBool = _controller.IsConnected;
                     moveRateModel.ControllerConnectionStatusBool = _controller.IsConnected;
                     moveRateModel.ControllerMoveToggle = ControllerMoveToggle;
                     moveRateModel.RotationRate = RotationRate;
@@ -247,12 +248,14 @@ namespace RobotClient.Move
             else
             {
                 ControllerConnectionStatusBool = _controller.IsConnected;
-                PublishEventToUI();
+                moveRateModel.ControllerConnectionStatusBool = _controller.IsConnected;
+                //PublishEventToUI();
             }
         }
 
-
-
+        /// <summary>
+        /// Publish on UI
+        /// </summary>
         private void PublishEventToUI()
         {
             _eventAggregator.BeginPublishOnUIThread(moveRateModel);
