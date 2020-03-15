@@ -78,8 +78,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ConnectionStatusModel.cs" />
-    <Compile Include="Models\MoveRateModel.cs" />
+    <Compile Include="Models\ControllerSettingsModel.cs" />
     <Compile Include="Models\RobotOutputPackage.cs" />
+    <Compile Include="Move\ControllerClass.cs" />
     <Compile Include="Move\MoveCommand.cs" />
     <Compile Include="Networking\PacketHandler.cs" />
     <Compile Include="Networking\SocketClient.cs" />

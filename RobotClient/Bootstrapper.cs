@@ -23,6 +23,7 @@ namespace RobotClient
             _container.Singleton<ShellViewModel>();
             _container.PerRequest<SocketClient>();
             _container.PerRequest<MoveCommand>();
+            _container.PerRequest<ControllerClass>();
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>();

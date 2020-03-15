@@ -11,8 +11,10 @@ using System.Net.Sockets;
 
 namespace RobotClient.Move
 {
-    public class MoveCommand : PropertyChangedBase, IHandle<RobotOutputPackage>, IHandle<Socket>, IHandle<MoveRateModel>
+    public class MoveCommand : PropertyChangedBase, IHandle<RobotOutputPackage>, IHandle<Socket>, IHandle<ControllerSettingsModel>
     {
+        #region Private members
+
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
         private double _TranslationRate = 0.01;
@@ -23,6 +25,10 @@ namespace RobotClient.Move
         SocketClient _socketClient;
         IEventAggregator _eventAggregator;
 
+        #endregion
+
+        #region Constructor
+
         public MoveCommand(
             IEventAggregator eventAggregator,
             SocketClient socketClient)
@@ -32,6 +38,10 @@ namespace RobotClient.Move
 
             _eventAggregator.Subscribe(this);
         }
+
+        #endregion
+
+        #region Public property initialisation
 
         /// <summary>
         /// Robot pose initalisation
@@ -69,8 +79,9 @@ namespace RobotClient.Move
             set => Set(ref _RotationRate, value);
         }
 
-        
+        #endregion
 
+        #region Move Command
 
         /// <summary>
         /// Send Move Command
@@ -133,6 +144,17 @@ namespace RobotClient.Move
             });
         }
 
+        /// <summary>
+        /// Sends the script command
+        /// </summary>
+        /// <param name="script"></param>
+        public void SendScriptCommand(string script)
+        {
+            _socketClient.Send(_socket, script);
+        }
+
+        #endregion
+
         #region Handlers
 
         /// <summary>
@@ -158,7 +180,7 @@ namespace RobotClient.Move
         /// Move rate handler
         /// </summary>
         /// <param name="message"></param>
-        public void Handle(MoveRateModel message)
+        public void Handle(ControllerSettingsModel message)
         {
             TranslationRate = message.TranslationRate;
             RotationRate = message.RotationRate;

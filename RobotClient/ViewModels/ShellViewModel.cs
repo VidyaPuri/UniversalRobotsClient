@@ -16,7 +16,7 @@ using RobotClient.Move;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputPackage>, IHandle<ConnectionStatusModel>
+    public class ShellViewModel : Screen, IHandle<RobotOutputPackage>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>
     {
         #region Window Control
 
@@ -68,6 +68,7 @@ namespace RobotClient.ViewModels
         private IEventAggregator _eventAggregator { get; }
         private SocketClient _socketClient;
         private MoveCommand _moveCommand;
+        private ControllerClass _controllerClass;
         private Socket _socket;
 
         private double _TranslationRate = 0.01;
@@ -79,7 +80,7 @@ namespace RobotClient.ViewModels
         private  Timer _timer;
 
         private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
-        private MoveRateModel moveRateModel = new MoveRateModel();
+        private ControllerSettingsModel moveRateModel = new ControllerSettingsModel();
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
 
@@ -99,17 +100,19 @@ namespace RobotClient.ViewModels
         public ShellViewModel(
             IEventAggregator eventAggregator,
             SocketClient socketClient,
-            MoveCommand moveCommand
+            MoveCommand moveCommand,
+            ControllerClass controllerClass
             )
         {
             _socketClient = socketClient;
             _moveCommand = moveCommand;
+            _controllerClass = controllerClass;
 
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
 
-            _timer = new Timer(obj => ControllerUpdate());
-            StartController();
+            
+            _controllerClass.StartController();
         }
 
         #endregion
@@ -378,16 +381,11 @@ namespace RobotClient.ViewModels
         /// <summary>
         /// Send script button
         /// </summary>
-        public void SendScript()
-        {
-            _socketClient.Send(_socket, Script);
-        }
+        public void SendScript() { _moveCommand.SendScriptCommand(Script); }
 
         #endregion
 
         #region Move Methods
-
-        #region Button Methods
 
         /// <summary>
         /// Joint Move Buttons
@@ -421,69 +419,6 @@ namespace RobotClient.ViewModels
         public void RySub() { _moveCommand.SendMoveCommand("-", 4, "tcp"); }
         public void RzAdd() { _moveCommand.SendMoveCommand("+", 5, "tcp"); }
         public void RzSub() { _moveCommand.SendMoveCommand("-", 5, "tcp"); }
-
-        #endregion
-
-        /// <summary>
-        /// Sending the move command to robot
-        /// </summary>
-        /// <param name="moveDirection"></param>
-        /// <param name="idx"></param>
-        private void SendMoveCommand(string moveDirection, int idx, string moveType)
-        {
-            Task.Run(() =>
-            {
-                string msg = "";
-
-                // Check the type of move
-                if(moveType == "joints")
-                {
-                    // Check which operation is clicked
-                    if (moveDirection == "+")
-                        RobotJoints[idx] += TranslationRate;
-                    else if (moveDirection == "-")
-                        RobotJoints[idx] -= TranslationRate;
-
-                    // Set the string
-                    msg = $"movej([" +
-                    $"{RobotJoints[0].ToString(new CultureInfo("en-US"))}," +
-                    $"{RobotJoints[1].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[2].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[3].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[4].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[5].ToString(new CultureInfo("en-US"))}]," +
-                    $" a = 2, v = 1, t = 0.1)";
-                } 
-                else if (moveType == "tcp")
-                {
-                    // Check which operation is clicked and if it is a rotation or translation 
-                    if (moveDirection == "+")
-                        if(idx < 3 )
-                            RobotPose[idx] += TranslationRate;
-                        else
-                            RobotPose[idx] += RotationRate;
-                    else if (moveDirection == "-")
-                        if (idx < 3)
-                            RobotPose[idx] -= TranslationRate;
-                        else
-                            RobotPose[idx] -= RotationRate;
-
-                    // Set the string
-                    msg = $"movej(p[" +
-                    $"{RobotPose[0].ToString(new CultureInfo("en-US"))}," +
-                    $"{RobotPose[1].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[2].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[3].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[4].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[5].ToString(new CultureInfo("en-US"))}]," +
-                    $" a = 2, v = 1, t = 0.1)";
-                }
-
-                // Send command
-                _socketClient.Send(_socket,msg);
-            });
-
-        }
 
         #endregion
 
@@ -694,6 +629,18 @@ namespace RobotClient.ViewModels
             ConnectionStatusBool = status.ConnectionStatusBool;
             ConnectionStatusStr = status.ConnectionStatusStr;
             CanConnect = status.CanConnect;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(ControllerSettingsModel message)
+        {
+            TranslationRate = message.TranslationRate;
+            RotationRate = message.RotationRate;
+            ControllerMoveToggle = message.ControllerMoveToggle;
+            ControllerConnectionStatusBool = message.ControllerConnectionStatusBool;
         }
 
         #endregion
