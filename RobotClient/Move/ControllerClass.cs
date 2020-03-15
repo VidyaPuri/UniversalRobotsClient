@@ -1,13 +1,7 @@
 ﻿using Caliburn.Micro;
 using RobotClient.Models;
-using RobotClient.Move;
 using SharpDX.XInput;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RobotClient.Move
 {
