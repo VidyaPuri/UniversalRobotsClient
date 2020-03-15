@@ -1,5 +1,5 @@
 ﻿
-namespace tcpClientWPF.Models
+namespace RobotClient.Models
 {
     public class RobotOutputPackage
     {

@@ -7,12 +7,12 @@ using System.Net;
 using System.Net.Sockets;
 using AsynchronousSockeClient.Networking;
 using System.Globalization;
-using tcpClientWPF.Models;
+using RobotClient.Models;
 using System.Windows;
 using SharpDX.XInput;
 using System.Threading;
 
-namespace tcpClientWPF.ViewModels
+namespace RobotClient.ViewModels
 {
     public class ShellViewModel : Screen
     {
@@ -65,7 +65,9 @@ namespace tcpClientWPF.ViewModels
         private string _ConnectToggle = "Connect";
         private bool _CanConnect;
 
-        private double _MoveRate = 0.01;
+        private double _TranslationRate = 0.01;
+        private double _RotationRate = 0.01;
+        private bool startButtonPressed = false;
 
         private readonly Controller _controller = new Controller(UserIndex.One);
         private readonly int RefreshRate = 60;
@@ -93,6 +95,8 @@ namespace tcpClientWPF.ViewModels
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ConnectionStatusBool = _socket.Connected;
             CanConnect = true;
+            _ControllerMoveToggle = "TCP";
+
             _timer = new Timer(obj => ControllerUpdate());
             StartController();
         }
@@ -201,13 +205,32 @@ namespace tcpClientWPF.ViewModels
         }
 
         /// <summary>
-        /// Rate of movement 
+        /// Rate of translation 
         /// </summary>
-        public double MoveRate
+        public double TranslationRate
         {
-            get { return _MoveRate; }
-            set => Set(ref _MoveRate, value);
+            get { return _TranslationRate; }
+            set => Set(ref _TranslationRate, value);
         }
+
+        /// <summary>
+        /// Rate of rotation
+        /// </summary>
+        public double  RotationRate
+        {
+            get { return _RotationRate; }
+            set => Set(ref _RotationRate, value);
+        }
+
+        private string _ControllerMoveToggle;
+
+        public string ControllerMoveToggle
+        {
+            get { return _ControllerMoveToggle; }
+            set => Set(ref _ControllerMoveToggle, value);
+        }
+
+
 
         #region I/O properties
 
@@ -337,19 +360,18 @@ namespace tcpClientWPF.ViewModels
             Debug.WriteLine($"IpAddress: { IpAddress}");
             Debug.WriteLine($"Port: { Port}");
 
-            if(!_socket.Connected)
+            if (!_socket.Connected)
             {
                 Task.Run(() =>
                 {
                     var ip = IpAddress;
-                    Connect(ip, 30003);
+                    Connect(ip, Port);
                 });
             }
             else if (_socket.Connected)
             {
                 Disconnect();
             }
-            
         }
 
         /// <summary>
@@ -647,7 +669,6 @@ namespace tcpClientWPF.ViewModels
             SendMoveCommand("-", 1, "tcp");
         }
 
-
         public void TzAdd()
         {
             SendMoveCommand("+", 2, "tcp");
@@ -706,9 +727,9 @@ namespace tcpClientWPF.ViewModels
                 {
                     // Check which operation is clicked
                     if (moveDirection == "+")
-                        RobotJoints[idx] += MoveRate;
+                        RobotJoints[idx] += TranslationRate;
                     else if (moveDirection == "-")
-                        RobotJoints[idx] -= MoveRate;
+                        RobotJoints[idx] -= TranslationRate;
 
                     // Set the string
                     msg = $"movej([" +
@@ -722,11 +743,17 @@ namespace tcpClientWPF.ViewModels
                 } 
                 else if (moveType == "tcp")
                 {
-                    // Check which operation is clicked
+                    // Check which operation is clicked and if it is a rotation or translation 
                     if (moveDirection == "+")
-                        RobotPose[idx] += MoveRate;
+                        if(idx < 3 )
+                            RobotPose[idx] += TranslationRate;
+                        else
+                            RobotPose[idx] += RotationRate;
                     else if (moveDirection == "-")
-                        RobotPose[idx] -= MoveRate;
+                        if (idx < 3)
+                            RobotPose[idx] -= TranslationRate;
+                        else
+                            RobotPose[idx] -= RotationRate;
 
                     // Set the string
                     msg = $"movej(p[" +
@@ -762,9 +789,54 @@ namespace tcpClientWPF.ViewModels
         /// </summary>
         public void ControllerUpdate()
         {
-            if(_controller.IsConnected)
+            if (_controller.IsConnected)
             {
                 var state = _controller.GetState();
+
+                #region Buttons
+
+                // Increase \ decrease the translation rate
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadUp))
+                {
+                    TranslationRate += 0.002;
+                    if (TranslationRate >= 0.1)
+                        TranslationRate = 0.1;
+                }
+                else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadDown))
+                {
+                    TranslationRate -= 0.002;
+                    if (TranslationRate <= 0.01)
+                        TranslationRate = 0.01;
+                }
+
+                // Increase \ decrease the rotation rate
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadRight))
+                {
+                    RotationRate += 0.002;
+                    if (RotationRate >= 0.1)
+                        RotationRate = 0.1;
+                }
+                else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadLeft))
+                {
+                    RotationRate -= 0.002;
+                    if (RotationRate <= 0.01)
+                        RotationRate = 0.01;
+                }
+
+                // Joints \ TCP Move Toggle
+                if(state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start) && !startButtonPressed)
+                {
+                    startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
+
+                    if (ControllerMoveToggle == "TCP")
+                        ControllerMoveToggle = "Joints";
+                    else
+                        ControllerMoveToggle = "TCP";
+                }
+
+                startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
+
+                #endregion
 
                 #region Translation 
 
@@ -773,11 +845,13 @@ namespace tcpClientWPF.ViewModels
                 {
                     if(state.Gamepad.LeftThumbX > 0)
                     {
-                        TxAdd();
+                        if (ControllerMoveToggle == "TCP") TxAdd();
+                        if (ControllerMoveToggle == "Joints") J0Add();
                     }
                     else if (state.Gamepad.LeftThumbX < 0)
                     {
-                        TxSub();
+                        if (ControllerMoveToggle == "TCP") TxSub();
+                        if (ControllerMoveToggle == "Joints") J0Sub();
                     }
                 }
 
@@ -786,11 +860,13 @@ namespace tcpClientWPF.ViewModels
                 {
                     if (state.Gamepad.LeftThumbY > 0)
                     {
-                        TyAdd();
+                        if (ControllerMoveToggle == "TCP") TyAdd();
+                        if (ControllerMoveToggle == "Joints") J1Add();
                     }
                     else if (state.Gamepad.LeftThumbY < 0)
                     {
-                        TySub();
+                        if (ControllerMoveToggle == "TCP") TySub();
+                        if (ControllerMoveToggle == "Joints") J1Sub();
                     }
                 }
 
@@ -799,7 +875,8 @@ namespace tcpClientWPF.ViewModels
                 {
                     if (state.Gamepad.LeftTrigger > 0)
                     {
-                        TzAdd();
+                        if (ControllerMoveToggle == "TCP") TzAdd();
+                        if (ControllerMoveToggle == "Joints") J2Add();
                     }
                 }
 
@@ -807,11 +884,13 @@ namespace tcpClientWPF.ViewModels
                 {
                     if (state.Gamepad.RightTrigger > 0)
                     {
-                        TzSub();
+                        if (ControllerMoveToggle == "TCP") TzSub();
+                        if (ControllerMoveToggle == "Joints") J2Sub();
                     }
                 }
 
                 #endregion
+
                 #region Rotation
 
                 // Rotate TCP in X axis
@@ -819,23 +898,27 @@ namespace tcpClientWPF.ViewModels
                 {
                     if (state.Gamepad.RightThumbY > 0)
                     {
-                        RxAdd();
+                        if (ControllerMoveToggle == "TCP") RxAdd();
+                        if (ControllerMoveToggle == "Joints") J3Add();
                     }
                     else if (state.Gamepad.RightThumbY < 0)
                     {
-                        RxSub();
+                        if (ControllerMoveToggle == "TCP") RxSub();
+                        if (ControllerMoveToggle == "Joints") J3Sub();
                     }
                 }
 
                 // Rotate TCP in Y axis
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.LeftShoulder))
                 {
-                    RyAdd();
+                    if (ControllerMoveToggle == "TCP") RyAdd();
+                    if (ControllerMoveToggle == "Joints") J4Add();
                 }
 
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.RightShoulder))
                 {
-                    RySub();
+                    if (ControllerMoveToggle == "TCP") RySub();
+                    if (ControllerMoveToggle == "Joints") J4Sub();
                 }
 
                 // Rotate TCP in Z axis
@@ -843,11 +926,13 @@ namespace tcpClientWPF.ViewModels
                 {
                     if (state.Gamepad.RightThumbX > 0)
                     {
-                        RzAdd();
+                        if (ControllerMoveToggle == "TCP") RzAdd();
+                        if (ControllerMoveToggle == "Joints") J5Add();
                     }
                     else if (state.Gamepad.RightThumbX < 0)
                     {
-                        RzSub();
+                        if (ControllerMoveToggle == "TCP") RzSub();
+                        if (ControllerMoveToggle == "Joints") J5Sub();
                     }
                 }
                 #endregion
