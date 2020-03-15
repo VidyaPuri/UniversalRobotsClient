@@ -824,7 +824,7 @@ namespace RobotClient.ViewModels
                 }
 
                 // Joints \ TCP Move Toggle
-                if(state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start) && !startButtonPressed)
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start) && !startButtonPressed)
                 {
                     startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
 
@@ -843,7 +843,7 @@ namespace RobotClient.ViewModels
                 // Move robot in X axis
                 if (state.Gamepad.LeftThumbX >= Gamepad.LeftThumbDeadZone || state.Gamepad.LeftThumbX <= -Gamepad.LeftThumbDeadZone)
                 {
-                    if(state.Gamepad.LeftThumbX > 0)
+                    if (state.Gamepad.LeftThumbX > 0)
                     {
                         if (ControllerMoveToggle == "TCP") TxAdd();
                         if (ControllerMoveToggle == "Joints") J0Add();
@@ -937,10 +937,6 @@ namespace RobotClient.ViewModels
                 }
                 #endregion
             }
-            //else
-            //{
-            //    _controller = new Controller(UserIndex.One);
-            //}
 
             ControllerConnectionStatusBool = _controller.IsConnected;
         }
