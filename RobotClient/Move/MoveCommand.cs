@@ -11,7 +11,7 @@ using System.Net.Sockets;
 
 namespace RobotClient.Move
 {
-    public class MoveCommand : PropertyChangedBase, IHandle<RobotOutputPackage>, IHandle<Socket>, IHandle<ControllerSettingsModel>
+    public class MoveCommand : PropertyChangedBase, IHandle<RobotOutputModel>, IHandle<Socket>, IHandle<ControllerSettingsModel>
     {
         #region Private members
 
@@ -161,7 +161,7 @@ namespace RobotClient.Move
         /// Robot output package handler
         /// </summary>
         /// <param name="message"></param>
-        public void Handle(RobotOutputPackage message)
+        public void Handle(RobotOutputModel message)
         {
             RobotPose = message.RobotPose;
             RobotJoints = message.RobotJoints;

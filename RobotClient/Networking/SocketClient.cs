@@ -20,7 +20,7 @@ namespace RobotClient.Networking
         private byte[] _buffer;
         public IEventAggregator _eventAggregator { get; }
         private ConnectionStatusModel connectionStatus = new ConnectionStatusModel();
-        private RobotOutputPackage robotOutputPackage = new RobotOutputPackage();
+        private RobotOutputModel robotOutputPackage = new RobotOutputModel();
 
         public SocketClient(IEventAggregator eventAggregator)
         {

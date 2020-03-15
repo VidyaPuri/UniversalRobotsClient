@@ -5,9 +5,9 @@ namespace AsynchronousSockeClient.Networking
 {
     public static class PacketHandler
     {
-        public static RobotOutputPackage Handle(byte[] packet, int packetSize)
+        public static RobotOutputModel Handle(byte[] packet, int packetSize)
         {
-            RobotOutputPackage output = new RobotOutputPackage();
+            RobotOutputModel output = new RobotOutputModel();
 
             // Lenght offset
             int integerOffset = 4;

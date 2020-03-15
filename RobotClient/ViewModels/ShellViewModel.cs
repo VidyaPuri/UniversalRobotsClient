@@ -7,7 +7,7 @@ using RobotClient.Move;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputPackage>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>
     {
         #region Window Control
 
@@ -64,7 +64,7 @@ namespace RobotClient.ViewModels
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
 
-        private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
+        private RobotOutputModel _RobotOutputPackage = new RobotOutputModel();
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
 
@@ -105,7 +105,7 @@ namespace RobotClient.ViewModels
         /// <summary>
         /// Robot output package initialisation
         /// </summary>
-        public RobotOutputPackage RobotOutputPackage
+        public RobotOutputModel RobotOutputPackage
         {
             get { return _RobotOutputPackage; }
             set => Set(ref _RobotOutputPackage, value);
@@ -411,7 +411,7 @@ namespace RobotClient.ViewModels
         /// Robot output package handler
         /// </summary>
         /// <param name="message"></param>
-        public void Handle(RobotOutputPackage rop)
+        public void Handle(RobotOutputModel rop)
         {
             RobotJoints = rop.RobotJoints;
             RobotPose = rop.RobotPose;
