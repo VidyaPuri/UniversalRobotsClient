@@ -28,6 +28,7 @@ namespace RobotClient.Move
 
         private bool startButtonPressed = false;
         private bool ControllerConnectionStatusBool = false;
+        private bool PreviousControllerStatus = false;
 
         public ControllerClass(
             IEventAggregator eventAggregator,
@@ -38,6 +39,11 @@ namespace RobotClient.Move
 
             _timer = new Timer(obj => ControllerUpdate());
 
+            ControllerConnectionStatusBool = _controller.IsConnected;
+            moveRateModel.ControllerConnectionStatusBool = _controller.IsConnected;
+            moveRateModel.ControllerMoveToggle = ControllerMoveToggle;
+            moveRateModel.RotationRate = RotationRate;
+            moveRateModel.TranslationRate = TranslationRate;
         }
 
         /// <summary>
@@ -233,23 +239,17 @@ namespace RobotClient.Move
                     }
                 }
                 #endregion
-
-                // First time initialisation
-                if(!ControllerConnectionStatusBool)
-                {
-                    ControllerConnectionStatusBool = _controller.IsConnected;
-                    moveRateModel.ControllerConnectionStatusBool = _controller.IsConnected;
-                    moveRateModel.ControllerMoveToggle = ControllerMoveToggle;
-                    moveRateModel.RotationRate = RotationRate;
-                    moveRateModel.TranslationRate = TranslationRate;
-                    PublishEventToUI();
-                }
             }
-            else
+
+            ControllerConnectionStatusBool = _controller.IsConnected;
+
+            // On change send the new status
+            if (ControllerConnectionStatusBool != PreviousControllerStatus)
             {
                 ControllerConnectionStatusBool = _controller.IsConnected;
-                moveRateModel.ControllerConnectionStatusBool = _controller.IsConnected;
-                //PublishEventToUI();
+                moveRateModel.ControllerConnectionStatusBool = ControllerConnectionStatusBool;
+                PreviousControllerStatus = ControllerConnectionStatusBool;
+                PublishEventToUI();
             }
         }
 
