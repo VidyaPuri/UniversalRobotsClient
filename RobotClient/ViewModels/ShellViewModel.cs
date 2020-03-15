@@ -11,10 +11,11 @@ using RobotClient.Models;
 using System.Windows;
 using SharpDX.XInput;
 using System.Threading;
+using RobotClient.Networking;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen
+    public class ShellViewModel : Screen, IHandle<RobotOutputPackage>, IHandle<ConnectionStatusModel>
     {
 
         #region Window Control
@@ -65,6 +66,10 @@ namespace RobotClient.ViewModels
         private string _ConnectToggle = "Connect";
         private bool _CanConnect;
 
+        
+        private IEventAggregator _eventAggregator { get; }
+        private SocketClient _socketClient;
+
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
         private bool startButtonPressed = false;
@@ -90,12 +95,20 @@ namespace RobotClient.ViewModels
 
         #region Constructor
 
-        public ShellViewModel()
+        public ShellViewModel(
+            IEventAggregator eventAggregator,
+            SocketClient socketClient)
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ConnectionStatusBool = _socket.Connected;
+            ConnectionStatusBool = false;
             CanConnect = true;
             _ControllerMoveToggle = "TCP";
+
+            _socketClient = socketClient;
+            _eventAggregator = eventAggregator;
+            _eventAggregator.Subscribe(this);
+
 
             _timer = new Timer(obj => ControllerUpdate());
             StartController();
@@ -360,17 +373,17 @@ namespace RobotClient.ViewModels
             Debug.WriteLine($"IpAddress: { IpAddress}");
             Debug.WriteLine($"Port: { Port}");
 
-            if (!_socket.Connected)
+            if (!ConnectionStatusBool)
             {
                 Task.Run(() =>
                 {
                     var ip = IpAddress;
-                    Connect(ip, Port);
+                    _socketClient.Connect(ip, Port);
                 });
             }
-            else if (_socket.Connected)
+            else if (ConnectionStatusBool)
             {
-                Disconnect();
+                _socketClient.Disconnect();
             }
         }
 
@@ -564,7 +577,7 @@ namespace RobotClient.ViewModels
             try
             {
                 string data = $"set_digital_out({io},{value})";
-                Send(_socket, data);
+                _socketClient.Send(_socket, data);
             }
             catch(SocketException ex)
             {
@@ -574,7 +587,7 @@ namespace RobotClient.ViewModels
 
         public void SendScript()
         {
-            Send(_socket, Script);
+            _socketClient.Send(_socket, Script);
         }
 
         #endregion
@@ -767,7 +780,7 @@ namespace RobotClient.ViewModels
                 }
 
                 // Send command
-                Send(_socket, msg);
+                _socketClient.Send(_socket, msg);
             });
 
         }
@@ -940,7 +953,33 @@ namespace RobotClient.ViewModels
 
             ControllerConnectionStatusBool = _controller.IsConnected;
         }
-        
+
+        #endregion
+
+        #region Handlers
+
+        /// <summary>
+        /// Robot output package handler
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(RobotOutputPackage rop)
+        {
+            RobotJoints = rop.RobotJoints;
+            RobotPose = rop.RobotPose;
+        }
+
+        /// <summary>
+        /// Connection status handler
+        /// </summary>
+        /// <param name="status"></param>
+        public void Handle(ConnectionStatusModel status)
+        {
+            ConnectToggle = status.ConnectToggle;
+            ConnectionStatusBool = status.ConnectionStatusBool;
+            ConnectionStatusStr = status.ConnectionStatusStr;
+            CanConnect = status.CanConnect;
+        }
+
         #endregion
 
     }
