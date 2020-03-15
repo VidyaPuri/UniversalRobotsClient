@@ -8,95 +8,95 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="403" Width="498.953" MinHeight="403" MinWidth="512" Background="#2B2F3D">
-
+        Title="TCP Client" Height="387" Width="512" MinHeight="387" MinWidth="512" MaxHeight="387" MaxWidth="512" Background="#2B2F3D">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
 
     <!--<Grid>-->
-        <Grid Margin="5" Background="#fffcf9">
-            <!-- Outer Shell-->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"></RowDefinition>
-                <RowDefinition Height="2"></RowDefinition>
-                <RowDefinition Height="35"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="2"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="5"></RowDefinition>
-                <RowDefinition Height="25"></RowDefinition>
+    <Grid Margin="5" Background="#fffcf9">
+        <!-- Outer Shell-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="2"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="2"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="5"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
         </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="5"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="5"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
-            <!-- Window Control-->
-            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="#466874">
+        <!-- Window Control-->
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="#466874">
             <Label Content="Robot TCP Client" Margin="5 0" FontWeight="Bold" FontSize="13" Foreground="Gainsboro"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button x:Name="MinimizeWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
-                        <Image Source="Styles/Icons/Minimize.png" Width="15"/>
-                    </Button>
+                <Button x:Name="MinimizeWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
+                    <Image Source="Styles/Icons/Minimize.png" Width="15"/>
+                </Button>
 
-                    <ToggleButton x:Name="MaximizeWindow" Height="30" Width="30" Template="{DynamicResource UnMaksimize_Maximize_Button}">
-                        <ToggleButton.Resources>
-                            <DataTemplate x:Key="Unpressed">
-                                <Image Source="Styles/Icons/Maksimize.png" Width="15"/>
-                            </DataTemplate>
-                            <DataTemplate x:Key="Pressed">
-                                <Image Source="Styles/Icons/UnMaksimize.png" Width="15"/>
-                            </DataTemplate>
-                        </ToggleButton.Resources>
-                        <ToggleButton.Style>
-                            <Style TargetType="{x:Type ToggleButton}">
-                                <Setter Property="ContentTemplate" Value="{StaticResource Unpressed}"/>
+                <ToggleButton x:Name="MaximizeWindow" Height="30" Width="30" Template="{DynamicResource UnMaksimize_Maximize_Button}">
+                    <ToggleButton.Resources>
+                        <DataTemplate x:Key="Unpressed">
+                            <Image Source="Styles/Icons/Maksimize.png" Width="15"/>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Pressed">
+                            <Image Source="Styles/Icons/UnMaksimize.png" Width="15"/>
+                        </DataTemplate>
+                    </ToggleButton.Resources>
+                    <ToggleButton.Style>
+                        <Style TargetType="{x:Type ToggleButton}">
+                            <Setter Property="ContentTemplate" Value="{StaticResource Unpressed}"/>
 
-                                <Style.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource Pressed}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ToggleButton.Style>
-                    </ToggleButton>
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource Pressed}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
 
-                    <Button x:Name="CloseWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
-                        <Image Source="Styles/Icons/Close.png" Width="15"/>
-                    </Button>
-                </StackPanel>
-            </Grid>
-            
-            <!-- Connection panel -->
-            <Border Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>
-            <DockPanel Grid.Row="2" Grid.Column="1">
-                <Label Content="IP Address" Margin="5" Foreground="Black" FontWeight="Bold"/>
-                <TextBox x:Name="IpAddress" Width="200" Margin="5" VerticalContentAlignment="Center"/>
-                <Label Content="Port" Margin="5" Foreground="Black" FontWeight="Bold"/>
-                <TextBox x:Name="Port" Width="60" Margin="5" VerticalContentAlignment="Center" />
-                <Button x:Name="ConnectToRobot" Content="{Binding ConnectToggle, FallbackValue=Connect}" 
-                        IsEnabled="{Binding CanConnect}" DockPanel.Dock="Right"
-                        Margin="5" Padding="5" VerticalContentAlignment="Center"/>
-                <!--<Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5" VerticalContentAlignment="Center"/>-->
-            </DockPanel>
-
-            <!-- Script panel -->
-            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-            <TextBox x:Name="Script" Width="425" Margin="5" VerticalContentAlignment="Center"/>
-                <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5"/>
+                <Button x:Name="CloseWindow" Height="30" Width="30" Style="{DynamicResource WindowControllButtons}">
+                    <Image Source="Styles/Icons/Close.png" Width="15"/>
+                </Button>
             </StackPanel>
-            
-            <Border Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>
-            <Grid Grid.Row="5" Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+        </Grid>
+
+        <!-- Connection panel -->
+        <Border Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>
+        <DockPanel Grid.Row="2" Grid.Column="1">
+            <Label Content="IP Address" Margin="5" Foreground="Black" FontWeight="Bold"/>
+            <TextBox x:Name="IpAddress" Width="200" Margin="5" VerticalContentAlignment="Center"/>
+            <Label Content="Port" Margin="5" Foreground="Black" FontWeight="Bold"/>
+            <TextBox x:Name="Port" Width="60" Margin="5" VerticalContentAlignment="Center" />
+            <Button x:Name="ConnectToRobot" Content="{Binding ConnectToggle, FallbackValue=Connect}" 
+                        IsEnabled="{Binding CanConnect}" DockPanel.Dock="Right"
+                        Margin="5" Padding="5" VerticalContentAlignment="Center"
+                        Style="{DynamicResource ButtonStyle1}"/>
+            <!--<Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5" VerticalContentAlignment="Center"/>-->
+        </DockPanel>
+
+        <!-- Script panel -->
+        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+            <TextBox x:Name="Script" Width="425" Margin="5" VerticalContentAlignment="Center"/>
+            <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle1}"/>
+        </StackPanel>
+
+        <Border Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>
+        <Grid Grid.Row="5" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -123,104 +123,104 @@
 
                 <GroupBox Header="Move Joints" Grid.Row="1" Grid.Column="1" BorderThickness="1" BorderBrush="DimGray">
                     <Grid Grid.Row="2" Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                    </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto" MinWidth="40"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto" MinWidth="40"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Move Joints data-->
-                    <Label Content="J0" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="°" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!-- Move Joints data-->
+                        <Label Content="J0" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotJoints[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="°" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J1" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="°" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="J1" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotJoints[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="°" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J2" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="°" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="J2" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotJoints[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="°" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J3" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="°" Grid.Row="3" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="J3" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotJoints[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="°" Grid.Row="3" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J4" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="°" Grid.Row="4" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="J4" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotJoints[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="°" Grid.Row="4" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="J5" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotJoints[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="°" Grid.Row="5" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="J5" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotJoints[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="°" Grid.Row="5" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <!-- Move Joints buttons-->
-                    <RepeatButton x:Name="J0Add" Content="J0+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <!-- Move Joints buttons-->
+                        <RepeatButton x:Name="J0Add" Content="J0+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="J0Sub" Content="J0-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J0Sub" Content="J0-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="J1Add" Content="J1+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J1Add" Content="J1+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="J1Sub" Content="J1-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J1Sub" Content="J1-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="J2Add" Content="J2+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J2Add" Content="J2+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="J2Sub" Content="J2-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J2Sub" Content="J2-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="J3Add" Content="J3+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J3Add" Content="J3+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="J3Sub" Content="J3-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J3Sub" Content="J3-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="J4Add" Content="J4+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J4Add" Content="J4+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="J4Sub" Content="J4-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J4Sub" Content="J4-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="J5Add" Content="J5+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J5Add" Content="J5+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="J5Sub" Content="J5-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J5Sub" Content="J5-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
-                    </RepeatButton>
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
 
-                </Grid>
+                    </Grid>
                 </GroupBox>
 
                 <GroupBox Header="Move Tool" Grid.Row="1" Grid.Column="3" BorderThickness="1" BorderBrush="DimGray">
@@ -267,60 +267,60 @@
                         <!-- Move Tool buttons-->
                         <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
                         <RepeatButton x:Name="TyAdd" Content="Ty+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
                         <RepeatButton x:Name="TzAdd" Content="Tz+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
                         <RepeatButton x:Name="RxAdd" Content="Rx+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
                         <RepeatButton x:Name="RyAdd" Content="Ry+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
                         <RepeatButton x:Name="RzAdd" Content="Rz+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25">
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                     </Grid>
                 </GroupBox>
-                
+
                 <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="DimGray" Margin="1" CornerRadius="3"/>
                 <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
                     <Grid.ColumnDefinitions>
@@ -336,7 +336,7 @@
                     <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="30" VerticalAlignment="Center"></TextBox>
                     <Label  Content="Rotation rate" Grid.Column="2" FontSize="12"/>
                     <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="30" VerticalAlignment="Center"></TextBox>
-                    <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="13" Width="60" HorizontalAlignment="Right"/>
+                    <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="12" Width="60" HorizontalAlignment="Right" Style="{DynamicResource ButtonStyle1}"/>
                 </Grid>
 
                 <!--  Digital I/O -->
@@ -359,7 +359,7 @@
                 </GroupBox>
             </Grid>
         </Grid>
-            
+
         <!-- Status bar -->
         <Grid Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="10" Background="#466874">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
