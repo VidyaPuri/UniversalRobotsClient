@@ -100,10 +100,9 @@
 
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="5"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="0"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="5"></RowDefinition>
+                    <RowDefinition Height="3"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="5"></RowDefinition>
                 </Grid.RowDefinitions>
@@ -121,9 +120,9 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Move Joints-->
-                <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" BorderThickness="1" BorderBrush="DimGray"/>
-                <Label Grid.Row="1" Grid.Column="1" Content="Move Joints" FontSize="18"/>
-                <Grid Grid.Row="2" Grid.Column="1">
+
+                <GroupBox Header="Move Joints" Grid.Row="1" Grid.Column="1" BorderThickness="1" BorderBrush="DimGray">
+                    <Grid Grid.Row="2" Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
@@ -222,106 +221,108 @@
                     </RepeatButton>
 
                 </Grid>
+                </GroupBox>
 
-                <Border Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" BorderThickness="1" BorderBrush="DimGray"/>
-                <Label Grid.Row="1" Grid.Column="3" Content="Move Tool" FontSize="18"/>
-                <Grid Grid.Row="2" Grid.Column="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                    </Grid.RowDefinitions>
+                <GroupBox Header="Move Tool" Grid.Row="1" Grid.Column="3" BorderThickness="1" BorderBrush="DimGray">
+                    <Grid Grid.Row="2" Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto" MinWidth="40"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto" MinWidth="40"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Move Tool data-->
-                    <Label Content="X" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="mm" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!-- Move Tool data-->
+                        <Label Content="X" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="mm" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="Y" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="mm" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="Y" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="mm" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="Z" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                    <TextBlock Text="mm" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="Z" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="mm" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="Rx" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="Rx" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="Ry" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="Ry" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <Label Content="Rz" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                        <Label Content="Rz" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
 
-                    <!-- Move Tool buttons-->
-                    <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <!-- Move Tool buttons-->
+                        <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        </RepeatButton>
+                        <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="TyAdd" Content="Ty+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="TyAdd" Content="Ty+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        </RepeatButton>
+                        <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="TzAdd" Content="Tz+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="TzAdd" Content="Tz+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        </RepeatButton>
+                        <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="RxAdd" Content="Rx+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="RxAdd" Content="Rx+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        </RepeatButton>
+                        <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
+                        </RepeatButton>
 
-                    <RepeatButton x:Name="RyAdd" Content="Ry+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="RyAdd" Content="Ry+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        </RepeatButton>
+                        <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    
-                    <RepeatButton x:Name="RzAdd" Content="Rz+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        </RepeatButton>
+
+                        <RepeatButton x:Name="RzAdd" Content="Rz+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                    <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        </RepeatButton>
+                        <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25">
-                    </RepeatButton>
-                </Grid>
-                <Border Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="DimGray"/>
-                <Grid Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3">
+                        </RepeatButton>
+                    </Grid>
+                </GroupBox>
+                
+                <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="DimGray" Margin="1" CornerRadius="3"/>
+                <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -335,25 +336,27 @@
                     <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="30" VerticalAlignment="Center"></TextBox>
                     <Label  Content="Rotation rate" Grid.Column="2" FontSize="12"/>
                     <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="30" VerticalAlignment="Center"></TextBox>
-                    <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="2" FontSize="15" Width="60" HorizontalAlignment="Right"/>
+                    <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="13" Width="60" HorizontalAlignment="Right"/>
                 </Grid>
 
                 <!--  Digital I/O -->
-                <Label Grid.Row="1" Grid.Column="5" Content="Digital I/O" FontSize="18"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="5">
-                    <StackPanel Orientation="Vertical" Margin="5">
-                        <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                        <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                        <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                        <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+
+                <GroupBox Header="Digital I/O" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Vertical" Margin="5">
-                        <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                        <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                        <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                        <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                    </StackPanel>
-                </StackPanel>
+                </GroupBox>
             </Grid>
         </Grid>
             
