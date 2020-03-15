@@ -4,6 +4,7 @@ using RobotClient.ViewModels;
 using System;
 using System.Collections.Generic;
 using RobotClient.Networking;
+using RobotClient.Move;
 
 namespace RobotClient
 {
@@ -20,8 +21,8 @@ namespace RobotClient
         {
             _container.Instance(_container);
             _container.Singleton<ShellViewModel>();
-            _container.Singleton<SocketClient>();
-
+            _container.PerRequest<SocketClient>();
+            _container.PerRequest<MoveCommand>();
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>();

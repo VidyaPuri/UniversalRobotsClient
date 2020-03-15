@@ -104,6 +104,7 @@ namespace RobotClient.Networking
                     connectionStatus.ConnectToggle = "Disconnect";
                     connectionStatus.ConnectionStatusBool = _socket.Connected;
                     PublishEventToUI();
+
                     StartReceiving();
                 }
                 else
@@ -173,7 +174,7 @@ namespace RobotClient.Networking
                 byte[] byteData = Encoding.ASCII.GetBytes(stringData);
 
                 // Begin sending the data to the remote device.  
-                client = _socket;
+                //client = _socket;
                 client.BeginSend(byteData, 0, byteData.Length, 0,
                     new AsyncCallback(SendCallback), client);
             }
@@ -209,7 +210,7 @@ namespace RobotClient.Networking
         /// </summary>
         /// <param name="io"></param>
         /// <param name="value"></param>
-        private void SendIO(int io, bool value)
+        public void SendIO(int io, bool value)
         {
             try
             {
@@ -228,6 +229,7 @@ namespace RobotClient.Networking
         {
             _eventAggregator.BeginPublishOnUIThread(connectionStatus);
             _eventAggregator.BeginPublishOnUIThread(robotOutputPackage);
+            _eventAggregator.BeginPublishOnUIThread(_socket);
         }
 
         #endregion

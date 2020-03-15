@@ -12,12 +12,12 @@ using System.Windows;
 using SharpDX.XInput;
 using System.Threading;
 using RobotClient.Networking;
+using RobotClient.Move;
 
 namespace RobotClient.ViewModels
 {
     public class ShellViewModel : Screen, IHandle<RobotOutputPackage>, IHandle<ConnectionStatusModel>
     {
-
         #region Window Control
 
         private WindowState windowState;
@@ -55,20 +55,20 @@ namespace RobotClient.ViewModels
 
         #region Private Members
 
-        private Socket _socket;
-        private byte[] _buffer;
         private int _Port = 30003;
         private string _IpAddress = "192.168.56.101";
 
+        private string _ControllerMoveToggle = "TCP";
         private bool _ControllerConnectionStatusBool;
         private bool _ConnectionStatusBool = false;
         private string _ConnectionStatusStr = "Disconnected";
         private string _ConnectToggle = "Connect";
-        private bool _CanConnect;
-
+        private bool _CanConnect = true;
         
         private IEventAggregator _eventAggregator { get; }
         private SocketClient _socketClient;
+        private MoveCommand _moveCommand;
+        private Socket _socket;
 
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
@@ -79,6 +79,7 @@ namespace RobotClient.ViewModels
         private  Timer _timer;
 
         private RobotOutputPackage _RobotOutputPackage = new RobotOutputPackage();
+        private MoveRateModel moveRateModel = new MoveRateModel();
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
 
@@ -97,18 +98,15 @@ namespace RobotClient.ViewModels
 
         public ShellViewModel(
             IEventAggregator eventAggregator,
-            SocketClient socketClient)
+            SocketClient socketClient,
+            MoveCommand moveCommand
+            )
         {
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ConnectionStatusBool = _socket.Connected;
-            ConnectionStatusBool = false;
-            CanConnect = true;
-            _ControllerMoveToggle = "TCP";
-
             _socketClient = socketClient;
+            _moveCommand = moveCommand;
+
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
-
 
             _timer = new Timer(obj => ControllerUpdate());
             StartController();
@@ -117,8 +115,6 @@ namespace RobotClient.ViewModels
         #endregion
 
         #region Properties Initialisation
-
-        #region Robot Output Package
 
         /// <summary>
         /// Robot output package initialisation
@@ -146,8 +142,6 @@ namespace RobotClient.ViewModels
             get => _RobotJoints;
             set => Set(ref _RobotJoints, value);
         }
-
-        #endregion
 
         /// <summary>
         /// Script (send command) Initialisation
@@ -235,15 +229,16 @@ namespace RobotClient.ViewModels
             set => Set(ref _RotationRate, value);
         }
 
-        private string _ControllerMoveToggle;
-
+        /// <summary>
+        /// Controller move type toggle
+        /// </summary>
         public string ControllerMoveToggle
         {
             get { return _ControllerMoveToggle; }
             set => Set(ref _ControllerMoveToggle, value);
         }
 
-
+        #endregion
 
         #region I/O properties
 
@@ -257,7 +252,7 @@ namespace RobotClient.ViewModels
             {
                 _io0 = value;
                 NotifyOfPropertyChange(() => Io0);
-                SendIO(0, value);
+                _socketClient.SendIO(0, value);
             }
         }
 
@@ -271,7 +266,7 @@ namespace RobotClient.ViewModels
             {
                 _io1 = value;
                 NotifyOfPropertyChange(() => Io1);
-                SendIO(1, value);
+                _socketClient.SendIO(1, value);
             }
         }
 
@@ -285,7 +280,7 @@ namespace RobotClient.ViewModels
             {
                 _io2 = value;
                 NotifyOfPropertyChange(() => Io2);
-                SendIO(2, value);
+                _socketClient.SendIO(2, value);
             }
         }
 
@@ -299,7 +294,7 @@ namespace RobotClient.ViewModels
             {
                 _io3 = value;
                 NotifyOfPropertyChange(() => Io3);
-                SendIO(3, value);
+                _socketClient.SendIO(3, value);
             }
         }
 
@@ -313,7 +308,7 @@ namespace RobotClient.ViewModels
             {
                 _io4 = value;
                 NotifyOfPropertyChange(() => Io4);
-                SendIO(4, value);
+                _socketClient.SendIO(4, value);
             }
         }
 
@@ -327,7 +322,7 @@ namespace RobotClient.ViewModels
             {
                 _io5 = value;
                 NotifyOfPropertyChange(() => Io5);
-                SendIO(5, value);
+                _socketClient.SendIO(5, value);
             }
         }
 
@@ -341,7 +336,7 @@ namespace RobotClient.ViewModels
             {
                 _io6 = value;
                 NotifyOfPropertyChange(() => Io6);
-                SendIO(6, value);
+                _socketClient.SendIO(6, value);
             }
         }
 
@@ -355,11 +350,9 @@ namespace RobotClient.ViewModels
             {
                 _io7 = value;
                 NotifyOfPropertyChange(() => Io7);
-                SendIO(7, value);
+                _socketClient.SendIO(7, value);
             }
         }
-
-        #endregion
 
         #endregion
 
@@ -370,9 +363,6 @@ namespace RobotClient.ViewModels
         /// </summary>
         public void ConnectToRobot()
         {
-            Debug.WriteLine($"IpAddress: { IpAddress}");
-            Debug.WriteLine($"Port: { Port}");
-
             if (!ConnectionStatusBool)
             {
                 Task.Run(() =>
@@ -382,209 +372,12 @@ namespace RobotClient.ViewModels
                 });
             }
             else if (ConnectionStatusBool)
-            {
                 _socketClient.Disconnect();
-            }
         }
 
         /// <summary>
-        /// Async Connect Method
+        /// Send script button
         /// </summary>
-        /// <param name="ipAddress">Input IP address</param>
-        /// <param name="port">Port</param>
-        public void Connect(string ipAddress, int port)
-        {
-            try
-            {
-                IPAddress ipa = IPAddress.Parse(ipAddress);
-                if (!_socket.Connected)
-                {
-                    ConnectionStatusStr = "Connecting";
-                    _socket.BeginConnect(new IPEndPoint(ipa, port), ConnectCallback, null   );
-                    CanConnect = false;
-                }
-                else
-                {
-                    Debug.WriteLine("Already connected to the server!");
-                }
-            } catch(Exception ex)
-            {
-                Debug.WriteLine($"Connection exception message: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Disconnect from server
-        /// </summary>
-        public void Disconnect()
-        {
-            try
-            {
-                _socket.Shutdown(SocketShutdown.Both);
-                _socket.Close();
-            }
-            catch (SocketException exception)
-            {
-                Debug.WriteLine($"Disconnect exception message: {exception.Message}");
-            }
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            RobotJoints = new double[] { 0, 0, 0, 0, 0, 0 };
-            RobotPose = new double[] { 0, 0, 0, 0, 0, 0 };
-
-            ConnectionStatusBool = _socket.Connected;
-            ConnectionStatusStr = "Stopped";
-            ConnectToggle = "Connect";
-            CanConnect = true;
-        }
-
-        /// <summary>
-        /// Connect Callback
-        /// </summary>
-        /// <param name="result"></param>
-        private void ConnectCallback(IAsyncResult result)
-        {
-            Console.WriteLine($"Status: {_socket.Connected.ToString()}");
-            ConnectionStatusStr = "Running";
-            CanConnect = true;
-
-            // If can not connect, call disconnect to reinitialize the socket
-            if (!_socket.Connected)
-                Disconnect();
-
-            try
-            {
-                if (_socket.Connected)
-                {
-                    ConnectToggle = "Disconnect";
-                    ConnectionStatusBool = _socket.Connected;
-                    StartReceiving();
-                }
-                else
-                    Console.WriteLine("Could not connect!");
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine($"Connect callback exception message: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// ReceivedCallback when we receive something from Socket
-        /// </summary>
-        /// <param name="result"></param>
-        private void ReceivedCallback(IAsyncResult result)
-        {
-            try
-            {
-                int buffLength = _socket.EndReceive(result);
-                byte[] packet = new byte[buffLength];
-
-                Array.Copy(_buffer, packet, packet.Length);
-
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(packet);
-
-                // Handle packet
-                RobotOutputPackage rop = PacketHandler.Handle(packet, packet.Length);
-
-                // Update UI
-                UpdateUI(rop);
-
-                // Start receiving next package
-                StartReceiving();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Received calback exception message: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Start Receiving
-        /// </summary>
-        public void StartReceiving()
-        {
-            try
-            {
-                _buffer = new byte[1116];
-                _socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, ReceivedCallback, null);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Update UI Values
-        /// </summary>
-        /// <param name="robotPose"></param>
-        public void UpdateUI(RobotOutputPackage robotPackage)
-        {
-            RobotJoints = robotPackage.RobotJoints;
-            RobotPose = robotPackage.RobotPose;
-        }
-
-        /// <summary>
-        /// Send string command
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="data"></param>
-        private static void Send(Socket client, String data)
-        {
-            try
-            {
-                var stringData = data + "\n";
-                // Convert the string data to byte data using ASCII encoding.  
-                byte[] byteData = Encoding.ASCII.GetBytes(stringData);
-
-                // Begin sending the data to the remote device.  
-
-                client.BeginSend(byteData, 0, byteData.Length, 0,
-                    new AsyncCallback(SendCallback), client);
-            }
-            catch (SocketException ex)
-            {
-                Debug.WriteLine($"Send exception message: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Callback after command is sent
-        /// </summary>
-        /// <param name="ar"></param>
-        private static void SendCallback(IAsyncResult ar)
-        {
-            try
-            {
-                // Retrieve the socket from the state object.  
-                Socket client = (Socket)ar.AsyncState;
-
-                // Complete sending the data to the remote device.  
-                int bytesSent = client.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to server.", bytesSent);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Send callback exception message : {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Sending digital IO on/off
-        /// </summary>
-        /// <param name="io"></param>
-        /// <param name="value"></param>
-        private void SendIO(int io, bool value)
-        {
-            try
-            {
-                string data = $"set_digital_out({io},{value})";
-                _socketClient.Send(_socket, data);
-            }
-            catch(SocketException ex)
-            {
-                Debug.WriteLine($"SendIO exception message: {ex.Message}");
-            }
-        }
-
         public void SendScript()
         {
             _socketClient.Send(_socket, Script);
@@ -599,128 +392,35 @@ namespace RobotClient.ViewModels
         /// <summary>
         /// Joint Move Buttons
         /// </summary>
-        public void J0Add()
-        {
-            SendMoveCommand("+", 0, "joints");
-        }
+        public void J0Add() { _moveCommand.SendMoveCommand("+", 0, "joints"); }
+        public void J0Sub() { _moveCommand.SendMoveCommand("-", 0, "joints"); }
+        public void J1Add() { _moveCommand.SendMoveCommand("+", 1, "joints"); }
+        public void J1Sub() { _moveCommand.SendMoveCommand("-", 1, "joints"); }
+        public void J2Add() { _moveCommand.SendMoveCommand("+", 2, "joints"); }
+        public void J2Sub() { _moveCommand.SendMoveCommand("-", 2, "joints"); }
+        public void J3Add() { _moveCommand.SendMoveCommand("+", 3, "joints"); }
+        public void J3Sub() { _moveCommand.SendMoveCommand("-", 3, "joints"); }
+        public void J4Add() { _moveCommand.SendMoveCommand("+", 4, "joints"); }
+        public void J4Sub() { _moveCommand.SendMoveCommand("-", 4, "joints"); }
+        public void J5Add() { _moveCommand.SendMoveCommand("+", 5, "joints"); }
+        public void J5Sub() { _moveCommand.SendMoveCommand("-", 5, "joints"); }
 
-        public void J0Sub()
-        {
-            SendMoveCommand("-", 0, "joints");
-        }
-
-        public void J1Add()
-        {
-            SendMoveCommand("+",1, "joints");
-        }
-
-        public void J1Sub()
-        {
-            SendMoveCommand("-", 1, "joints");
-        }
-
-        public void J2Add()
-        {
-            SendMoveCommand("+", 2, "joints");
-        }
-
-        public void J2Sub()
-        {
-            SendMoveCommand("-", 2, "joints");
-        }
-
-        public void J3Add()
-        {
-            SendMoveCommand("+", 3, "joints");
-        }
-
-        public void J3Sub()
-        {
-            SendMoveCommand("-", 3, "joints");
-        }
-
-        public void J4Add()
-        {
-            SendMoveCommand("+", 4, "joints");
-        }
-
-        public void J4Sub()
-        {
-            SendMoveCommand("-", 4, "joints");
-        }
-
-        public void J5Add()
-        {
-            SendMoveCommand("+", 5, "joints");
-        }
-
-        public void J5Sub()
-        {
-            SendMoveCommand("-", 5, "joints");
-        }
 
         /// <summary>
         /// TCP Move Buttons
         /// </summary>
-        public void TxAdd()
-        {
-            SendMoveCommand("+", 0, "tcp");
-        }
-
-        public void TxSub()
-        {
-            SendMoveCommand("-", 0, "tcp");
-        }
-
-        public void TyAdd()
-        {
-            SendMoveCommand("+", 1, "tcp");
-        }
-
-        public void TySub()
-        {
-            SendMoveCommand("-", 1, "tcp");
-        }
-
-        public void TzAdd()
-        {
-            SendMoveCommand("+", 2, "tcp");
-        }
-
-        public void TzSub()
-        {
-            SendMoveCommand("-", 2, "tcp");
-        }
-
-        public void RxAdd()
-        {
-            SendMoveCommand("+", 3, "tcp");
-        }
-
-        public void RxSub()
-        {
-            SendMoveCommand("-", 3, "tcp");
-        }
-
-        public void RyAdd()
-        {
-            SendMoveCommand("+", 4, "tcp");
-        }
-
-        public void RySub()
-        {
-            SendMoveCommand("-", 4, "tcp");
-        }
-
-        public void RzAdd()
-        {
-            SendMoveCommand("+", 5, "tcp");
-        }
-
-        public void RzSub()
-        {
-            SendMoveCommand("-", 5, "tcp");
-        }
+        public void TxAdd() { _moveCommand.SendMoveCommand("+", 0, "tcp"); }
+        public void TxSub() { _moveCommand.SendMoveCommand("-", 0, "tcp"); }
+        public void TyAdd() { _moveCommand.SendMoveCommand("+", 1, "tcp"); }
+        public void TySub() { _moveCommand.SendMoveCommand("-", 1, "tcp"); }
+        public void TzAdd() { _moveCommand.SendMoveCommand("+", 2, "tcp"); }
+        public void TzSub() { _moveCommand.SendMoveCommand("-", 2, "tcp"); }
+        public void RxAdd() { _moveCommand.SendMoveCommand("+", 3, "tcp"); }
+        public void RxSub() { _moveCommand.SendMoveCommand("-", 3, "tcp"); }
+        public void RyAdd() { _moveCommand.SendMoveCommand("+", 4, "tcp"); }
+        public void RySub() { _moveCommand.SendMoveCommand("-", 4, "tcp"); }
+        public void RzAdd() { _moveCommand.SendMoveCommand("+", 5, "tcp"); }
+        public void RzSub() { _moveCommand.SendMoveCommand("-", 5, "tcp"); }
 
         #endregion
 
@@ -780,7 +480,7 @@ namespace RobotClient.ViewModels
                 }
 
                 // Send command
-                _socketClient.Send(_socket, msg);
+                _socketClient.Send(_socket,msg);
             });
 
         }
@@ -814,12 +514,18 @@ namespace RobotClient.ViewModels
                     TranslationRate += 0.002;
                     if (TranslationRate >= 0.1)
                         TranslationRate = 0.1;
+
+                    moveRateModel.TranslationRate = TranslationRate;
+                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
                 }
                 else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadDown))
                 {
                     TranslationRate -= 0.002;
                     if (TranslationRate <= 0.01)
                         TranslationRate = 0.01;
+
+                    moveRateModel.TranslationRate = TranslationRate;
+                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
                 }
 
                 // Increase \ decrease the rotation rate
@@ -828,12 +534,18 @@ namespace RobotClient.ViewModels
                     RotationRate += 0.002;
                     if (RotationRate >= 0.1)
                         RotationRate = 0.1;
+
+                    moveRateModel.RotationRate = RotationRate;
+                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
                 }
                 else if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadLeft))
                 {
                     RotationRate -= 0.002;
                     if (RotationRate <= 0.01)
                         RotationRate = 0.01;
+
+                    moveRateModel.RotationRate = RotationRate;
+                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
                 }
 
                 // Joints \ TCP Move Toggle
@@ -845,7 +557,11 @@ namespace RobotClient.ViewModels
                         ControllerMoveToggle = "Joints";
                     else
                         ControllerMoveToggle = "TCP";
+
+                    moveRateModel.ControllerMoveToggle = ControllerMoveToggle;
+                    _eventAggregator.BeginPublishOnUIThread(moveRateModel);
                 }
+
 
                 startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
 
