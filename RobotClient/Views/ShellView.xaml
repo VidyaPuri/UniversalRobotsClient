@@ -143,27 +143,27 @@
                         <!-- Move Joints data-->
                         <Label Content="J0" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotJoints[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="°" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="°" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="J1" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotJoints[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="°" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="°" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="J2" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotJoints[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="°" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="°" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="J3" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotJoints[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="°" Grid.Row="3" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="°" Grid.Row="3" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="J4" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotJoints[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="°" Grid.Row="4" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="°" Grid.Row="4" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="J5" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotJoints[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="°" Grid.Row="5" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="°" Grid.Row="5" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <!-- Move Joints buttons-->
                         <RepeatButton x:Name="J0Add" Content="J0+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
@@ -245,15 +245,15 @@
                         <!-- Move Tool data-->
                         <Label Content="X" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="mm" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="mm" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="Y" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="mm" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="mm" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="Z" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="mm" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="mm" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <Label Content="Rx" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
