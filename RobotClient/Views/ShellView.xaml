@@ -333,9 +333,9 @@
                     </Grid.ColumnDefinitions>
 
                     <Label  Content="Traslation rate" Grid.Column="0" FontSize="12"/>
-                    <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="30" VerticalAlignment="Center"></TextBox>
+                    <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="40" VerticalAlignment="Center"></TextBox>
                     <Label  Content="Rotation rate" Grid.Column="2" FontSize="12"/>
-                    <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="30" VerticalAlignment="Center"></TextBox>
+                    <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="40" VerticalAlignment="Center"></TextBox>
                     <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="12" Width="60" HorizontalAlignment="Right" Style="{DynamicResource ButtonStyle1}"/>
                 </Grid>
 
