@@ -169,18 +169,18 @@ namespace RobotClient.Move
                 }
 
                 // Move robot in Z axis
-                if (state.Gamepad.LeftTrigger >= Gamepad.TriggerThreshold)
+                if (state.Gamepad.RightTrigger >= Gamepad.TriggerThreshold)
                 {
-                    if (state.Gamepad.LeftTrigger > 0)
+                    if (state.Gamepad.RightTrigger > 0)
                     {
                         if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("+", 2, "tcp");
                         if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("+", 2, "joints");
                     }
                 }
 
-                if (state.Gamepad.RightTrigger >= Gamepad.TriggerThreshold)
+                if (state.Gamepad.LeftTrigger >= Gamepad.TriggerThreshold)
                 {
-                    if (state.Gamepad.RightTrigger > 0)
+                    if (state.Gamepad.LeftTrigger > 0)
                     {
                         if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("-", 2, "tcp");
                         if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("-", 2, "joints");

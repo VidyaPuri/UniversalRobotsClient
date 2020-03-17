@@ -15,7 +15,6 @@ namespace RobotClient.Networking
 {
     public class SocketClient
     {
-
         private Socket _socket;
         private byte[] _buffer;
         public IEventAggregator _eventAggregator { get; }
@@ -197,7 +196,7 @@ namespace RobotClient.Networking
 
                 // Complete sending the data to the remote device.  
                 int bytesSent = client.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to server.", bytesSent);
+                //Console.WriteLine("Sent {0} bytes to server.", bytesSent);
             }
             catch (Exception e)
             {
@@ -225,6 +224,9 @@ namespace RobotClient.Networking
 
         #region Helper Methods
 
+        /// <summary>
+        /// Publish to UI 
+        /// </summary>
         private void PublishEventToUI()
         {
             _eventAggregator.BeginPublishOnUIThread(connectionStatus);

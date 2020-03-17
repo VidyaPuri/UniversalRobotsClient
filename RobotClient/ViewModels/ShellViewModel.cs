@@ -421,7 +421,6 @@ namespace RobotClient.ViewModels
         public void J5Add() { _moveCommand.SendSpeedCommand("+", 5, "joints"); }
         public void J5Sub() { _moveCommand.SendSpeedCommand("-", 5, "joints"); }
 
-
         /// <summary>
         /// TCP Move Buttons
         /// </summary>

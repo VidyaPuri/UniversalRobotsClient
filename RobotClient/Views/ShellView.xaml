@@ -166,59 +166,60 @@
                         <!--<TextBlock Text="°" Grid.Row="5" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
 
                         <!-- Move Joints buttons-->
-                        <RepeatButton x:Name="J0Add" Content="J0+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J0Sub" Content="J0-" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="J0Sub" Content="J0-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
-                        </RepeatButton>
-
-                        <RepeatButton x:Name="J1Add" Content="J1+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
-                        </RepeatButton>
-                        <RepeatButton x:Name="J1Sub" Content="J1-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J0Add" Content="J0+" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
-                        <RepeatButton x:Name="J2Add" Content="J2+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J1Sub" Content="J1-" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="J2Sub" Content="J2-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
-                        </RepeatButton>
-
-                        <RepeatButton x:Name="J3Add" Content="J3+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                            IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
-                        </RepeatButton>
-                        <RepeatButton x:Name="J3Sub" Content="J3-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J1Add" Content="J1+" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
-                        <RepeatButton x:Name="J4Add" Content="J4+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J2Sub" Content="J2-" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="J4Sub" Content="J4-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J2Add" Content="J2+" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
-                        <RepeatButton x:Name="J5Add" Content="J5+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J3Sub" Content="J3-" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="J5Sub" Content="J5-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="J3Add" Content="J3+" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
+
+                        <RepeatButton x:Name="J4Sub" Content="J4-" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J4Add" Content="J4+" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+
+                        <RepeatButton x:Name="J5Sub" Content="J5-" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                        <RepeatButton x:Name="J5Add" Content="J5+" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
+                        </RepeatButton>
+                       
 
                     </Grid>
                 </GroupBox>
@@ -265,59 +266,61 @@
                         <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
 
                         <!-- Move Tool buttons-->
-                        <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-
-                        <RepeatButton x:Name="TyAdd" Content="Ty+" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        
+                        <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="TyAdd" Content="Ty+" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-
-                        <RepeatButton x:Name="TzAdd" Content="Tz+" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        
+                        <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="TzAdd" Content="Tz+" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-
-                        <RepeatButton x:Name="RxAdd" Content="Rx+" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        
+                        <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="RxAdd" Content="Rx+" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-
-                        <RepeatButton x:Name="RyAdd" Content="Ry+" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        
+                        <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="RyAdd" Content="Ry+" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-
-                        <RepeatButton x:Name="RzAdd" Content="Rz+" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        
+                        
+                        <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                        <RepeatButton x:Name="RzAdd" Content="Rz+" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="25" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
+                        
                     </Grid>
                 </GroupBox>
 
