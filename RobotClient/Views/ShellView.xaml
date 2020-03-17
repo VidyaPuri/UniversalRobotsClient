@@ -88,7 +88,7 @@
         <!-- Script panel -->
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
             <TextBox x:Name="Script" Width="425" Margin="5" VerticalContentAlignment="Center"/>
-            <Button x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle1}"/>
+            <RepeatButton x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle2}"/>
         </StackPanel>
 
         <Border Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>

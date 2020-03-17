@@ -7,7 +7,7 @@ using RobotClient.Move;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>
     {
         #region Window Control
 
@@ -65,6 +65,8 @@ namespace RobotClient.ViewModels
         private double _RotationRate = 0.01;
 
         private RobotOutputModel _RobotOutputPackage = new RobotOutputModel();
+        private MoveRateModel _MoveRate = new MoveRateModel();
+
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
 
@@ -101,6 +103,15 @@ namespace RobotClient.ViewModels
         #endregion
 
         #region Properties Initialisation
+
+        /// <summary>
+        /// Mover rate model initialisation
+        /// </summary>
+        public MoveRateModel MoveRate
+        {
+            get { return _MoveRate; }
+            set => Set(ref _MoveRate, value);
+        }
 
         /// <summary>
         /// Robot output package initialisation
@@ -197,13 +208,29 @@ namespace RobotClient.ViewModels
             set => Set(ref _CanConnect, value);
         }
 
+        private int myVar;
+
+        public int MyProperty
+        {
+            get { return myVar; }
+            set { myVar = value; }
+        }
+
         /// <summary>
         /// Rate of translation 
         /// </summary>
         public double TranslationRate
         {
             get { return _TranslationRate; }
-            set => Set(ref _TranslationRate, value);
+            set
+            {
+                _TranslationRate = value;
+                if (_TranslationRate > 0.5) _TranslationRate = 0.5;
+                if (_TranslationRate < 0.05) _TranslationRate = 0.05;
+                NotifyOfPropertyChange(() => TranslationRate);
+                MoveRate.TranslationRate = TranslationRate;
+                _eventAggregator.PublishOnUIThread(MoveRate);
+            }
         }
 
         /// <summary>
@@ -212,7 +239,15 @@ namespace RobotClient.ViewModels
         public double  RotationRate
         {
             get { return _RotationRate; }
-            set => Set(ref _RotationRate, value);
+            set
+            {
+                _RotationRate = value;
+                if (_RotationRate > 0.5) _RotationRate = 0.5;
+                if (_RotationRate < 0.05) _RotationRate = 0.05;
+                NotifyOfPropertyChange(() => RotationRate);
+                MoveRate.RotationRate = RotationRate;
+                _eventAggregator.PublishOnUIThread(MoveRate);
+            }
         }
 
         /// <summary>
@@ -373,36 +408,44 @@ namespace RobotClient.ViewModels
         /// <summary>
         /// Joint Move Buttons
         /// </summary>
-        public void J0Add() { _moveCommand.SendMoveCommand("+", 0, "joints"); }
-        public void J0Sub() { _moveCommand.SendMoveCommand("-", 0, "joints"); }
-        public void J1Add() { _moveCommand.SendMoveCommand("+", 1, "joints"); }
-        public void J1Sub() { _moveCommand.SendMoveCommand("-", 1, "joints"); }
-        public void J2Add() { _moveCommand.SendMoveCommand("+", 2, "joints"); }
-        public void J2Sub() { _moveCommand.SendMoveCommand("-", 2, "joints"); }
-        public void J3Add() { _moveCommand.SendMoveCommand("+", 3, "joints"); }
-        public void J3Sub() { _moveCommand.SendMoveCommand("-", 3, "joints"); }
-        public void J4Add() { _moveCommand.SendMoveCommand("+", 4, "joints"); }
-        public void J4Sub() { _moveCommand.SendMoveCommand("-", 4, "joints"); }
-        public void J5Add() { _moveCommand.SendMoveCommand("+", 5, "joints"); }
-        public void J5Sub() { _moveCommand.SendMoveCommand("-", 5, "joints"); }
+        public void J0Add() { _moveCommand.SendSpeedCommand("+", 0, "joints"); }
+        public void J0Sub() { _moveCommand.SendSpeedCommand("-", 0, "joints"); }
+        public void J1Add() { _moveCommand.SendSpeedCommand("+", 1, "joints"); }
+        public void J1Sub() { _moveCommand.SendSpeedCommand("-", 1, "joints"); }
+        public void J2Add() { _moveCommand.SendSpeedCommand("+", 2, "joints"); }
+        public void J2Sub() { _moveCommand.SendSpeedCommand("-", 2, "joints"); }
+        public void J3Add() { _moveCommand.SendSpeedCommand("+", 3, "joints"); }
+        public void J3Sub() { _moveCommand.SendSpeedCommand("-", 3, "joints"); }
+        public void J4Add() { _moveCommand.SendSpeedCommand("+", 4, "joints"); }
+        public void J4Sub() { _moveCommand.SendSpeedCommand("-", 4, "joints"); }
+        public void J5Add() { _moveCommand.SendSpeedCommand("+", 5, "joints"); }
+        public void J5Sub() { _moveCommand.SendSpeedCommand("-", 5, "joints"); }
 
 
         /// <summary>
         /// TCP Move Buttons
         /// </summary>
-        public void TxAdd() { _moveCommand.SendMoveCommand("+", 0, "tcp"); }
-        public void TxSub() { _moveCommand.SendMoveCommand("-", 0, "tcp"); }
-        public void TyAdd() { _moveCommand.SendMoveCommand("+", 1, "tcp"); }
-        public void TySub() { _moveCommand.SendMoveCommand("-", 1, "tcp"); }
-        public void TzAdd() { _moveCommand.SendMoveCommand("+", 2, "tcp"); }
-        public void TzSub() { _moveCommand.SendMoveCommand("-", 2, "tcp"); }
-        public void RxAdd() { _moveCommand.SendMoveCommand("+", 3, "tcp"); }
-        public void RxSub() { _moveCommand.SendMoveCommand("-", 3, "tcp"); }
-        public void RyAdd() { _moveCommand.SendMoveCommand("+", 4, "tcp"); }
-        public void RySub() { _moveCommand.SendMoveCommand("-", 4, "tcp"); }
-        public void RzAdd() { _moveCommand.SendMoveCommand("+", 5, "tcp"); }
-        public void RzSub() { _moveCommand.SendMoveCommand("-", 5, "tcp"); }
+        public void TxAdd() { _moveCommand.SendSpeedCommand("+", 0, "tcp"); }
+        public void TxSub() { _moveCommand.SendSpeedCommand("-", 0, "tcp"); }
+        public void TyAdd() { _moveCommand.SendSpeedCommand("+", 1, "tcp"); }
+        public void TySub() { _moveCommand.SendSpeedCommand("-", 1, "tcp"); }
+        public void TzAdd() { _moveCommand.SendSpeedCommand("+", 2, "tcp"); }
+        public void TzSub() { _moveCommand.SendSpeedCommand("-", 2, "tcp"); }
+        public void RxAdd() { _moveCommand.SendSpeedCommand("+", 3, "tcp"); }
+        public void RxSub() { _moveCommand.SendSpeedCommand("-", 3, "tcp"); }
+        public void RyAdd() { _moveCommand.SendSpeedCommand("+", 4, "tcp"); }
+        public void RySub() { _moveCommand.SendSpeedCommand("-", 4, "tcp"); }
+        public void RzAdd() { _moveCommand.SendSpeedCommand("+", 5, "tcp"); }
+        public void RzSub() { _moveCommand.SendSpeedCommand("-", 5, "tcp"); }
 
+        /// <summary>
+        /// Send robot to home position
+        /// </summary>
+        public void Home()
+        {
+            RobotJoints = new double[] { 0, -1.5708, 1.5708, 0, 1.5708, 0 };
+            _moveCommand.SendMoveCommand(RobotJoints, "joints");
+        }
         #endregion
 
         #region Handlers
@@ -430,15 +473,25 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// 
+        /// Controller settings model handler
         /// </summary>
         /// <param name="message"></param>
         public void Handle(ControllerSettingsModel message)
         {
-            RotationRate = message.RotationRate;
-            TranslationRate = message.TranslationRate;
             ControllerMoveToggle = message.ControllerMoveToggle;
             ControllerConnectionStatusBool = message.ControllerConnectionStatusBool;
+        }
+
+        /// <summary>
+        /// Move rate model handler
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(MoveRateModel message)
+        {
+            if(RotationRate != message.RotationRate)
+                RotationRate = message.RotationRate;
+            if(TranslationRate != message.TranslationRate)
+                TranslationRate = message.TranslationRate;
         }
 
         #endregion

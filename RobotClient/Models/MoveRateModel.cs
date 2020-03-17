@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace RobotClient.Models
 {
-    public class ControllerSettingsModel
+    public class MoveRateModel
     {
-
-        public string ControllerMoveToggle;
-        public bool ControllerConnectionStatusBool;
+        public double TranslationRate;
+        public double RotationRate;
     }
 }

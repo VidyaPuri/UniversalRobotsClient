@@ -8,20 +8,22 @@ using System.Globalization;
 using RobotClient.Networking;
 using RobotClient.Models;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace RobotClient.Move
 {
-    public class MoveCommand : PropertyChangedBase, IHandle<RobotOutputModel>, IHandle<Socket>, IHandle<ControllerSettingsModel>
+    public class MoveCommand : PropertyChangedBase, IHandle<RobotOutputModel>, IHandle<Socket>, IHandle<MoveRateModel>
     {
         #region Private members
-
+        private double[] JointSpeed { get; set; } = { 0, 0, 0, 0, 0, 0 };
+        private double[] ToolSpeed { get; set; } = { 0, 0, 0, 0, 0, 0 };
+        
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
 
         private Socket _socket;
-
         SocketClient _socketClient;
         IEventAggregator _eventAggregator;
 
@@ -89,7 +91,46 @@ namespace RobotClient.Move
         /// <param name="moveDirection"></param>
         /// <param name="idx"></param>
         /// <param name="moveType"></param>
-        public void SendMoveCommand(string moveDirection, int idx, string moveType)
+        public void SendMoveCommand(double[] position, string moveType)
+        {
+            Task.Run(() =>
+            {
+                string msg = "";
+
+                // Check the type of move
+                if (moveType == "joints")
+                {
+                    // Set the string
+                    msg = $"movej([" +
+                    $"{position[0].ToString(new CultureInfo("en-US"))}," +
+                    $"{position[1].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[2].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[3].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[4].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[5].ToString(new CultureInfo("en-US"))}]," +
+                    $" t = 2)";
+                }
+                else if (moveType == "tcp")
+                {
+                    // Set the string
+                    msg = $"movej(p[" +
+                    $"{position[0].ToString(new CultureInfo("en-US"))}," +
+                    $"{position[1].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[2].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[3].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[4].ToString(new CultureInfo("en-US"))}, " +
+                    $"{position[5].ToString(new CultureInfo("en-US"))}]," +
+                    $" t = 2)";
+                }
+
+                // Send command
+                _socketClient.Send(_socket, msg);
+            });
+        }
+
+
+
+        public void SendSpeedCommand(string moveDirection, int idx, string moveType)
         {
             Task.Run(() =>
             {
@@ -100,47 +141,50 @@ namespace RobotClient.Move
                 {
                     // Check which operation is clicked
                     if (moveDirection == "+")
-                        RobotJoints[idx] += TranslationRate;
+                        JointSpeed[idx] = TranslationRate;
                     else if (moveDirection == "-")
-                        RobotJoints[idx] -= TranslationRate;
+                        JointSpeed[idx] = -TranslationRate;
 
                     // Set the string
-                    msg = $"movej([" +
-                    $"{RobotJoints[0].ToString(new CultureInfo("en-US"))}," +
-                    $"{RobotJoints[1].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[2].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[3].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[4].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotJoints[5].ToString(new CultureInfo("en-US"))}]," +
-                    $" a = 2, v = 1, t = 0.1)";
+                     msg = $"speedj([" +
+                    $"{JointSpeed[0].ToString(new CultureInfo("en-US"))}," +
+                    $"{JointSpeed[1].ToString(new CultureInfo("en-US"))}, " +
+                    $"{JointSpeed[2].ToString(new CultureInfo("en-US"))}, " +
+                    $"{JointSpeed[3].ToString(new CultureInfo("en-US"))}, " +
+                    $"{JointSpeed[4].ToString(new CultureInfo("en-US"))}, " +
+                    $"{JointSpeed[5].ToString(new CultureInfo("en-US"))}]," +
+                    $" 0.5,0.1)";
                 }
                 else if (moveType == "tcp")
                 {
                     // Check which operation is clicked and if it is a rotation or translation 
                     if (moveDirection == "+")
                         if (idx < 3)
-                            RobotPose[idx] += TranslationRate;
+                            ToolSpeed[idx] = TranslationRate;
                         else
-                            RobotPose[idx] += RotationRate;
+                            ToolSpeed[idx] = RotationRate;
                     else if (moveDirection == "-")
                         if (idx < 3)
-                            RobotPose[idx] -= TranslationRate;
+                            ToolSpeed[idx] = -TranslationRate;
                         else
-                            RobotPose[idx] -= RotationRate;
+                            ToolSpeed[idx] = -RotationRate;
 
                     // Set the string
-                    msg = $"movej(p[" +
-                    $"{RobotPose[0].ToString(new CultureInfo("en-US"))}," +
-                    $"{RobotPose[1].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[2].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[3].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[4].ToString(new CultureInfo("en-US"))}, " +
-                    $"{RobotPose[5].ToString(new CultureInfo("en-US"))}]," +
-                    $" a = 2, v = 1, t = 0.1)";
+                    msg = $"speedl([" +
+                    $"{ToolSpeed[0].ToString(new CultureInfo("en-US"))}," +
+                    $"{ToolSpeed[1].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeed[2].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeed[3].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeed[4].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeed[5].ToString(new CultureInfo("en-US"))}]," +
+                    $" 0.5,0.1)";
                 }
 
                 // Send command
                 _socketClient.Send(_socket, msg);
+                Debug.WriteLine($"Output message: Movetype: {moveType} and the whole script string: {msg}");
+                JointSpeed = new double[] { 0, 0, 0, 0, 0, 0 };
+                ToolSpeed = new double[] { 0, 0, 0, 0, 0, 0 };
             });
         }
 
@@ -180,10 +224,12 @@ namespace RobotClient.Move
         /// Move rate handler
         /// </summary>
         /// <param name="message"></param>
-        public void Handle(ControllerSettingsModel message)
+        public void Handle(MoveRateModel message)
         {
-            TranslationRate = message.TranslationRate;
-            RotationRate = message.RotationRate;
+            if (RotationRate != message.RotationRate)
+                RotationRate = message.RotationRate;
+            if (TranslationRate != message.TranslationRate)
+                TranslationRate = message.TranslationRate;
         }
 
         #endregion

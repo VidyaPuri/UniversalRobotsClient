@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Models\ConnectionStatusModel.cs" />
     <Compile Include="Models\ControllerSettingsModel.cs" />
+    <Compile Include="Models\MoveRateModel.cs" />
     <Compile Include="Models\RobotOutputModel.cs" />
     <Compile Include="Move\ControllerClass.cs" />
     <Compile Include="Move\MoveCommand.cs" />
