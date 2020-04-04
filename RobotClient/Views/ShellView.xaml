@@ -87,7 +87,8 @@
 
         <!-- Script panel -->
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-            <TextBox x:Name="Script" Width="425" Margin="5" VerticalContentAlignment="Center"/>
+            <Label Width="auto" Content="Dashboard Server" Margin="5" FontWeight="Bold" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="Script" Width="303" Margin="5" VerticalContentAlignment="Center"/>
             <RepeatButton x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle2}"/>
         </StackPanel>
 
@@ -343,23 +344,30 @@
                 </Grid>
 
                 <!--  Digital I/O -->
-
-                <GroupBox Header="Digital I/O" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray">
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Vertical" Margin="5">
-                            <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                            <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                            <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                            <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                <StackPanel Grid.Row="1" Grid.Column="5">
+                    <GroupBox Header="Digital I/O" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Vertical" Margin="5">
-                            <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                            <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                            <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
-                            <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                    </GroupBox>
+                    <GroupBox Header="Dashboard" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray" Margin="0 5 0 0 ">
+                        <StackPanel Orientation="Vertical">
+                            <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
-                    </StackPanel>
-                </GroupBox>
+                    </GroupBox>
+                </StackPanel>
             </Grid>
         </Grid>
 

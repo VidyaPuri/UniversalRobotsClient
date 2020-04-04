@@ -15,22 +15,24 @@ namespace RobotClient.Move
 
         private ControllerSettingsModel controllerSettingsModel = new ControllerSettingsModel();
         private MoveRateModel moveRateModel = new MoveRateModel();
-        private MoveCommand _moveCommand;
+        private RobotCommand _robotCommand;
 
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
         private string ControllerMoveToggle = "TCP";
 
-        private bool startButtonPressed = false;
+        private bool buttonStartPressed = false;
+        private bool buttonAPressed = false;
+        private bool buttonBPressed = false;
         private bool ControllerConnectionStatusBool = false;
         private bool PreviousControllerStatus = false;
 
         public ControllerClass(
             IEventAggregator eventAggregator,
-            MoveCommand moveCommand)
+            RobotCommand robotCommand)
         {
             _eventAggregator = eventAggregator;
-            _moveCommand = moveCommand;
+            _robotCommand = robotCommand;
 
             _timer = new Timer(obj => ControllerUpdate());
 
@@ -73,10 +75,12 @@ namespace RobotClient.Move
         public void ControllerUpdate()
         {
             if (_controller.IsConnected)
-            {
+             {
                 var state = _controller.GetState();
 
                 #region Buttons
+
+
 
                 // Increase \ decrease the translation rate
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadUp))
@@ -119,9 +123,9 @@ namespace RobotClient.Move
                 }
 
                 // Joints \ TCP Move Toggle
-                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start) && !startButtonPressed)
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start) && !buttonStartPressed)
                 {
-                    startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
+                    buttonStartPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
 
                     if (ControllerMoveToggle == "TCP")
                         ControllerMoveToggle = "Joints";
@@ -132,7 +136,25 @@ namespace RobotClient.Move
                     _eventAggregator.BeginPublishOnUIThread(moveRateModel);
                 }
 
-                startButtonPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
+                // Close popup when Button A is pressed
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.A) && !buttonAPressed)
+                {
+                    buttonAPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.A);
+                    _robotCommand.ClosePopup();
+                }
+
+                // Enable robot when Button B is pressed
+                if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.B) && !buttonBPressed)
+                {
+                    buttonAPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.B);
+                    _robotCommand.EnableRobot();
+                }
+
+
+                // reinitialize button states
+                buttonStartPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.Start);
+                buttonAPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.A);
+                buttonAPressed = state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.B);
 
                 #endregion
 
@@ -143,13 +165,13 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.LeftThumbX > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("+", 0, "tcp"); ;
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("+", 0, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("+", 0, "tcp"); ;
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("+", 0, "joints");
                     }
                     else if (state.Gamepad.LeftThumbX < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("-", 0, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("-", 0, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("-", 0, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("-", 0, "joints");
                     }
                 }
 
@@ -158,13 +180,13 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.LeftThumbY > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("+", 1, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("+", 1, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("+", 1, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("+", 1, "joints");
                     }
                     else if (state.Gamepad.LeftThumbY < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("-", 1, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("-", 1, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("-", 1, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("-", 1, "joints");
                     }
                 }
 
@@ -173,8 +195,8 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.RightTrigger > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("+", 2, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("+", 2, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("+", 2, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("+", 2, "joints");
                     }
                 }
 
@@ -182,11 +204,10 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.LeftTrigger > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("-", 2, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("-", 2, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("-", 2, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("-", 2, "joints");
                     }
                 }
-
                 #endregion
 
                 #region Rotation
@@ -196,27 +217,27 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.RightThumbY > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("+", 3, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("+", 3, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("+", 3, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("+", 3, "joints");
                     }
                     else if (state.Gamepad.RightThumbY < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("-", 3, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("-", 3, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("-", 3, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("-", 3, "joints");
                     }
                 }
 
                 // Rotate TCP in Y axis
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.LeftShoulder))
                 {
-                    if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("+", 4, "tcp");
-                    if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("+", 4, "joints");
+                    if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("+", 4, "tcp");
+                    if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("+", 4, "joints");
                 }
 
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.RightShoulder))
                 {
-                    if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("-", 4, "tcp");
-                    if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("-", 4, "joints");
+                    if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("-", 4, "tcp");
+                    if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("-", 4, "joints");
                 }
 
                 // Rotate TCP in Z axis
@@ -224,13 +245,13 @@ namespace RobotClient.Move
                 {
                     if (state.Gamepad.RightThumbX > 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("+", 5, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("+", 5, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("+", 5, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("+", 5, "joints");
                     }
                     else if (state.Gamepad.RightThumbX < 0)
                     {
-                        if (ControllerMoveToggle == "TCP") _moveCommand.SendSpeedCommand("-", 5, "tcp");
-                        if (ControllerMoveToggle == "Joints") _moveCommand.SendSpeedCommand("-", 5, "joints");
+                        if (ControllerMoveToggle == "TCP") _robotCommand.SendSpeedCommand("-", 5, "tcp");
+                        if (ControllerMoveToggle == "Joints") _robotCommand.SendSpeedCommand("-", 5, "joints");
                     }
                 }
                 #endregion

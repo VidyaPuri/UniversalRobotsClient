@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace RobotClient.Move
 {
-    public class MoveCommand : PropertyChangedBase, IHandle<RobotOutputModel>, IHandle<Socket>, IHandle<MoveRateModel>
+    public class RobotCommand : PropertyChangedBase, IHandle<RobotOutputModel>, IHandle<Socket>, IHandle<MoveRateModel>
     {
         #region Private members
         private double[] JointSpeed { get; set; } = { 0, 0, 0, 0, 0, 0 };
@@ -23,7 +23,10 @@ namespace RobotClient.Move
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
 
-        private Socket _socket;
+        private string command;
+
+        private Socket _rtSocket;
+        private Socket _dashSocket;
         SocketClient _socketClient;
         IEventAggregator _eventAggregator;
 
@@ -31,7 +34,7 @@ namespace RobotClient.Move
 
         #region Constructor
 
-        public MoveCommand(
+        public RobotCommand(
             IEventAggregator eventAggregator,
             SocketClient socketClient)
         {
@@ -83,7 +86,7 @@ namespace RobotClient.Move
 
         #endregion
 
-        #region Move Command
+        #region Move Commands
 
         /// <summary>
         /// Send Move Command
@@ -124,12 +127,16 @@ namespace RobotClient.Move
                 }
 
                 // Send command
-                _socketClient.Send(_socket, msg);
+                _socketClient.Send(_rtSocket, msg);
             });
         }
 
-
-
+        /// <summary>
+        /// Send speed command
+        /// </summary>
+        /// <param name="moveDirection"></param>
+        /// <param name="idx"></param>
+        /// <param name="moveType"></param>
         public void SendSpeedCommand(string moveDirection, int idx, string moveType)
         {
             Task.Run(() =>
@@ -181,7 +188,7 @@ namespace RobotClient.Move
                 }
 
                 // Send command
-                _socketClient.Send(_socket, msg);
+                _socketClient.Send(_rtSocket, msg);
                 Debug.WriteLine($"Output message: Movetype: {moveType} and the whole script string: {msg}");
                 JointSpeed = new double[] { 0, 0, 0, 0, 0, 0 };
                 ToolSpeed = new double[] { 0, 0, 0, 0, 0, 0 };
@@ -194,7 +201,31 @@ namespace RobotClient.Move
         /// <param name="script"></param>
         public void SendScriptCommand(string script)
         {
-            _socketClient.Send(_socket, script);
+            _socketClient.Send(_dashSocket, script);
+        }
+
+        #endregion
+
+        #region Dashboard Commands
+
+        /// <summary>
+        /// Releasing the protective stop break
+        /// </summary>
+        public void EnableRobot()
+        {
+            command = "unlock protective stop";
+            _socketClient.Send(_dashSocket, command);
+        }
+
+        /// <summary>
+        /// Closing the popups
+        /// </summary>
+        public void ClosePopup()
+        {
+            command = "close safety popup";
+            _socketClient.Send(_dashSocket, command);
+            command = "close popup";
+            _socketClient.Send(_dashSocket, command);
         }
 
         #endregion
@@ -217,10 +248,20 @@ namespace RobotClient.Move
         /// <param name="message"></param>
         public void Handle(Socket message)
         {
-            _socket = message;
+            try
+            {
+                if (message.RemoteEndPoint.ToString() == "192.168.56.101:30003")
+                    _rtSocket = message;
+                else if (message.RemoteEndPoint.ToString() == "192.168.56.101:29999")
+                    _dashSocket = message;
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
-        /// <summary>
+        /// <summary> "192.168.56.101:29999"
         /// Move rate handler
         /// </summary>
         /// <param name="message"></param>

@@ -81,8 +81,8 @@
     <Compile Include="Models\ControllerSettingsModel.cs" />
     <Compile Include="Models\MoveRateModel.cs" />
     <Compile Include="Models\RobotOutputModel.cs" />
-    <Compile Include="Move\ControllerClass.cs" />
-    <Compile Include="Move\MoveCommand.cs" />
+    <Compile Include="Command Helpers\ControllerClass.cs" />
+    <Compile Include="Command Helpers\RobotCommand.cs" />
     <Compile Include="Networking\PacketHandler.cs" />
     <Compile Include="Networking\SocketClient.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />

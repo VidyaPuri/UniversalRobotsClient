@@ -47,6 +47,8 @@ namespace RobotClient.ViewModels
         #region Private Members
 
         private int _Port = 30003;
+        private readonly int DashboardPort = 29999;
+       
         private string _IpAddress = "192.168.56.101";
 
         private string _ControllerMoveToggle = "TCP";
@@ -58,7 +60,8 @@ namespace RobotClient.ViewModels
         
         private IEventAggregator _eventAggregator { get; }
         private SocketClient _socketClient;
-        private MoveCommand _moveCommand;
+        private SocketClient _dashboardClient;
+        private RobotCommand _robotCommand;
         private ControllerClass _controllerClass;
 
         private double _TranslationRate = 0.01;
@@ -86,12 +89,14 @@ namespace RobotClient.ViewModels
         public ShellViewModel(
             IEventAggregator eventAggregator,
             SocketClient socketClient,
-            MoveCommand moveCommand,
+            RobotCommand moveCommand,
             ControllerClass controllerClass
             )
         {
             _socketClient = socketClient;
-            _moveCommand = moveCommand;
+            _dashboardClient = new SocketClient(eventAggregator);
+
+            _robotCommand = moveCommand;
             _controllerClass = controllerClass;
 
             _eventAggregator = eventAggregator;
@@ -390,16 +395,20 @@ namespace RobotClient.ViewModels
                 {
                     var ip = IpAddress;
                     _socketClient.Connect(ip, Port);
+                    _dashboardClient.Connect(ip, DashboardPort);
                 });
             }
             else if (ConnectionStatusBool)
+            {
                 _socketClient.Disconnect();
+                _dashboardClient.Disconnect();
+            }
         }
 
         /// <summary>
         /// Send script button
         /// </summary>
-        public void SendScript() { _moveCommand.SendScriptCommand(Script); }
+        public void SendScript() { _robotCommand.SendScriptCommand(Script); }   // this one has to be changed
 
         #endregion
 
@@ -408,34 +417,50 @@ namespace RobotClient.ViewModels
         /// <summary>
         /// Joint Move Buttons
         /// </summary>
-        public void J0Add() { _moveCommand.SendSpeedCommand("+", 0, "joints"); }
-        public void J0Sub() { _moveCommand.SendSpeedCommand("-", 0, "joints"); }
-        public void J1Add() { _moveCommand.SendSpeedCommand("+", 1, "joints"); }
-        public void J1Sub() { _moveCommand.SendSpeedCommand("-", 1, "joints"); }
-        public void J2Add() { _moveCommand.SendSpeedCommand("+", 2, "joints"); }
-        public void J2Sub() { _moveCommand.SendSpeedCommand("-", 2, "joints"); }
-        public void J3Add() { _moveCommand.SendSpeedCommand("+", 3, "joints"); }
-        public void J3Sub() { _moveCommand.SendSpeedCommand("-", 3, "joints"); }
-        public void J4Add() { _moveCommand.SendSpeedCommand("+", 4, "joints"); }
-        public void J4Sub() { _moveCommand.SendSpeedCommand("-", 4, "joints"); }
-        public void J5Add() { _moveCommand.SendSpeedCommand("+", 5, "joints"); }
-        public void J5Sub() { _moveCommand.SendSpeedCommand("-", 5, "joints"); }
+        public void J0Add() { _robotCommand.SendSpeedCommand("+", 0, "joints"); }
+        public void J0Sub() { _robotCommand.SendSpeedCommand("-", 0, "joints"); }
+        public void J1Add() { _robotCommand.SendSpeedCommand("+", 1, "joints"); }
+        public void J1Sub() { _robotCommand.SendSpeedCommand("-", 1, "joints"); }
+        public void J2Add() { _robotCommand.SendSpeedCommand("+", 2, "joints"); }
+        public void J2Sub() { _robotCommand.SendSpeedCommand("-", 2, "joints"); }
+        public void J3Add() { _robotCommand.SendSpeedCommand("+", 3, "joints"); }
+        public void J3Sub() { _robotCommand.SendSpeedCommand("-", 3, "joints"); }
+        public void J4Add() { _robotCommand.SendSpeedCommand("+", 4, "joints"); }
+        public void J4Sub() { _robotCommand.SendSpeedCommand("-", 4, "joints"); }
+        public void J5Add() { _robotCommand.SendSpeedCommand("+", 5, "joints"); }
+        public void J5Sub() { _robotCommand.SendSpeedCommand("-", 5, "joints"); }
 
         /// <summary>
         /// TCP Move Buttons
         /// </summary>
-        public void TxAdd() { _moveCommand.SendSpeedCommand("+", 0, "tcp"); }
-        public void TxSub() { _moveCommand.SendSpeedCommand("-", 0, "tcp"); }
-        public void TyAdd() { _moveCommand.SendSpeedCommand("+", 1, "tcp"); }
-        public void TySub() { _moveCommand.SendSpeedCommand("-", 1, "tcp"); }
-        public void TzAdd() { _moveCommand.SendSpeedCommand("+", 2, "tcp"); }
-        public void TzSub() { _moveCommand.SendSpeedCommand("-", 2, "tcp"); }
-        public void RxAdd() { _moveCommand.SendSpeedCommand("+", 3, "tcp"); }
-        public void RxSub() { _moveCommand.SendSpeedCommand("-", 3, "tcp"); }
-        public void RyAdd() { _moveCommand.SendSpeedCommand("+", 4, "tcp"); }
-        public void RySub() { _moveCommand.SendSpeedCommand("-", 4, "tcp"); }
-        public void RzAdd() { _moveCommand.SendSpeedCommand("+", 5, "tcp"); }
-        public void RzSub() { _moveCommand.SendSpeedCommand("-", 5, "tcp"); }
+        public void TxAdd() { _robotCommand.SendSpeedCommand("+", 0, "tcp"); }
+        public void TxSub() { _robotCommand.SendSpeedCommand("-", 0, "tcp"); }
+        public void TyAdd() { _robotCommand.SendSpeedCommand("+", 1, "tcp"); }
+        public void TySub() { _robotCommand.SendSpeedCommand("-", 1, "tcp"); }
+        public void TzAdd() { _robotCommand.SendSpeedCommand("+", 2, "tcp"); }
+        public void TzSub() { _robotCommand.SendSpeedCommand("-", 2, "tcp"); }
+        public void RxAdd() { _robotCommand.SendSpeedCommand("+", 3, "tcp"); }
+        public void RxSub() { _robotCommand.SendSpeedCommand("-", 3, "tcp"); }
+        public void RyAdd() { _robotCommand.SendSpeedCommand("+", 4, "tcp"); }
+        public void RySub() { _robotCommand.SendSpeedCommand("-", 4, "tcp"); }
+        public void RzAdd() { _robotCommand.SendSpeedCommand("+", 5, "tcp"); }
+        public void RzSub() { _robotCommand.SendSpeedCommand("-", 5, "tcp"); }
+
+        /// <summary>
+        /// Enable robot method
+        /// </summary>
+        public void EnableRobot()
+        {
+            _robotCommand.EnableRobot();
+        }
+
+        /// <summary>
+        /// Close popup method
+        /// </summary>
+        public void ClosePopup()
+        {
+            _robotCommand.ClosePopup();
+        }
 
         /// <summary>
         /// Send robot to home position
@@ -443,7 +468,7 @@ namespace RobotClient.ViewModels
         public void Home()
         {
             RobotJoints = new double[] { 0, -1.5708, 1.5708, 0, 1.5708, 0 };
-            _moveCommand.SendMoveCommand(RobotJoints, "joints");
+            _robotCommand.SendMoveCommand(RobotJoints, "joints");
         }
         #endregion
 
