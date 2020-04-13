@@ -80,8 +80,6 @@ namespace RobotClient.Move
 
                 #region Buttons
 
-
-
                 // Increase \ decrease the translation rate
                 if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.DPadUp))
                 {

@@ -1,15 +1,11 @@
 ﻿using AsynchronousSockeClient.Networking;
 using Caliburn.Micro;
 using RobotClient.Models;
-using RobotClient.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RobotClient.Networking
 {
@@ -37,7 +33,7 @@ namespace RobotClient.Networking
             try
             {
                 IPAddress ipa = IPAddress.Parse(ipAddress);
-                if (!_socket.Connected)
+                if (!_socket.Connected) 
                 {
                     connectionStatus.ConnectionStatusStr = "Connecting";
                     _socket.BeginConnect(new IPEndPoint(ipa, port), ConnectCallback, null);

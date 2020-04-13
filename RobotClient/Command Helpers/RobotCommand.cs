@@ -9,6 +9,7 @@ using RobotClient.Networking;
 using RobotClient.Models;
 using System.Net.Sockets;
 using System.Diagnostics;
+using Robots;
 
 namespace RobotClient.Move
 {
@@ -16,7 +17,7 @@ namespace RobotClient.Move
     {
         #region Private members
         private double[] JointSpeed { get; set; } = { 0, 0, 0, 0, 0, 0 };
-        private double[] ToolSpeed { get; set; } = { 0, 0, 0, 0, 0, 0 };
+        private double[] ToolSpeedBase { get; set; } = { 0, 0, 0, 0, 0, 0 };
         
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
@@ -167,23 +168,23 @@ namespace RobotClient.Move
                     // Check which operation is clicked and if it is a rotation or translation 
                     if (moveDirection == "+")
                         if (idx < 3)
-                            ToolSpeed[idx] = TranslationRate;
+                            ToolSpeedBase[idx] = TranslationRate;
                         else
-                            ToolSpeed[idx] = RotationRate;
+                            ToolSpeedBase[idx] = RotationRate;
                     else if (moveDirection == "-")
                         if (idx < 3)
-                            ToolSpeed[idx] = -TranslationRate;
+                            ToolSpeedBase[idx] = -TranslationRate;
                         else
-                            ToolSpeed[idx] = -RotationRate;
+                            ToolSpeedBase[idx] = -RotationRate;
 
                     // Set the string
                     msg = $"speedl([" +
-                    $"{ToolSpeed[0].ToString(new CultureInfo("en-US"))}," +
-                    $"{ToolSpeed[1].ToString(new CultureInfo("en-US"))}, " +
-                    $"{ToolSpeed[2].ToString(new CultureInfo("en-US"))}, " +
-                    $"{ToolSpeed[3].ToString(new CultureInfo("en-US"))}, " +
-                    $"{ToolSpeed[4].ToString(new CultureInfo("en-US"))}, " +
-                    $"{ToolSpeed[5].ToString(new CultureInfo("en-US"))}]," +
+                    $"{ToolSpeedBase[0].ToString(new CultureInfo("en-US"))}," +
+                    $"{ToolSpeedBase[1].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeedBase[2].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeedBase[3].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeedBase[4].ToString(new CultureInfo("en-US"))}, " +
+                    $"{ToolSpeedBase[5].ToString(new CultureInfo("en-US"))}]," +
                     $" 0.5,0.1)";
                 }
 
@@ -191,8 +192,18 @@ namespace RobotClient.Move
                 _socketClient.Send(_rtSocket, msg);
                 Debug.WriteLine($"Output message: Movetype: {moveType} and the whole script string: {msg}");
                 JointSpeed = new double[] { 0, 0, 0, 0, 0, 0 };
-                ToolSpeed = new double[] { 0, 0, 0, 0, 0, 0 };
+                ToolSpeedBase = new double[] { 0, 0, 0, 0, 0, 0 };
+                SpeedByToolSpace();
+
             });
+        }
+
+        public void SpeedByToolSpace()
+        {
+            double[] ToolSpeedTCP = { 0, 0, 0, 0, 0 };
+
+            var poseMatrix = Common.PoseToMatrix(RobotPose);
+
         }
 
         /// <summary>
@@ -250,9 +261,9 @@ namespace RobotClient.Move
         {
             try
             {
-                if (message.RemoteEndPoint.ToString() == "192.168.56.101:30003")
+                if (message.RemoteEndPoint.ToString() == "192.168.56.102:30003")
                     _rtSocket = message;
-                else if (message.RemoteEndPoint.ToString() == "192.168.56.101:29999")
+                else if (message.RemoteEndPoint.ToString() == "192.168.56.102:29999")
                     _dashSocket = message;
             }
             catch(Exception ex)

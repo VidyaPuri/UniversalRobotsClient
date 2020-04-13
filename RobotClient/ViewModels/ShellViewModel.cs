@@ -48,8 +48,9 @@ namespace RobotClient.ViewModels
 
         private int _Port = 30003;
         private readonly int DashboardPort = 29999;
-       
-        private string _IpAddress = "192.168.56.101";
+        private readonly int RoboPort = 4000;
+
+        private string _IpAddress = "192.168.56.102";
 
         private string _ControllerMoveToggle = "TCP";
         private bool _ControllerConnectionStatusBool;
@@ -61,6 +62,9 @@ namespace RobotClient.ViewModels
         private IEventAggregator _eventAggregator { get; }
         private SocketClient _socketClient;
         private SocketClient _dashboardClient;
+        private SocketServer _roboServer = new SocketServer();
+
+
         private RobotCommand _robotCommand;
         private ControllerClass _controllerClass;
 
@@ -95,6 +99,10 @@ namespace RobotClient.ViewModels
         {
             _socketClient = socketClient;
             _dashboardClient = new SocketClient(eventAggregator);
+            //_roboClient = new SocketClient(eventAggregator);
+
+            _roboServer = new SocketServer();
+            _roboServer.StartListening();
 
             _robotCommand = moveCommand;
             _controllerClass = controllerClass;
@@ -103,6 +111,8 @@ namespace RobotClient.ViewModels
             _eventAggregator.Subscribe(this);
             
             _controllerClass.StartController();
+
+
         }
 
         #endregion
@@ -396,12 +406,14 @@ namespace RobotClient.ViewModels
                     var ip = IpAddress;
                     _socketClient.Connect(ip, Port);
                     _dashboardClient.Connect(ip, DashboardPort);
+                    //_roboClient.Connect(ip, RoboPort);
                 });
             }
             else if (ConnectionStatusBool)
             {
                 _socketClient.Disconnect();
                 _dashboardClient.Disconnect();
+                //_roboClient.Disconnect();
             }
         }
 
