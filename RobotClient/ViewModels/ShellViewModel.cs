@@ -102,7 +102,6 @@ namespace RobotClient.ViewModels
             //_roboClient = new SocketClient(eventAggregator);
 
             _roboServer = new SocketServer();
-            _roboServer.StartListening();
 
             _robotCommand = moveCommand;
             _controllerClass = controllerClass;
@@ -112,7 +111,7 @@ namespace RobotClient.ViewModels
             
             _controllerClass.StartController();
 
-
+            SocketServerListener();
         }
 
         #endregion
@@ -393,6 +392,14 @@ namespace RobotClient.ViewModels
         #endregion
 
         #region Socket Methods
+
+        public void SocketServerListener()
+        {
+            Task.Run(() =>
+            {
+                _roboServer.StartListening();
+            });
+        }
 
         /// <summary>
         /// ConnectToRobot Button Method

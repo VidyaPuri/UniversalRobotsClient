@@ -101,7 +101,6 @@ namespace RobotClient.Networking
                 // There  might be more data, so store the data received so far.  
                 state.sb.Append(Encoding.ASCII.GetString(
                     state.buffer, 0, bytesRead));
-
                 // Check for end-of-file tag. If it is not there, read
                 // more data.  
                 content = state.sb.ToString();
@@ -121,6 +120,9 @@ namespace RobotClient.Networking
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
                 }
+
+                // Empty  the string buffer
+                state.sb.Clear();
             }
         }
 
