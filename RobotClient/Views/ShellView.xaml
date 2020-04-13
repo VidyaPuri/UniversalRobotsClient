@@ -399,7 +399,10 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <Button Content="Start server" Width="100"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="StartSocketServer" Content="Start server" Width="100"/>
+                            <Button x:Name="StopSocketServer" Content="Stop server" Width="100"/>
+                        </StackPanel>
                         <RadioButton Content="Status" HorizontalAlignment="Center"/>
                         <Button Content="Add" Width="100"/>
                         <Button Content="Edit" Width="100"/>
