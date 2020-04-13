@@ -23,5 +23,10 @@ namespace RobotClient.Views
         {
             InitializeComponent();
         }
+
+        private void Val_Servo()
+        {
+
+        }
     }
 }

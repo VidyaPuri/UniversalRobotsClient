@@ -405,7 +405,9 @@
                         <Button Content="Edit" Width="100"/>
                         <Button Content="Remove" Width="100"/>
                         <ListView  />
-                        <Slider Width="300"/>
+                        <Slider x:Name="Slider_Servo" Value="{Binding SliderValue}"
+                                TickFrequency="10" TickPlacement="BottomRight" Width="300" Minimum="1" Maximum="1024" />
+                        <TextBlock Text="{Binding SliderValue}"/>
                         <TextBox Text="Baud rate"/>
 
                     </StackPanel>
