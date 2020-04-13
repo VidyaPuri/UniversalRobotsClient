@@ -1,5 +1,6 @@
 ﻿using RobotClient.Models;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
@@ -13,6 +14,8 @@ namespace RobotClient.Networking
         #region Private Members
 
         private StateObject state = new StateObject();
+        private Dictionary<int, StateObject> clients = new Dictionary<int, StateObject>();
+
 
         #endregion
 
@@ -23,14 +26,14 @@ namespace RobotClient.Networking
 
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
-        public void StartListening()
+        public void StartListening(int port)
         {
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".  
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[2];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,
@@ -78,8 +81,10 @@ namespace RobotClient.Networking
             Socket handler = listener.EndAccept(ar);
 
             // Create the state object.  
-            StateObject state = new StateObject();
-            state.workSocket = handler;
+            StateObject state = new StateObject
+            {
+                workSocket = handler
+            };
             handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                 new AsyncCallback(ReadCallback), state);
          }
@@ -99,7 +104,7 @@ namespace RobotClient.Networking
             if (bytesRead > 0)
             {
                 // There  might be more data, so store the data received so far.  
-                state.sb.Append(Encoding.ASCII.GetString(
+                state.sb.Append(Encoding.ASCII.GetString( 
                     state.buffer, 0, bytesRead));
                 // Check for end-of-file tag. If it is not there, read
                 // more data.  
@@ -155,6 +160,12 @@ namespace RobotClient.Networking
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        public void CloseServer()
+        {
+            //handler.Shutdown(SocketShutdown.Both);
+            //handler.Close();
         }
     }
 }

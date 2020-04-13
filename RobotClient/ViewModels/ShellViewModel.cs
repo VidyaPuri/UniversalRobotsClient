@@ -48,7 +48,7 @@ namespace RobotClient.ViewModels
 
         private int _Port = 30003;
         private readonly int DashboardPort = 29999;
-        private readonly int RoboPort = 4000;
+        private readonly int RoboPort = 11000;
 
         private string _IpAddress = "192.168.56.102";
 
@@ -111,7 +111,6 @@ namespace RobotClient.ViewModels
             
             _controllerClass.StartController();
 
-            SocketServerListener();
         }
 
         #endregion
@@ -393,12 +392,17 @@ namespace RobotClient.ViewModels
 
         #region Socket Methods
 
-        public void SocketServerListener()
+        public void StartSocketServer()
         {
             Task.Run(() =>
             {
-                _roboServer.StartListening();
+                _roboServer.StartListening(RoboPort);
             });
+        }
+
+        public void StopSocketServer()
+        {
+            _roboServer.CloseServer();
         }
 
         /// <summary>
