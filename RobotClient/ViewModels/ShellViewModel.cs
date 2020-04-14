@@ -54,18 +54,14 @@ namespace RobotClient.ViewModels
 
         SerialPort port;
 
-        private double _SliderValue = 512;
+        //private double _SliderValue = 512;
 
-        public double SliderValue
-        {
-            get { return _SliderValue; }
-            set { Set(ref _SliderValue, value); }
-        }
+        //public double SliderValue
+        //{
+        //    get { return _SliderValue; }
+        //    set { Set(ref _SliderValue, value); }
+        //}
 
-public ShellViewModel()
-        {         
-            init();
-        }
 
         private void init()
         {
@@ -117,7 +113,7 @@ public ShellViewModel()
         private int _SelectedFocusTargetIdx = 0;
         private FocusModel _SelectedFocusTarget;
 
-        private int _SliderValue = 512;
+        private double _SliderValue = 512;
 
         private RobotCommand _robotCommand;
         private ControllerClass _controllerClass;
@@ -268,18 +264,10 @@ public ShellViewModel()
         /// <summary>
         /// Waiting for connection to finish or return false
         /// </summary>
-        public bool  CanConnect
+        public bool CanConnect
         {
             get { return _CanConnect; }
             set => Set(ref _CanConnect, value);
-        }
-
-        private int myVar;
-
-        public int MyProperty
-        {
-            get { return myVar; }
-            set { myVar = value; }
         }
 
         /// <summary>
@@ -334,7 +322,6 @@ public ShellViewModel()
             set => Set(ref _FocusList, value);
         }
 
-
         /// <summary>
         /// Idx of selected focus target
         /// </summary>
@@ -353,12 +340,10 @@ public ShellViewModel()
             set => Set(ref _SelectedFocusTarget, value);
         }
 
-
-
         /// <summary>
         /// Slider Value init
         /// </summary>
-        public int SliderValue
+        public double SliderValue
         {
             get { return _SliderValue; }
             set => Set(ref _SliderValue, value);
