@@ -4,6 +4,7 @@ using RobotClient.Models;
 using System.Windows;
 using RobotClient.Networking;
 using RobotClient.Move;
+using RobotInterface.Models;
 
 namespace RobotClient.ViewModels
 {
@@ -64,6 +65,11 @@ namespace RobotClient.ViewModels
         private SocketClient _dashboardClient;
         private SocketServer _roboServer = new SocketServer();
 
+        private BindableCollection<FocusModel> _FocusList = new BindableCollection<FocusModel>();
+        private int _SelectedFocusTargetIdx = 0;
+        private FocusModel _SelectedFocusTarget;
+
+        private int _SliderValue = 512;
 
         private RobotCommand _robotCommand;
         private ControllerClass _controllerClass;
@@ -99,7 +105,6 @@ namespace RobotClient.ViewModels
         {
             _socketClient = socketClient;
             _dashboardClient = new SocketClient(eventAggregator);
-            //_roboClient = new SocketClient(eventAggregator);
 
             _roboServer = new SocketServer();
 
@@ -271,6 +276,46 @@ namespace RobotClient.ViewModels
             get { return _ControllerMoveToggle; }
             set => Set(ref _ControllerMoveToggle, value);
         }
+
+        /// <summary>
+        /// List with Focus Targets
+        /// </summary>
+        public BindableCollection<FocusModel> FocusList
+        {
+            get { return _FocusList; }
+            set => Set(ref _FocusList, value);
+        }
+
+
+        /// <summary>
+        /// Idx of selected focus target
+        /// </summary>
+        public int SelectedFocusTargetIdx
+        {
+            get { return _SelectedFocusTargetIdx; }
+            set => Set(ref _SelectedFocusTargetIdx, value);
+        }
+
+        /// <summary>
+        /// Idx of selected focus target
+        /// </summary>
+        public FocusModel SelectedFocusTarget
+        {
+            get { return _SelectedFocusTarget; }
+            set => Set(ref _SelectedFocusTarget, value);
+        }
+
+
+
+        /// <summary>
+        /// Slider Value init
+        /// </summary>
+        public int SliderValue
+        {
+            get { return _SliderValue; }
+            set => Set(ref _SliderValue, value);
+        }
+
 
         #endregion
 
@@ -493,6 +538,59 @@ namespace RobotClient.ViewModels
             RobotJoints = new double[] { 0, -1.5708, 1.5708, 0, 1.5708, 0 };
             _robotCommand.SendMoveCommand(RobotJoints, "joints");
         }
+        #endregion
+
+        #region
+
+        /// <summary>
+        /// Adds new focus target to the list
+        /// </summary>
+        public void AddFocusTarget()
+        {
+            var target = new FocusModel
+            {
+                Name = "GetSomeName",
+                Idx = 0,
+                Val = SliderValue
+            };
+            FocusList.Add(target);
+        }
+
+        /// <summary>
+        /// Insert new focus target to the list
+        /// </summary>
+        public void InsertFocusTarget()
+        {
+            var target = new FocusModel
+            {
+                Name = "FocusTarget",
+                Idx = 0,
+                Val = SliderValue
+            };
+            FocusList.Insert(SelectedFocusTargetIdx, target);
+        }
+
+        /// <summary>
+        /// Edits selected focus target
+        /// </summary>
+        public void EditFocusTarget()
+        {
+            if(FocusList.Count > 0)
+                FocusList[SelectedFocusTargetIdx].Val = SliderValue;
+
+            FocusList.Refresh();
+         }
+
+        /// <summary>
+        /// Removes selected focus target from the list
+        /// </summary>
+        public void RemoveFocusTarget()
+        {
+            if (FocusList.Count > 0)
+                FocusList.RemoveAt(SelectedFocusTargetIdx);
+            SelectedFocusTargetIdx = 0;
+        }
+
         #endregion
 
         #region Handlers

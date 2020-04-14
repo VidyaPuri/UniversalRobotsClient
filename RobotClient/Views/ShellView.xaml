@@ -399,17 +399,48 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Margin="10">
                             <Button x:Name="StartSocketServer" Content="Start server" Width="100"/>
                             <Button x:Name="StopSocketServer" Content="Stop server" Width="100"/>
+                            <RadioButton Content="Status" HorizontalAlignment="Center"/>
                         </StackPanel>
-                        <RadioButton Content="Status" HorizontalAlignment="Center"/>
-                        <Button Content="Add" Width="100"/>
-                        <Button Content="Edit" Width="100"/>
-                        <Button Content="Remove" Width="100"/>
-                        <ListView  />
-                        <Slider Width="300"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="250" Minimum="0" Maximum="1024"/>
+                            <Label Content="Value:" ></Label>
+                            <TextBlock Text="{Binding SliderValue, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" ></TextBlock>
+                        </StackPanel>
+                        
+                        
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <StackPanel >
+                                <Button Content="Add" x:Name="AddFocusTarget" Width="100"/>
+                                <Button Content="Insert" x:Name="InsertFocusTarget" Width="100"/>
+                                <Button Content="Edit" x:Name="EditFocusTarget" Width="100"/>
+                                <Button Content="Remove" x:Name="RemoveFocusTarget" Width="100"/>
+                            </StackPanel>
+                            <ListView  ItemsSource="{Binding FocusList}" SelectionMode="Single"
+                                       MinHeight="50" MaxHeight="80" MinWidth="150"
+                                       SelectedIndex="{Binding SelectedFocusTargetIdx}"
+                                       SelectedItem="{Binding SelectedFocusTarget}" BorderBrush="#141414" BorderThickness="1">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="   " Height="14"/>
+                                            <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14" Width="90"/>
+                                            <TextBlock Text="   " Height="14"/>
+                                            <TextBlock Text="{Binding Val}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
+                                            <TextBlock Text="   " Height="14"/>
+                                            <TextBox Text="{Binding Idx}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
                         <TextBox Text="Baud rate"/>
+
+
+
 
                     </StackPanel>
                 </Grid>
