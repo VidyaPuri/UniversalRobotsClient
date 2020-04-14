@@ -429,7 +429,7 @@
                                             <TextBlock Text="   " Height="14"/>
                                             <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14" Width="90"/>
                                             <TextBlock Text="   " Height="14"/>
-                                            <TextBlock Text="{Binding Val}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
+                                            <TextBlock Text="{Binding Val, StringFormat={}{0:0.#}}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
                                             <TextBlock Text="   " Height="14"/>
                                             <TextBox Text="{Binding Idx}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
                                         </StackPanel>
