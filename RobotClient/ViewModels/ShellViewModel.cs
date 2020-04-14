@@ -5,6 +5,10 @@ using System.Windows;
 using RobotClient.Networking;
 using RobotClient.Move;
 using RobotInterface.Models;
+using System.Windows.Shapes;
+using System.IO.Ports;
+using System.Diagnostics;
+using System;
 
 namespace RobotClient.ViewModels
 {
@@ -41,6 +45,50 @@ namespace RobotClient.ViewModels
         public void CloseWindow()
         {
             Application.Current.Shutdown();
+        }
+
+        #endregion
+
+
+        #region Servo control
+
+        SerialPort port;
+
+        private double _SliderValue = 512;
+
+        public double SliderValue
+        {
+            get { return _SliderValue; }
+            set { Set(ref _SliderValue, value); }
+        }
+
+public ShellViewModel()
+        {         
+            init();
+        }
+
+        private void init()
+        {
+            port = new SerialPort();
+            port.PortName = "COM3";
+            port.BaudRate = 1000000;
+
+            try
+            {
+                port.Open();
+            }
+            catch (Exception e1)
+            {
+                MessageBox.Show(e1.Message);
+            }
+        }
+       
+        private void Val_Servo()
+        {
+            if (port.IsOpen)
+            {
+                port.WriteLine(SliderValue.ToString());
+            }
         }
 
         #endregion
@@ -432,6 +480,8 @@ namespace RobotClient.ViewModels
                 _socketClient.SendIO(7, value);
             }
         }
+
+        public object Slider_Value { get; private set; }
 
         #endregion
 
