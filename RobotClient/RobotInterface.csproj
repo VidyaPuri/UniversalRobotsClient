@@ -89,6 +89,7 @@
     <Compile Include="Command Helpers\RobotCommand.cs" />
     <Compile Include="Models\StateObject.cs" />
     <Compile Include="Networking\PacketHandler.cs" />
+    <Compile Include="Networking\SerialCommunication.cs" />
     <Compile Include="Networking\SocketClient.cs" />
     <Compile Include="Networking\SocketServer.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />

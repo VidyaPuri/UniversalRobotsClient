@@ -5,14 +5,13 @@ using System.Windows;
 using RobotClient.Networking;
 using RobotClient.Move;
 using RobotInterface.Models;
-using System.Windows.Shapes;
-using System.IO.Ports;
-using System.Diagnostics;
 using System;
+using System.Diagnostics;
+using RobotInterface.Networking;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>
     {
         #region Window Control
 
@@ -49,46 +48,6 @@ namespace RobotClient.ViewModels
 
         #endregion
 
-
-        #region Servo control
-
-        SerialPort port;
-
-        //private double _SliderValue = 512;
-
-        //public double SliderValue
-        //{
-        //    get { return _SliderValue; }
-        //    set { Set(ref _SliderValue, value); }
-        //}
-
-
-        private void init()
-        {
-            port = new SerialPort();
-            port.PortName = "COM3";
-            port.BaudRate = 1000000;
-
-            try
-            {
-                port.Open();
-            }
-            catch (Exception e1)
-            {
-                MessageBox.Show(e1.Message);
-            }
-        }
-       
-        private void Val_Servo()
-        {
-            if (port.IsOpen)
-            {
-                port.WriteLine(SliderValue.ToString());
-            }
-        }
-
-        #endregion
-
         #region Private Members
 
         private int _Port = 30003;
@@ -107,11 +66,13 @@ namespace RobotClient.ViewModels
         private IEventAggregator _eventAggregator { get; }
         private SocketClient _socketClient;
         private SocketClient _dashboardClient;
-        private SocketServer _roboServer = new SocketServer();
+        private SocketServer _roboServer;
+        private SerialCommunication _serial;
+
+        private int _ReceivedFocusTarget;
 
         private BindableCollection<FocusModel> _FocusList = new BindableCollection<FocusModel>();
         private int _SelectedFocusTargetIdx = 0;
-        private FocusModel _SelectedFocusTarget;
 
         private double _SliderValue = 512;
 
@@ -150,7 +111,7 @@ namespace RobotClient.ViewModels
             _socketClient = socketClient;
             _dashboardClient = new SocketClient(eventAggregator);
 
-            _roboServer = new SocketServer();
+            _roboServer = new SocketServer(eventAggregator);
 
             _robotCommand = moveCommand;
             _controllerClass = controllerClass;
@@ -159,6 +120,7 @@ namespace RobotClient.ViewModels
             _eventAggregator.Subscribe(this);
             
             _controllerClass.StartController();
+            _serial = new SerialCommunication();
 
         }
 
@@ -332,21 +294,26 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// Idx of selected focus target
-        /// </summary>
-        public FocusModel SelectedFocusTarget
-        {
-            get { return _SelectedFocusTarget; }
-            set => Set(ref _SelectedFocusTarget, value);
-        }
-
-        /// <summary>
         /// Slider Value init
         /// </summary>
         public double SliderValue
         {
             get { return _SliderValue; }
             set => Set(ref _SliderValue, value);
+        }
+
+        /// <summary>
+        /// The target that was received from UR
+        /// </summary>
+        public int ReceivedFocusTarget
+        {
+            get { return _ReceivedFocusTarget; }
+            set 
+            { 
+                _ReceivedFocusTarget = value;
+                Debug.WriteLine($"I have received the order to execute servo focus position #{ReceivedFocusTarget}");
+                NotifyOfPropertyChange(() => ReceivedFocusTarget);
+            }
         }
 
 
@@ -575,7 +542,8 @@ namespace RobotClient.ViewModels
         }
         #endregion
 
-        #region
+        #region Target Focus Methods
+       
 
         /// <summary>
         /// Adds new focus target to the list
@@ -628,6 +596,23 @@ namespace RobotClient.ViewModels
 
         #endregion
 
+        #region Serial Communication Methods
+
+        /// <summary>
+        /// Open up the serial port to arduino
+        /// </summary>
+        public void OpenSerialPort()
+        {
+            _serial.OpenSerialPort();
+        }
+
+        public void CloseSerialPort()
+        {
+            _serial.CloseSerialPort();
+        }
+
+        #endregion
+
         #region Handlers
 
         /// <summary>
@@ -672,6 +657,15 @@ namespace RobotClient.ViewModels
                 RotationRate = message.RotationRate;
             if(TranslationRate != message.TranslationRate)
                 TranslationRate = message.TranslationRate;
+        }
+
+        /// <summary>
+        /// Received focus target handler
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(int message)
+        {
+            ReceivedFocusTarget = message;
         }
 
         #endregion

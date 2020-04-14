@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Linq;
+using Caliburn.Micro;
+using System.Text.RegularExpressions;
 
 namespace RobotClient.Networking
 {
@@ -18,11 +20,13 @@ namespace RobotClient.Networking
         private Socket listener;
         private bool isListening;
 
+        public IEventAggregator _eventAggregator { get; }
+
         #endregion
 
-        public SocketServer()
+        public SocketServer(IEventAggregator eventAggregator)
         {
-
+            _eventAggregator = eventAggregator;
         }
 
         public static ManualResetEvent mre = new ManualResetEvent(false);
@@ -73,6 +77,10 @@ namespace RobotClient.Networking
 
         }
 
+        /// <summary>
+        /// AsyncCallback method
+        /// </summary>
+        /// <param name="ar"></param>
         public void AcceptCallback(IAsyncResult ar)
         {
             // Signal the main thread to continue.  
@@ -98,19 +106,12 @@ namespace RobotClient.Networking
             {
                 Debug.WriteLine(ex.Message);
             }
-
-            //// Get the socket that handles the client request.  
-            //Socket listener = (Socket)ar.AsyncState;
-            //Socket handler = listener.EndAccept(ar);
-
-            //// Create the state object.  
-            ////StateObject state = new StateObject();
-
-
-            //handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-            //    new AsyncCallback(ReadCallback), state);
          }
 
+        /// <summary>
+        /// ReadCallback method
+        /// </summary>
+        /// <param name="ar"></param>
         public void ReadCallback(IAsyncResult ar)
         {
             try
@@ -137,22 +138,20 @@ namespace RobotClient.Networking
                     // Check for end-of-file tag. If it is not there, read
                     // more data.  
                     content = state.sb.ToString();
+
                     Debug.WriteLine($"Client {state.Id} is sending {content}");
-                    if (content.IndexOf("<EOF>") > -1)
+
+                    var resultString = Regex.Match(content, @"\d+").Value;
+
+                    if (resultString != "")
                     {
-                        // All the data has been read from the
-                        // client. Display it on the console.  
-                        Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                            content.Length, content);
-                        // Echo the data back to the client.  
-                        Send(handler, content);
+                        var index = Int32.Parse(resultString);
+                        _eventAggregator.PublishOnUIThread(index);
                     }
-                    else
-                    {
-                        // Not all data received. Get more.  
-                        handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                        new AsyncCallback(ReadCallback), state);
-                    }
+
+                    // Not all data received. Get more.  
+                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReadCallback), state);
 
                     // Empty  the string buffer
                     state.sb.Clear();

@@ -405,6 +405,12 @@
                             <RadioButton Content="Status" HorizontalAlignment="Center"/>
                         </StackPanel>
 
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <Button x:Name="OpenSerialPort" Content="Open serial port" Width="100"/>
+                            <Button x:Name="CloseSerialPort" Content="Close serial port" Width="100"/>
+                            <RadioButton Content="Status" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
                         <StackPanel Orientation="Horizontal">
                             <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="250" Minimum="0" Maximum="1024"/>
                             <Label Content="Value:" ></Label>
@@ -429,7 +435,7 @@
                                             <TextBlock Text="   " Height="14"/>
                                             <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14" Width="90"/>
                                             <TextBlock Text="   " Height="14"/>
-                                            <TextBlock Text="{Binding Val, StringFormat={}{0:0.#}}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
+                                            <TextBlock Text="{Binding Val, StringFormat={}{0:0.#}}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14" Width="30"/>
                                             <TextBlock Text="   " Height="14"/>
                                             <TextBox Text="{Binding Idx}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
                                         </StackPanel>
