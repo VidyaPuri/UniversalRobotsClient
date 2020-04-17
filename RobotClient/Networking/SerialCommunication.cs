@@ -17,7 +17,7 @@ namespace RobotInterface.Networking
             port = new SerialPort
             {
                 PortName = "COM3",
-                BaudRate = 1000000
+                BaudRate = 9600
             };
 
             try
@@ -45,10 +45,16 @@ namespace RobotInterface.Networking
         /// <param name="value"></param>
         public void SendToPort(double value)
         {
-            if(port.IsOpen)
+            if(port != null)
             {
-                port.WriteLine(value.ToString());
+                if (port.IsOpen)
+                {
+                    port.WriteLine(value.ToString());
+                }
             }
+            
         }
+
+
     }
 }

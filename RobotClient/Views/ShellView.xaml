@@ -8,7 +8,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="600" Width="512" MinHeight="600" MinWidth="512" MaxHeight="387" MaxWidth="512" Background="#2B2F3D">
+        Title="TCP Client" Height="600" Width="512" MinHeight="800" MinWidth="512" MaxHeight="387" MaxWidth="512" Background="#2B2F3D">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
@@ -27,7 +27,7 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="5"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="5"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="25"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -410,14 +410,17 @@
                             <Button x:Name="CloseSerialPort" Content="Close serial port" Width="100"/>
                             <RadioButton Content="Status" HorizontalAlignment="Center"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="SerialInput" Width="303" Margin="5" VerticalContentAlignment="Center"/>
+                            <Button x:Name="SendSerial" Content="Send to Arduino" Width="100"/>
+                        </StackPanel>
+                        
 
                         <StackPanel Orientation="Horizontal">
-                            <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="250" Minimum="0" Maximum="1024"/>
+                            <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="250" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5"/>
                             <Label Content="Value:" ></Label>
                             <TextBlock Text="{Binding SliderValue, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" ></TextBlock>
                         </StackPanel>
-                        
-                        
                         <StackPanel Orientation="Horizontal" Margin="10">
                             <StackPanel >
                                 <Button Content="Add" x:Name="AddFocusTarget" Width="100"/>
@@ -426,7 +429,7 @@
                                 <Button Content="Remove" x:Name="RemoveFocusTarget" Width="100"/>
                             </StackPanel>
                             <ListView  ItemsSource="{Binding FocusList}" SelectionMode="Single"
-                                       MinHeight="50" MaxHeight="80" MinWidth="150"
+                                       MinHeight="50" MaxHeight="200" MinWidth="150"
                                        SelectedIndex="{Binding SelectedFocusTargetIdx}"
                                        SelectedItem="{Binding SelectedFocusTarget}" BorderBrush="#141414" BorderThickness="1">
                                 <ListView.ItemTemplate>
@@ -444,10 +447,6 @@
                             </ListView>
                         </StackPanel>
                         <TextBox Text="Baud rate"/>
-
-
-
-
                     </StackPanel>
                 </Grid>
             </GroupBox>

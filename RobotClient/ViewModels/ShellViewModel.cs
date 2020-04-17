@@ -74,7 +74,7 @@ namespace RobotClient.ViewModels
         private BindableCollection<FocusModel> _FocusList = new BindableCollection<FocusModel>();
         private int _SelectedFocusTargetIdx = 0;
 
-        private double _SliderValue = 512;
+        private double _SliderValue = 1500;
 
         private RobotCommand _robotCommand;
         private ControllerClass _controllerClass;
@@ -299,7 +299,12 @@ namespace RobotClient.ViewModels
         public double SliderValue
         {
             get { return _SliderValue; }
-            set => Set(ref _SliderValue, value);
+            set
+            {
+                _SliderValue = value;
+                _serial.SendToPort(value);
+                NotifyOfPropertyChange(() => SliderValue);
+            }
         }
 
         /// <summary>
@@ -312,6 +317,14 @@ namespace RobotClient.ViewModels
             { 
                 _ReceivedFocusTarget = value;
                 Debug.WriteLine($"I have received the order to execute servo focus position #{ReceivedFocusTarget}");
+                try
+                {
+                    _serial.SendToPort(FocusList[value].Val);
+                }
+                catch (Exception ex)
+                {
+
+                }
                 NotifyOfPropertyChange(() => ReceivedFocusTarget);
             }
         }
@@ -599,17 +612,42 @@ namespace RobotClient.ViewModels
         #region Serial Communication Methods
 
         /// <summary>
-        /// Open up the serial port to arduino
+        /// Open up the serial port
         /// </summary>
         public void OpenSerialPort()
         {
             _serial.OpenSerialPort();
         }
 
+        /// <summary>
+        /// Close the serial port
+        /// </summary>
         public void CloseSerialPort()
         {
             _serial.CloseSerialPort();
         }
+
+        #endregion
+
+        #region Test stuff
+
+
+        private string _SerialInput;
+
+        public string SerialInput
+        {
+            get { return _SerialInput; }
+            set => Set(ref _SerialInput, value);
+        }
+
+
+        public void SendSerial()
+        {
+            var value = Convert.ToDouble(SerialInput);
+            _serial.SendToPort(value);
+
+        }
+
 
         #endregion
 
