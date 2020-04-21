@@ -650,25 +650,64 @@ namespace RobotClient.ViewModels
 
         }
 
+        #endregion
+
+        #region Bluetooth
+
+
+        private bool _SerialStatus;
+
+        public bool SerialStatus
+        {
+            get { return _SerialStatus; }
+            set 
+            { 
+                _SerialStatus = value;
+                NotifyOfPropertyChange(() => SerialStatus);
+            }
+        }
+
+
         // Bluetooth stuff
         SerialPort serial = new SerialPort();
 
-        public void ConnectBluetooth()
+        /// <summary>
+        /// Connect BT
+        /// </summary>
+        public void BTConnect()
         {
             serial.PortName = "COM4";
             serial.BaudRate = 38400;
 
+            SerialStatus = serial.IsOpen;
+
             try
             {
                 if (!serial.IsOpen)
+                {
                     serial.Open();
+                    SerialStatus = serial.IsOpen;
+                }
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
 
-            serial.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(DataReceived);
+            serial.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
+        }
+
+        /// <summary>
+        /// Disconnect BT
+        /// </summary>
+        public void BTDisconnect()
+        {
+            if (serial.IsOpen)
+            {
+                serial.Close();
+                SerialStatus = serial.IsOpen;
+            }
         }
 
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -690,17 +729,8 @@ namespace RobotClient.ViewModels
         {
             if (serial.IsOpen)
             {
-                //string data = "waka waka bitch";
                 try
                 {
-                    // Send the binary data out the port
-                    //byte[] hexstring = Encoding.ASCII.GetBytes(BluetoothText);
-                    //foreach (byte hexval in hexstring)
-                    //{
-                    //    byte[] _hexval = new byte[] { hexval };     // need to convert byte 
-                    //                                                // to byte[] to write
-                    //    serial.Write(_hexval, 0, 1);
-                    //}
                     serial.Write(BluetoothText);
                 }
                 catch (Exception ex)
@@ -709,9 +739,6 @@ namespace RobotClient.ViewModels
                 }
             }
         }
-
-
-
 
         #endregion
 
