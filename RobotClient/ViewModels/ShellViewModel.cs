@@ -654,9 +654,12 @@ namespace RobotClient.ViewModels
 
         #region Bluetooth
 
-
         private bool _SerialStatus;
+        public string BluetoothText { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool SerialStatus
         {
             get { return _SerialStatus; }
@@ -666,7 +669,6 @@ namespace RobotClient.ViewModels
                 NotifyOfPropertyChange(() => SerialStatus);
             }
         }
-
 
         // Bluetooth stuff
         SerialPort serial = new SerialPort();
@@ -723,8 +725,9 @@ namespace RobotClient.ViewModels
             }
         }
 
-        public string BluetoothText { get; set; }
-
+        /// <summary>
+        /// Send string to arduino via BT
+        /// </summary>
         public void SendToArduinoBlueTooth()
         {
             if (serial.IsOpen)
