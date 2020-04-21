@@ -446,7 +446,14 @@
                                 </ListView.ItemTemplate>
                             </ListView>
                         </StackPanel>
-                        <TextBox Text="Baud rate"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="ConnectBluetooth" Content="Connect with BT" Width="100"/>
+                            <TextBox x:Name="BluetoothText" Width="250" Margin="5" VerticalContentAlignment="Center"/>
+                            <Button x:Name="SendToArduinoBlueTooth" Content="Connect with BT" Width="100"/>
+
+
+                        </StackPanel>
+                        
                     </StackPanel>
                 </Grid>
             </GroupBox>

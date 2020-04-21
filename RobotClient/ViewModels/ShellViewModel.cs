@@ -9,6 +9,7 @@ using System;
 using System.IO.Ports;
 using System.Diagnostics;
 using RobotInterface.Networking;
+using System.Text;
 
 namespace RobotClient.ViewModels
 {
@@ -650,14 +651,12 @@ namespace RobotClient.ViewModels
         }
 
         // Bluetooth stuff
+        SerialPort serial = new SerialPort();
 
         public void ConnectBluetooth()
         {
-            SerialPort serial = new SerialPort
-            {
-                PortName = "COM3",
-                BaudRate = 38400
-            };
+            serial.PortName = "COM4";
+            serial.BaudRate = 38400;
 
             try
             {
@@ -682,6 +681,31 @@ namespace RobotClient.ViewModels
             catch (Exception ex)
             {
 
+            }
+        }
+
+        public string BluetoothText { get; set; }
+
+        public void SendToArduinoBlueTooth()
+        {
+            if (serial.IsOpen)
+            {
+                //string data = "waka waka bitch";
+                try
+                {
+                    // Send the binary data out the port
+                    byte[] hexstring = Encoding.ASCII.GetBytes(BluetoothText);
+                    foreach (byte hexval in hexstring)
+                    {
+                        byte[] _hexval = new byte[] { hexval };     // need to convert byte 
+                                                                    // to byte[] to write
+                        serial.Write(_hexval, 0, 1);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
 
