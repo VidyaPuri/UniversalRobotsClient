@@ -694,13 +694,14 @@ namespace RobotClient.ViewModels
                 try
                 {
                     // Send the binary data out the port
-                    byte[] hexstring = Encoding.ASCII.GetBytes(BluetoothText);
-                    foreach (byte hexval in hexstring)
-                    {
-                        byte[] _hexval = new byte[] { hexval };     // need to convert byte 
-                                                                    // to byte[] to write
-                        serial.Write(_hexval, 0, 1);
-                    }
+                    //byte[] hexstring = Encoding.ASCII.GetBytes(BluetoothText);
+                    //foreach (byte hexval in hexstring)
+                    //{
+                    //    byte[] _hexval = new byte[] { hexval };     // need to convert byte 
+                    //                                                // to byte[] to write
+                    //    serial.Write(_hexval, 0, 1);
+                    //}
+                    serial.Write(BluetoothText);
                 }
                 catch (Exception ex)
                 {
