@@ -6,6 +6,7 @@ using RobotClient.Networking;
 using RobotClient.Move;
 using RobotInterface.Models;
 using System;
+using System.IO.Ports;
 using System.Diagnostics;
 using RobotInterface.Networking;
 
@@ -647,6 +648,44 @@ namespace RobotClient.ViewModels
             _serial.SendToPort(value);
 
         }
+
+        // Bluetooth stuff
+
+        public void ConnectBluetooth()
+        {
+            SerialPort serial = new SerialPort
+            {
+                PortName = "COM3",
+                BaudRate = 38400
+            };
+
+            try
+            {
+                if (!serial.IsOpen)
+                    serial.Open();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            serial.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(DataReceived);
+        }
+
+        private void DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                SerialPort spl = (SerialPort)sender;
+                Debug.WriteLine($"Data {spl.ReadLine()} \n");
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+
 
 
         #endregion
