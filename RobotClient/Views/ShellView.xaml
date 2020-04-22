@@ -456,7 +456,8 @@
             <GroupBox Grid.Column="1" Grid.Row="2" Header="Bluetooth Arduino" BorderThickness="1" BorderBrush="DimGray">
                 <StackPanel >
                     <StackPanel Orientation="Horizontal" Margin="10 5">
-                        <Button x:Name="BTConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" Style="{DynamicResource ButtonStyle1}"/>
+                        <Button x:Name="BTConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
+                                Style="{DynamicResource ButtonStyle1}" MinWidth="75"/>
                         <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
                                      IsEnabled="false" VerticalAlignment="Center"
                                      Margin="5 "></RadioButton>

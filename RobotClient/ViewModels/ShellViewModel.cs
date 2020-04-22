@@ -706,11 +706,14 @@ namespace RobotClient.ViewModels
                     {
                         _BTConnection.Connect();
                         BTConnectBtnText = "Disconnect";
+                        BTSerialStatus = true;
                     }
                     else if (BTSerialStatus)
                     {
                         _BTConnection.Disconnect();
                         BTConnectBtnText = "Connect";
+                        BTSerialStatus = false;
+
                     }
                 });
             }
