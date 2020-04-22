@@ -80,7 +80,7 @@ namespace RobotInterface.Networking
                 SerialPort spl = (SerialPort)sender;
                 //string received = spl.ReadLine();
                 logModel.Message = spl.ReadLine();
-                logModel.Timestamp = DateTime.Now;
+                logModel.Timestamp = DateTime.Now.ToString("HH:mm:ss");
                 logModel.Idx = idx;
 
                 Debug.WriteLine($"Data {spl.ReadLine()} \n");

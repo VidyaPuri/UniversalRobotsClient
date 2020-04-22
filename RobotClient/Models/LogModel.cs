@@ -6,6 +6,6 @@ namespace RobotInterface.Models
     {
         public int Idx { get; set; }
         public string Message { get; set; }
-        public DateTime Timestamp { get; set; }
+        public string Timestamp { get; set; }
     }
 }

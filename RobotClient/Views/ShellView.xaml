@@ -489,15 +489,16 @@
                     <!-- Column 1-->
                     <StackPanel Grid.Column="1" Margin="5">
                         <TextBlock Text="Received from Arduino" Margin="0 5" />
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding BTReceivedMessage}"  Style="{DynamicResource LogViewerStyle}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Idx}"></TextBlock>
+                                            <TextBlock Text="#" FontWeight="DemiBold"></TextBlock>
+                                            <TextBlock Text="{Binding Idx}" FontWeight="DemiBold"></TextBlock>
                                             <TextBlock Text=" "></TextBlock>
-                                            <TextBlock Text="{Binding Timestamp}"></TextBlock>
-                                            <TextBlock Text=" "></TextBlock>
+                                            <TextBlock Text="{Binding Timestamp}" FontWeight="DemiBold" FontStyle="Italic"></TextBlock>
+                                            <TextBlock Text=": " FontWeight="DemiBold"></TextBlock>
                                             <TextBlock Text="{Binding Message}"></TextBlock>
                                         </StackPanel>
                                     </DataTemplate>
@@ -526,8 +527,8 @@
     <Window.Resources>
         <Style TargetType="ItemsControl" x:Key="LogViewerStyle">
             <Setter Property="MinHeight" Value="100" />
-            <Setter Property="MinWidth" Value="245" />
-            <Setter Property="MaxHeight" Value="150" />
+            <Setter Property="Width" Value="245" />
+            <Setter Property="MaxHeight" Value="120" />
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="#141414" />
