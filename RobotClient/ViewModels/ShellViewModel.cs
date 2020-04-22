@@ -675,6 +675,8 @@ namespace RobotClient.ViewModels
 
         // Private BT properties 
 
+        public int BTListCnt { get; set; }
+
         private string _BluetoothInputText;
 
         public string BluetoothInputText
@@ -834,6 +836,7 @@ namespace RobotClient.ViewModels
         {
             BTReceivedStrings.Add(message);
             BTReceivedStrings.Refresh();
+            BTListCnt = BTReceivedStrings.Count;
         }
 
         #endregion

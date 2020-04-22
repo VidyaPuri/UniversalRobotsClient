@@ -490,7 +490,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Stevilka"></TextBlock>
+                                            <TextBlock Text="{Binding BTListCnt}"></TextBlock>
                                             <TextBlock Text=" "></TextBlock>
                                             <TextBlock Text="{Binding}"></TextBlock>
                                         </StackPanel>
