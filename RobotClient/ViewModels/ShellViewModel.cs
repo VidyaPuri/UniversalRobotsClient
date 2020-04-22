@@ -669,7 +669,7 @@ namespace RobotClient.ViewModels
 
         private bool _BTSerialStatus = false;
 
-        readonly SerialPort serial = new SerialPort();
+        //readonly SerialPort serial = new SerialPort();
 
         /// <summary>
         /// Serial Status Initialisation
@@ -687,7 +687,8 @@ namespace RobotClient.ViewModels
             get { return _BTConnectBtnText; }
             set 
             { 
-                _BTConnectBtnText = value; 
+                _BTConnectBtnText = value;
+                NotifyOfPropertyChange(() => BTConnectBtnText);
             }
         }
 
@@ -699,16 +700,19 @@ namespace RobotClient.ViewModels
         {
             try
             {
-                if (!serial.IsOpen)
+                Task.Run(() =>
                 {
-                    _BTConnection.Connect();
-                    BTConnectBtnText = "Disconnect";
-                }
-                else if(serial.IsOpen)
-                {
-                    _BTConnection.Disconnect();
-                    BTConnectBtnText = "Connect";
-                }
+                    if (!BTSerialStatus)
+                    {
+                        _BTConnection.Connect();
+                        BTConnectBtnText = "Disconnect";
+                    }
+                    else if (BTSerialStatus)
+                    {
+                        _BTConnection.Disconnect();
+                        BTConnectBtnText = "Connect";
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -721,7 +725,7 @@ namespace RobotClient.ViewModels
         /// </summary>
         public void SendToArduinoBlueTooth()
         {
-            if (serial.IsOpen)
+            if (BTSerialStatus)
             {
                 try
                 {
