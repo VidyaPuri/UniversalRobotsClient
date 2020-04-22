@@ -8,7 +8,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="600" Width="512" MinHeight="1024" MinWidth="512" MaxHeight="387" MaxWidth="512" Background="#2B2F3D">
+        Title="TCP Client" Height="600" Width="510" MinHeight="1024" MinWidth="510" MaxHeight="387" MaxWidth="510" Background="#2B2F3D">
     
 
     <WindowChrome.WindowChrome>
@@ -90,9 +90,9 @@
 
         <!-- Script panel -->
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-            <Label Width="auto" Content="Dashboard Server" Margin="5" FontWeight="Bold" VerticalContentAlignment="Center"/>
+            <Label Width="Auto" Content="Dashboard Server" Margin="5" FontWeight="Bold" VerticalContentAlignment="Center"/>
             <TextBox x:Name="Script" Width="303" Margin="5" VerticalContentAlignment="Center"/>
-            <RepeatButton x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle2}"/>
+            <RepeatButton x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle2}" Width="46"/>
         </StackPanel>
 
         <Border Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>
@@ -172,16 +172,16 @@
                         <!-- Move Joints buttons-->
                         <RepeatButton x:Name="J0Sub" Content="J0-" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="J0Add" Content="J0+" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
                         <RepeatButton x:Name="J1Sub" Content="J1-" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="J1Add" Content="J1+" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
@@ -272,11 +272,11 @@
                         <!-- Move Tool buttons-->
                         <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
                         <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
-                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
 
                         <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
@@ -366,8 +366,8 @@
                     </GroupBox>
                     <GroupBox Header="Dashboard" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray" Margin="0 5 0 0 ">
                         <StackPanel Orientation="Vertical">
-                            <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Style="{DynamicResource ButtonStyle1}"/>
-                            <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Width="80" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Width="80" Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
@@ -403,24 +403,28 @@
 
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <Button x:Name="StartSocketServer" Content="Start server"  Style="{DynamicResource ButtonStyle1}"/>
-                            <Button x:Name="StopSocketServer" Content="Stop server"  Style="{DynamicResource ButtonStyle1}"/>
-                            <RadioButton Content="Status" HorizontalAlignment="Center"/>
+                            <Button x:Name="StartSocketServer" Content="Start server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="StopSocketServer" Content="Stop server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                            <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False"
+                                         FlowDirection="RightToLeft" Margin="15 0 0 0" Style="{DynamicResource RadioButtonStyle1}" 
+                                         VerticalAlignment="Center"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <Button x:Name="OpenSerialPort" Content="Open serial port" Style="{DynamicResource ButtonStyle1}"/>
-                            <Button x:Name="CloseSerialPort" Content="Close serial port"  Style="{DynamicResource ButtonStyle1}"/>
-                            <RadioButton Content="Status" HorizontalAlignment="Center"/>
+                            <Button x:Name="OpenSerialPort" Content="Open serial port" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="CloseSerialPort" Content="Close serial port" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                            <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False" 
+                                         FlowDirection="RightToLeft" Margin="15 0 0 0" Style="{DynamicResource RadioButtonStyle1}" 
+                                         VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <TextBox x:Name="SerialInput" Width="403" Margin="5" VerticalContentAlignment="Center"/>
-                            <Button x:Name="SendSerial" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
+                            <TextBox x:Name="SerialInput" Width="390" Height="auto"  VerticalContentAlignment="Center" Margin="0 0 10 0"/>
+                            <Button x:Name="SendSerial" Content="Send" Width="45" Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
 
 
                         <StackPanel Orientation="Horizontal">
-                            <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="373" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                            <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="370" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5" Margin="10 0 0 0" VerticalAlignment="Center"/>
                             <Label Content="Value:" VerticalAlignment="Center"></Label>
                             <TextBlock Text="{Binding SliderValue, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" VerticalAlignment="Center"></TextBlock>
                         </StackPanel>
@@ -432,14 +436,14 @@
                                 <Button Content="Remove" x:Name="RemoveFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
                             </StackPanel>
                             <ListView  ItemsSource="{Binding FocusList}" SelectionMode="Single"
-                                       MinHeight="50" MaxHeight="102" MinWidth="348"
+                                       MinHeight="50" MaxHeight="102" MinWidth="344"
                                        SelectedIndex="{Binding SelectedFocusTargetIdx}"
                                        SelectedItem="{Binding SelectedFocusTarget}" BorderBrush="#141414" BorderThickness="1">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="   " Height="20"/>
-                                            <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18" Width="150"/>
+                                            <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18" Width="248"/>
                                             <TextBlock Text="   " Height="20"/>
                                             <TextBlock Text="{Binding Val, StringFormat={}{0:0.#}}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18" Width="30"/>
                                             <TextBlock Text="   " Height="20"/>
@@ -469,10 +473,10 @@
                     <StackPanel Grid.Column="0" Margin="5">
                         <StackPanel Orientation="Horizontal" Margin="10 5">
                             <Button x:Name="BTConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
-                                Style="{DynamicResource ButtonStyle1}" MinWidth="75"/>
+                                Style="{DynamicResource ButtonStyle1}" Width="100"/>
                             <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
-                                     IsEnabled="false" VerticalAlignment="Center"
-                                     Margin="5 " Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
+                                     IsEnabled="false" VerticalAlignment="Center" Margin="15 0 0 0"
+                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
                         </StackPanel>
                         <TextBlock Text="Baud Rate" Margin="10 5" />
                         <TextBlock Text="COM Port" Margin="10 5"/>
