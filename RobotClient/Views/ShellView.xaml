@@ -414,36 +414,36 @@
                             <RadioButton Content="Status" HorizontalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <TextBox x:Name="SerialInput" Width="303" Margin="5" VerticalContentAlignment="Center"/>
+                            <TextBox x:Name="SerialInput" Width="403" Margin="5" VerticalContentAlignment="Center"/>
                             <Button x:Name="SendSerial" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
 
 
                         <StackPanel Orientation="Horizontal">
-                            <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="250" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5"/>
-                            <Label Content="Value:" ></Label>
-                            <TextBlock Text="{Binding SliderValue, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" ></TextBlock>
+                            <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="373" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                            <Label Content="Value:" VerticalAlignment="Center"></Label>
+                            <TextBlock Text="{Binding SliderValue, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" VerticalAlignment="Center"></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10">
                             <StackPanel >
-                                <Button Content="Add" x:Name="AddFocusTarget"  Style="{DynamicResource ButtonStyle1}"/>
-                                <Button Content="Insert" x:Name="InsertFocusTarget" Style="{DynamicResource ButtonStyle1}"/>
-                                <Button Content="Edit" x:Name="EditFocusTarget"  Style="{DynamicResource ButtonStyle1}"/>
-                                <Button Content="Remove" x:Name="RemoveFocusTarget"  Style="{DynamicResource ButtonStyle1}"/>
+                                <Button Content="Add" x:Name="AddFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                <Button Content="Insert" x:Name="InsertFocusTarget" Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                <Button Content="Edit" x:Name="EditFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                <Button Content="Remove" x:Name="RemoveFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
                             </StackPanel>
                             <ListView  ItemsSource="{Binding FocusList}" SelectionMode="Single"
-                                       MinHeight="50" MaxHeight="200" MinWidth="150"
+                                       MinHeight="50" MaxHeight="102" MinWidth="348"
                                        SelectedIndex="{Binding SelectedFocusTargetIdx}"
                                        SelectedItem="{Binding SelectedFocusTarget}" BorderBrush="#141414" BorderThickness="1">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="   " Height="14"/>
-                                            <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14" Width="90"/>
-                                            <TextBlock Text="   " Height="14"/>
-                                            <TextBlock Text="{Binding Val, StringFormat={}{0:0.#}}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14" Width="30"/>
-                                            <TextBlock Text="   " Height="14"/>
-                                            <TextBox Text="{Binding Idx}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="14"/>
+                                            <TextBlock Text="   " Height="20"/>
+                                            <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18" Width="150"/>
+                                            <TextBlock Text="   " Height="20"/>
+                                            <TextBlock Text="{Binding Val, StringFormat={}{0:0.#}}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18" Width="30"/>
+                                            <TextBlock Text="   " Height="20"/>
+                                            <TextBox Text="{Binding Idx}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
