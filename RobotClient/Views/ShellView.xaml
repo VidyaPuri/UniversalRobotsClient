@@ -490,13 +490,15 @@
                     <StackPanel Grid.Column="1" Margin="5">
                         <TextBlock Text="Received from Arduino" Margin="0 5" />
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding BTReceivedStrings}"  Style="{DynamicResource LogViewerStyle}">
+                            <ItemsControl ItemsSource="{Binding BTReceivedMessage}"  Style="{DynamicResource LogViewerStyle}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding BTListCnt}"></TextBlock>
+                                            <TextBlock Text="{Binding idx}"></TextBlock>
                                             <TextBlock Text=" "></TextBlock>
-                                            <TextBlock Text="{Binding}"></TextBlock>
+                                            <TextBlock Text="{Binding timestamp}"></TextBlock>
+                                            <TextBlock Text=" "></TextBlock>
+                                            <TextBlock Text="{Binding message}"></TextBlock>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

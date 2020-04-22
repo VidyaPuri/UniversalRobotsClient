@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using RobotInterface.Models;
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
@@ -10,6 +11,9 @@ namespace RobotInterface.Networking
         readonly SerialPort serial = new SerialPort();
         public IEventAggregator _eventAggregator { get; }
         public bool SerialStatus { get; set; }
+        private LogModel logModel = new LogModel();
+        private int idx;
+
 
         /// <summary>
         /// Constructor
@@ -18,6 +22,7 @@ namespace RobotInterface.Networking
         public BluetoothConnection(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
+            idx = 0;
         }
 
         /// <summary>
@@ -71,11 +76,16 @@ namespace RobotInterface.Networking
         {
             try
             {
+                idx++;
                 SerialPort spl = (SerialPort)sender;
-                string received = spl.ReadLine();
+                //string received = spl.ReadLine();
+                logModel.message = spl.ReadLine();
+                logModel.timestamp = DateTime.Now;
+                logModel.idx = idx;
+
                 Debug.WriteLine($"Data {spl.ReadLine()} \n");
-                Debug.WriteLine($"Received {received}");
-                _eventAggregator.BeginPublishOnUIThread(received);
+                Debug.WriteLine($"Received {logModel.message}");
+                _eventAggregator.BeginPublishOnUIThread(logModel);
             }
             catch (Exception ex)
             {
@@ -88,7 +98,6 @@ namespace RobotInterface.Networking
         /// </summary>
         public void SendString(string text)
         {
-            //_eventAggregator.BeginPublishOnUIThread(text); // < ------------------------------------------------------------------------------------------------------------- to je sam testno
             if (serial.IsOpen)
             {
                 try

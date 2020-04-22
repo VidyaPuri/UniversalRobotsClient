@@ -83,6 +83,7 @@
     <Compile Include="Models\ConnectionStatusModel.cs" />
     <Compile Include="Models\ControllerSettingsModel.cs" />
     <Compile Include="Models\FocusModel.cs" />
+    <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\MoveRateModel.cs" />
     <Compile Include="Models\RobotOutputModel.cs" />
     <Compile Include="Command Helpers\ControllerClass.cs" />

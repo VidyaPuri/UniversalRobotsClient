@@ -13,7 +13,7 @@ using System.Text;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<bool>, IHandle<string>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<bool>, IHandle<LogModel>
     {
         #region Window Control
 
@@ -660,13 +660,7 @@ namespace RobotClient.ViewModels
 
         }
 
-        private BindableCollection<string> _BTReceivedStrings = new BindableCollection<string>();
 
-        public BindableCollection<string> BTReceivedStrings
-        {
-            get { return _BTReceivedStrings; }
-            set => Set(ref _BTReceivedStrings, value);
-        }
 
 
         #endregion
@@ -674,27 +668,28 @@ namespace RobotClient.ViewModels
         #region Bluetooth
 
         // Private BT properties 
-
-
-        private int _BtListCnt;
-
-        public int BTListCnt
-        {
-            get { return _BtListCnt; }
-            set => Set(ref _BtListCnt, value);
-        }
-
-
         private string _BluetoothInputText;
+        private BindableCollection<LogModel> _BTReceivedMessage = new BindableCollection<LogModel>();
+        private bool _BTSerialStatus = false;
+        private string _BTConnectBtnText = "Connect";
 
+        /// <summary>
+        /// BT Input text initialisation
+        /// </summary>
         public string BluetoothInputText
         {
             get { return _BluetoothInputText; }
             set => Set(ref _BluetoothInputText, value);
         }
 
-        private bool _BTSerialStatus = false;
-        private string _BTConnectBtnText = "Connect";
+        /// <summary>
+        /// LogModel List
+        /// </summary>
+        public BindableCollection<LogModel> BTReceivedMessage
+        {
+            get { return _BTReceivedMessage; }
+            set => Set(ref _BTReceivedMessage, value);
+        }
 
         /// <summary>
         /// Serial Status Initialisation
@@ -753,9 +748,6 @@ namespace RobotClient.ViewModels
         /// </summary>
         public void SendToArduinoBlueTooth()
         {
-            //_BTConnection.SendString(BluetoothInputText);   // < ------------------------------------------------------------------------------------------------------------- to je sam testno
-            //BluetoothInputText = string.Empty;              // < ------------------------------------------------------------------------------------------------------------- to je sam testno
-
             if (BTSerialStatus)
             {
                 try
@@ -840,11 +832,10 @@ namespace RobotClient.ViewModels
         /// Reeived message from BT string
         /// </summary>
         /// <param name="message"></param>
-        public void Handle(string message)
+        public void Handle(LogModel message)
         {
-            BTReceivedStrings.Add(message);
-            BTReceivedStrings.Refresh();
-            BTListCnt = BTReceivedStrings.Count;
+            BTReceivedMessage.Add(message);
+            BTReceivedMessage.Refresh();
         }
 
         #endregion
