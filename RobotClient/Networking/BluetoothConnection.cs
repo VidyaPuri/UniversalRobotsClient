@@ -73,6 +73,7 @@ namespace RobotInterface.Networking
             {
                 SerialPort spl = (SerialPort)sender;
                 Debug.WriteLine($"Data {spl.ReadLine()} \n");
+                _eventAggregator.BeginPublishOnUIThread(spl.ReadLine());
             }
             catch (Exception ex)
             {
@@ -85,6 +86,7 @@ namespace RobotInterface.Networking
         /// </summary>
         public void SendString(string text)
         {
+            _eventAggregator.BeginPublishOnUIThread(text); // < ------------------------------------------------------------------------------------------------------------- to je sam testno
             if (serial.IsOpen)
             {
                 try
