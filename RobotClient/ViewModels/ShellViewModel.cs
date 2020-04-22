@@ -675,7 +675,15 @@ namespace RobotClient.ViewModels
 
         // Private BT properties 
 
-        public int BTListCnt { get; set; }
+
+        private int _BtListCnt;
+
+        public int BTListCnt
+        {
+            get { return _BtListCnt; }
+            set => Set(ref _BtListCnt, value);
+        }
+
 
         private string _BluetoothInputText;
 
