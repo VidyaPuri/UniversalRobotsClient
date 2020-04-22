@@ -13,7 +13,7 @@ using System.Text;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<bool>
     {
         #region Window Control
 
@@ -52,10 +52,10 @@ namespace RobotClient.ViewModels
 
         #region Private Members
 
+        // Socket initialisers
         private int _Port = 30003;
         private readonly int DashboardPort = 29999;
         private readonly int RoboPort = 11000;
-
         private string _IpAddress = "192.168.56.102";
 
         private string _ControllerMoveToggle = "TCP";
@@ -65,11 +65,15 @@ namespace RobotClient.ViewModels
         private string _ConnectToggle = "Connect";
         private bool _CanConnect = true;
         
+        // EventAggregator
         private IEventAggregator _eventAggregator { get; }
+
+        // Network
         private SocketClient _socketClient;
         private SocketClient _dashboardClient;
         private SocketServer _roboServer;
         private SerialCommunication _serial;
+        private BluetoothConnection _BTConnection;
 
         private int _ReceivedFocusTarget;
 
@@ -81,15 +85,19 @@ namespace RobotClient.ViewModels
         private RobotCommand _robotCommand;
         private ControllerClass _controllerClass;
 
+        // Move rates
         private double _TranslationRate = 0.01;
         private double _RotationRate = 0.01;
 
+        // Models
         private RobotOutputModel _RobotOutputPackage = new RobotOutputModel();
         private MoveRateModel _MoveRate = new MoveRateModel();
 
+        // Initial values
         private double[] _RobotJoints = { 0, 0, 0, 0, 0, 0 };
         private double[] _RobotPose = { 0, 0, 0, 0, 0, 0 };
 
+        // IO initialisers
         private bool _io0;
         private bool _io1;
         private bool _io2;
@@ -122,7 +130,9 @@ namespace RobotClient.ViewModels
             _eventAggregator.Subscribe(this);
             
             _controllerClass.StartController();
+
             _serial = new SerialCommunication();
+            _BTConnection = new BluetoothConnection(eventAggregator);
 
         }
 
@@ -655,72 +665,50 @@ namespace RobotClient.ViewModels
         #region Bluetooth
 
         // Private BT properties 
-        public string BluetoothText { get; set; }
+        public string BluetoothInputText { get; set; }
 
-        private bool _SerialStatus;
+        private bool _BTSerialStatus = false;
 
         readonly SerialPort serial = new SerialPort();
 
         /// <summary>
         /// Serial Status Initialisation
         /// </summary>
-        public bool SerialStatus
+        public bool BTSerialStatus
         {
-            get { return _SerialStatus; }
-            set => Set(ref _SerialStatus, value);
+            get { return _BTSerialStatus; }
+            set => Set(ref _BTSerialStatus, value);
         }
+
+        private string _BTConnectBtnText = "Connect";
+
+        public string BTConnectBtnText
+        {
+            get { return _BTConnectBtnText; }
+            set 
+            { 
+                _BTConnectBtnText = value; 
+            }
+        }
+
 
         /// <summary>
         /// Connect BT
         /// </summary>
         public void BTConnect()
         {
-            serial.PortName = "COM4";
-            serial.BaudRate = 38400;
-
-            // Sets the Serial Status 
-            SerialStatus = serial.IsOpen;
-
             try
             {
                 if (!serial.IsOpen)
                 {
-                    serial.Open();
-                    SerialStatus = serial.IsOpen;
+                    _BTConnection.Connect();
+                    BTConnectBtnText = "Disconnect";
                 }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-
-            // DataReceived event handler
-            serial.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
-        }
-
-        /// <summary>
-        /// Disconnect BT
-        /// </summary>
-        public void BTDisconnect()
-        {
-            if (serial.IsOpen)
-            {
-                serial.Close();
-                SerialStatus = serial.IsOpen;
-            }
-        }
-
-        /// <summary>
-        /// Received data from Arduino
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            try
-            {
-                SerialPort spl = (SerialPort)sender;
-                Debug.WriteLine($"Data {spl.ReadLine()} \n");
+                else if(serial.IsOpen)
+                {
+                    _BTConnection.Disconnect();
+                    BTConnectBtnText = "Connect";
+                }
             }
             catch (Exception ex)
             {
@@ -737,7 +725,7 @@ namespace RobotClient.ViewModels
             {
                 try
                 {
-                    serial.Write(BluetoothText);
+                    _BTConnection.SendString(BluetoothInputText);
                 }
                 catch (Exception ex)
                 {
@@ -801,6 +789,15 @@ namespace RobotClient.ViewModels
         public void Handle(int message)
         {
             ReceivedFocusTarget = message;
+        }
+
+        /// <summary>
+        /// BT connection status
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(bool message)
+        {
+            BTSerialStatus = message;
         }
 
         #endregion
