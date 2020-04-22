@@ -13,7 +13,7 @@ using System.Text;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<bool>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<bool>, IHandle<string>
     {
         #region Window Control
 
@@ -660,16 +660,23 @@ namespace RobotClient.ViewModels
 
         }
 
+        private BindableCollection<string> _BTReceivedStrings = new BindableCollection<string>();
+
+        public BindableCollection<string> BTReceivedStrings
+        {
+            get { return _BTReceivedStrings; }
+            set => Set(ref _BTReceivedStrings, value);
+        }
+
+
         #endregion
 
         #region Bluetooth
 
         // Private BT properties 
         public string BluetoothInputText { get; set; }
-
         private bool _BTSerialStatus = false;
-
-        //readonly SerialPort serial = new SerialPort();
+        private string _BTConnectBtnText = "Connect";
 
         /// <summary>
         /// Serial Status Initialisation
@@ -680,8 +687,9 @@ namespace RobotClient.ViewModels
             set => Set(ref _BTSerialStatus, value);
         }
 
-        private string _BTConnectBtnText = "Connect";
-
+        /// <summary>
+        /// ConnectBtn Text 
+        /// </summary>
         public string BTConnectBtnText
         {
             get { return _BTConnectBtnText; }
@@ -691,7 +699,6 @@ namespace RobotClient.ViewModels
                 NotifyOfPropertyChange(() => BTConnectBtnText);
             }
         }
-
 
         /// <summary>
         /// Connect BT
@@ -728,6 +735,7 @@ namespace RobotClient.ViewModels
         /// </summary>
         public void SendToArduinoBlueTooth()
         {
+            _BTConnection.SendString(BluetoothInputText);   // < ------------------------------------------------------------------------------------------------------------- to je sam testno
             if (BTSerialStatus)
             {
                 try
@@ -805,6 +813,16 @@ namespace RobotClient.ViewModels
         public void Handle(bool message)
         {
             BTSerialStatus = message;
+        }
+
+        /// <summary>
+        /// Reeived message from BT string
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(string message)
+        {
+            BTReceivedStrings.Add(message);
+            BTReceivedStrings.Refresh();
         }
 
         #endregion

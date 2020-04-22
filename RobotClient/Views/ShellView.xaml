@@ -467,7 +467,17 @@
                         <TextBox x:Name="BluetoothInputText" Width="250" Margin="5" VerticalContentAlignment="Center"/>
                         <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                     </StackPanel>
+                    <ItemsControl ItemsSource="{Binding BTReceivedStrings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding}"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
+                
 
             </GroupBox>
 
