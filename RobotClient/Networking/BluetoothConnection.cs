@@ -72,8 +72,10 @@ namespace RobotInterface.Networking
             try
             {
                 SerialPort spl = (SerialPort)sender;
+                string received = spl.ReadLine();
                 Debug.WriteLine($"Data {spl.ReadLine()} \n");
-                _eventAggregator.BeginPublishOnUIThread(spl.ReadLine());
+                Debug.WriteLine($"Received {received}");
+                _eventAggregator.BeginPublishOnUIThread(received);
             }
             catch (Exception ex)
             {
