@@ -9,6 +9,7 @@
         WindowStyle="None"
         FontSize="12"
         Title="TCP Client" Height="600" Width="512" MinHeight="800" MinWidth="512" MaxHeight="387" MaxWidth="512" Background="#2B2F3D">
+    
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
@@ -222,7 +223,7 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                       
+
 
                     </Grid>
                 </GroupBox>
@@ -277,7 +278,7 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        
+
                         <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
@@ -286,7 +287,7 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        
+
                         <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
@@ -295,7 +296,7 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        
+
                         <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
@@ -304,7 +305,7 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        
+
                         <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
@@ -313,8 +314,8 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        
-                        
+
+
                         <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
@@ -323,7 +324,7 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                         </RepeatButton>
-                        
+
                     </Grid>
                 </GroupBox>
 
@@ -388,7 +389,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
-            
+
             <!-- TCP Server-->
             <GroupBox Grid.Column="1" Grid.Row="1" Header="TCP Socket Server" BorderThickness="1" BorderBrush="DimGray">
                 <Grid Grid.Row="1">
@@ -416,7 +417,7 @@
                             <TextBox x:Name="SerialInput" Width="303" Margin="5" VerticalContentAlignment="Center"/>
                             <Button x:Name="SendSerial" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
-                        
+
 
                         <StackPanel Orientation="Horizontal">
                             <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="250" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5"/>
@@ -460,14 +461,14 @@
                                 Style="{DynamicResource ButtonStyle1}" MinWidth="75"/>
                         <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
                                      IsEnabled="false" VerticalAlignment="Center"
-                                     Margin="5 "></RadioButton>
+                                     Margin="5 " Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="10 5">
                         <TextBox x:Name="BluetoothInputText" Width="250" Margin="5" VerticalContentAlignment="Center"/>
                         <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                     </StackPanel>
                 </StackPanel>
-                
+
             </GroupBox>
 
         </Grid>
