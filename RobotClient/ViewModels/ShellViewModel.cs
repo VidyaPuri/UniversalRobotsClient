@@ -654,24 +654,21 @@ namespace RobotClient.ViewModels
 
         #region Bluetooth
 
-        private bool _SerialStatus;
+        // Private BT properties 
         public string BluetoothText { get; set; }
 
+        private bool _SerialStatus;
+
+        readonly SerialPort serial = new SerialPort();
+
         /// <summary>
-        /// 
+        /// Serial Status Initialisation
         /// </summary>
         public bool SerialStatus
         {
             get { return _SerialStatus; }
-            set 
-            { 
-                _SerialStatus = value;
-                NotifyOfPropertyChange(() => SerialStatus);
-            }
+            set => Set(ref _SerialStatus, value);
         }
-
-        // Bluetooth stuff
-        SerialPort serial = new SerialPort();
 
         /// <summary>
         /// Connect BT
@@ -681,6 +678,7 @@ namespace RobotClient.ViewModels
             serial.PortName = "COM4";
             serial.BaudRate = 38400;
 
+            // Sets the Serial Status 
             SerialStatus = serial.IsOpen;
 
             try
@@ -690,13 +688,13 @@ namespace RobotClient.ViewModels
                     serial.Open();
                     SerialStatus = serial.IsOpen;
                 }
-
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
 
+            // DataReceived event handler
             serial.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
         }
 
@@ -712,6 +710,11 @@ namespace RobotClient.ViewModels
             }
         }
 
+        /// <summary>
+        /// Received data from Arduino
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             try
@@ -721,7 +724,7 @@ namespace RobotClient.ViewModels
             }
             catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -738,7 +741,7 @@ namespace RobotClient.ViewModels
                 }
                 catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }

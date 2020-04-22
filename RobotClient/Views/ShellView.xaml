@@ -401,18 +401,18 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="10 5">
                             <Button x:Name="StartSocketServer" Content="Start server"  Style="{DynamicResource ButtonStyle1}"/>
                             <Button x:Name="StopSocketServer" Content="Stop server"  Style="{DynamicResource ButtonStyle1}"/>
                             <RadioButton Content="Status" HorizontalAlignment="Center"/>
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="10 5">
                             <Button x:Name="OpenSerialPort" Content="Open serial port" Style="{DynamicResource ButtonStyle1}"/>
                             <Button x:Name="CloseSerialPort" Content="Close serial port"  Style="{DynamicResource ButtonStyle1}"/>
                             <RadioButton Content="Status" HorizontalAlignment="Center"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Margin="10 5">
                             <TextBox x:Name="SerialInput" Width="303" Margin="5" VerticalContentAlignment="Center"/>
                             <Button x:Name="SendSerial" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
@@ -454,13 +454,15 @@
 
             <!-- Arduino Bluetooth -->
             <GroupBox Grid.Column="1" Grid.Row="2" Header="Bluetooth Arduino" BorderThickness="1" BorderBrush="DimGray">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                <StackPanel >
+                    <StackPanel Orientation="Horizontal" Margin="10 5">
                         <Button x:Name="BTConnect" Content="Connect" Style="{DynamicResource ButtonStyle1}"/>
                         <Button x:Name="BTDisconnect" Content="Disconnect" Style="{DynamicResource ButtonStyle1}"/>
-                        <RadioButton IsChecked="{Binding SerialStatus}" IsEnabled="false"></RadioButton>
+                        <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding SerialStatus}" 
+                                     IsEnabled="false" VerticalAlignment="Center"
+                                     Margin="5 "></RadioButton>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="10 5">
                         <TextBox x:Name="BluetoothText" Width="250" Margin="5" VerticalContentAlignment="Center"/>
                         <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                     </StackPanel>
