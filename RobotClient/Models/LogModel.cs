@@ -4,8 +4,8 @@ namespace RobotInterface.Models
 {
     public class LogModel
     {
-        public int idx;
-        public string message;
-        public DateTime timestamp;
+        public int Idx { get; set; }
+        public string Message { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

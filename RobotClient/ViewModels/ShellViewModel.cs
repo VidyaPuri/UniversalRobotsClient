@@ -107,6 +107,8 @@ namespace RobotClient.ViewModels
         private bool _io6;
         private bool _io7;
 
+        LogModel logModel = new LogModel();
+
         #endregion 
 
         #region Constructor
@@ -134,6 +136,12 @@ namespace RobotClient.ViewModels
             _serial = new SerialCommunication();
             _BTConnection = new BluetoothConnection(eventAggregator);
 
+            logModel.Message = "waka waka";
+            logModel.Idx = 0;
+            logModel.Timestamp = DateTime.Now;
+
+            BTReceivedMessage.Add(logModel);
+            BTReceivedMessage.Refresh();
         }
 
         #endregion
@@ -643,7 +651,6 @@ namespace RobotClient.ViewModels
 
         #region Test stuff
 
-
         private string _SerialInput;
 
         public string SerialInput
@@ -659,10 +666,6 @@ namespace RobotClient.ViewModels
             _serial.SendToPort(value);
 
         }
-
-
-
-
         #endregion
 
         #region Bluetooth

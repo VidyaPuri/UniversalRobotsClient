@@ -8,7 +8,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="600" Width="510" MinHeight="1024" MinWidth="510" MaxHeight="387" MaxWidth="510" Background="#2B2F3D">
+        Title="TCP Client" Height="600" Width="510" MinHeight="1024" MinWidth="540" MaxHeight="387" MaxWidth="510" Background="#2B2F3D">
     
 
     <WindowChrome.WindowChrome>
@@ -418,7 +418,7 @@
                                          VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <TextBox x:Name="SerialInput" Width="390" Height="auto"  VerticalContentAlignment="Center" Margin="0 0 10 0"/>
+                            <TextBox x:Name="SerialInput" Width="414" Height="auto"  VerticalContentAlignment="Center" Margin="0 0 10 0"/>
                             <Button x:Name="SendSerial" Content="Send" Width="45" Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
 
@@ -436,7 +436,7 @@
                                 <Button Content="Remove" x:Name="RemoveFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
                             </StackPanel>
                             <ListView  ItemsSource="{Binding FocusList}" SelectionMode="Single"
-                                       MinHeight="50" MaxHeight="102" MinWidth="344"
+                                       MinHeight="50" MaxHeight="100" MinWidth="365"
                                        SelectedIndex="{Binding SelectedFocusTargetIdx}"
                                        SelectedItem="{Binding SelectedFocusTarget}" BorderBrush="#141414" BorderThickness="1">
                                 <ListView.ItemTemplate>
@@ -494,11 +494,11 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding idx}"></TextBlock>
+                                            <TextBlock Text="{Binding Idx}"></TextBlock>
                                             <TextBlock Text=" "></TextBlock>
-                                            <TextBlock Text="{Binding timestamp}"></TextBlock>
+                                            <TextBlock Text="{Binding Timestamp}"></TextBlock>
                                             <TextBlock Text=" "></TextBlock>
-                                            <TextBlock Text="{Binding message}"></TextBlock>
+                                            <TextBlock Text="{Binding Message}"></TextBlock>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -522,10 +522,11 @@
         </Grid>
     </Grid>
 
+    <!-- Styles and templates-->
     <Window.Resources>
         <Style TargetType="ItemsControl" x:Key="LogViewerStyle">
             <Setter Property="MinHeight" Value="100" />
-            <Setter Property="MinWidth" Value="200" />
+            <Setter Property="MinWidth" Value="245" />
             <Setter Property="MaxHeight" Value="150" />
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderThickness" Value="1" />

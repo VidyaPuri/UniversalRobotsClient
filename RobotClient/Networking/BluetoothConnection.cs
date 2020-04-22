@@ -79,12 +79,12 @@ namespace RobotInterface.Networking
                 idx++;
                 SerialPort spl = (SerialPort)sender;
                 //string received = spl.ReadLine();
-                logModel.message = spl.ReadLine();
-                logModel.timestamp = DateTime.Now;
-                logModel.idx = idx;
+                logModel.Message = spl.ReadLine();
+                logModel.Timestamp = DateTime.Now;
+                logModel.Idx = idx;
 
                 Debug.WriteLine($"Data {spl.ReadLine()} \n");
-                Debug.WriteLine($"Received {logModel.message}");
+                Debug.WriteLine($"Received {logModel.Message}");
                 _eventAggregator.BeginPublishOnUIThread(logModel);
             }
             catch (Exception ex)
