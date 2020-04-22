@@ -86,7 +86,7 @@ namespace RobotInterface.Networking
         /// </summary>
         public void SendString(string text)
         {
-            _eventAggregator.BeginPublishOnUIThread(text); // < ------------------------------------------------------------------------------------------------------------- to je sam testno
+            //_eventAggregator.BeginPublishOnUIThread(text); // < ------------------------------------------------------------------------------------------------------------- to je sam testno
             if (serial.IsOpen)
             {
                 try

@@ -8,7 +8,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="600" Width="512" MinHeight="800" MinWidth="512" MaxHeight="387" MaxWidth="512" Background="#2B2F3D">
+        Title="TCP Client" Height="600" Width="512" MinHeight="1024" MinWidth="512" MaxHeight="387" MaxWidth="512" Background="#2B2F3D">
     
 
     <WindowChrome.WindowChrome>
@@ -455,30 +455,51 @@
 
             <!-- Arduino Bluetooth -->
             <GroupBox Grid.Column="1" Grid.Row="2" Header="Bluetooth Arduino" BorderThickness="1" BorderBrush="DimGray">
-                <StackPanel >
-                    <StackPanel Orientation="Horizontal" Margin="10 5">
-                        <Button x:Name="BTConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!-- Column 0-->
+                    <StackPanel Grid.Column="0" Margin="5">
+                        <StackPanel Orientation="Horizontal" Margin="10 5">
+                            <Button x:Name="BTConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
                                 Style="{DynamicResource ButtonStyle1}" MinWidth="75"/>
-                        <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
+                            <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
                                      IsEnabled="false" VerticalAlignment="Center"
                                      Margin="5 " Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
+                        </StackPanel>
+                        <TextBlock Text="Baud Rate" Margin="10 5" />
+                        <TextBlock Text="COM Port" Margin="10 5"/>
+                        <StackPanel Orientation="Horizontal" Margin="10 5">
+                            <TextBox Text="{Binding BluetoothInputText}" Width="150" Margin="5" VerticalContentAlignment="Center"/>
+                            <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="10 5">
-                        <TextBox x:Name="BluetoothInputText" Width="250" Margin="5" VerticalContentAlignment="Center"/>
-                        <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
-                    </StackPanel>
-                    <ItemsControl ItemsSource="{Binding BTReceivedStrings}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding}"></TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-                
 
+                    <!-- Column 1-->
+                    <StackPanel Grid.Column="1" Margin="5">
+                        <TextBlock Text="Received from Arduino" Margin="0 5" />
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding BTReceivedStrings}"  Style="{DynamicResource LogViewerStyle}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Stevilka"></TextBlock>
+                                            <TextBlock Text=" "></TextBlock>
+                                            <TextBlock Text="{Binding}"></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Grid>
             </GroupBox>
 
         </Grid>
@@ -494,4 +515,27 @@
             </StackPanel>
         </Grid>
     </Grid>
+
+    <Window.Resources>
+        <Style TargetType="ItemsControl" x:Key="LogViewerStyle">
+            <Setter Property="MinHeight" Value="100" />
+            <Setter Property="MinWidth" Value="200" />
+            <Setter Property="MaxHeight" Value="150" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#141414" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border Background="White" BorderBrush="#141414" BorderThickness="1">
+                            <ScrollViewer CanContentScroll="True">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+    </Window.Resources>
 </Window>

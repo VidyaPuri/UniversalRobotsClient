@@ -674,7 +674,15 @@ namespace RobotClient.ViewModels
         #region Bluetooth
 
         // Private BT properties 
-        public string BluetoothInputText { get; set; }
+
+        private string _BluetoothInputText;
+
+        public string BluetoothInputText
+        {
+            get { return _BluetoothInputText; }
+            set => Set(ref _BluetoothInputText, value);
+        }
+
         private bool _BTSerialStatus = false;
         private string _BTConnectBtnText = "Connect";
 
@@ -735,12 +743,15 @@ namespace RobotClient.ViewModels
         /// </summary>
         public void SendToArduinoBlueTooth()
         {
-            _BTConnection.SendString(BluetoothInputText);   // < ------------------------------------------------------------------------------------------------------------- to je sam testno
+            //_BTConnection.SendString(BluetoothInputText);   // < ------------------------------------------------------------------------------------------------------------- to je sam testno
+            //BluetoothInputText = string.Empty;              // < ------------------------------------------------------------------------------------------------------------- to je sam testno
+
             if (BTSerialStatus)
             {
                 try
                 {
                     _BTConnection.SendString(BluetoothInputText);
+                    BluetoothInputText = string.Empty;
                 }
                 catch (Exception ex)
                 {
