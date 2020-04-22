@@ -482,6 +482,5 @@
                 <Label Content="{Binding ControllerMoveToggle}" Foreground="Gainsboro" FontSize="10"></Label>
             </StackPanel>
         </Grid>
-        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Height="100" Margin="-81,155,0,-230" Grid.Row="10" VerticalAlignment="Top"/>
     </Grid>
 </Window>
