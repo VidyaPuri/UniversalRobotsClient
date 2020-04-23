@@ -337,12 +337,11 @@ namespace RobotClient.ViewModels
                 }
                 catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
                 NotifyOfPropertyChange(() => ReceivedFocusTarget);
             }
         }
-
 
         #endregion
 
@@ -570,7 +569,6 @@ namespace RobotClient.ViewModels
         #endregion
 
         #region Target Focus Methods
-       
 
         /// <summary>
         /// Adds new focus target to the list
@@ -679,6 +677,8 @@ namespace RobotClient.ViewModels
         private string _SelectedBaudRate;
         private int _BaudRateIndex = 6;
 
+        private double _BTSliderVal = 1500;
+
         #endregion
 
         #region Bluetooth Properties Initialisation
@@ -773,6 +773,21 @@ namespace RobotClient.ViewModels
             get { return _BaudRateIndex; }
             set => Set(ref _BaudRateIndex, value);
         }
+
+        /// <summary>
+        /// Bluetooth slider value
+        /// </summary>
+        public double BTSliderVal
+        {
+            get { return _BTSliderVal; }
+            set
+            {
+                _BTSliderVal = value;
+                _BTConnection.SendString(value.ToString());
+                NotifyOfPropertyChange(() => BTSliderVal);
+            }
+        }
+
 
         #endregion
 

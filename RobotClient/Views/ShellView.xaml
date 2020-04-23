@@ -495,7 +495,7 @@
                                      IsEnabled="false" VerticalAlignment="Center" Margin="15 0 0 0"
                                      Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal"  Margin="5 3">
                             <TextBlock Text="COM Port" Margin="10 5" Width="80"/>
                             <ComboBox ItemsSource="{Binding ComPortList}"
                                       SelectedItem="{Binding SelectedComPort}"
@@ -504,7 +504,7 @@
                                       SelectedIndex="{Binding SelectedComPortIndex}">
                             </ComboBox>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal"  Margin="5 3">
                             <TextBlock Text="Baud Rate" Margin="10 5" Width="80" />
                             <ComboBox ItemsSource="{Binding BaudRateList}"
                                       SelectedItem="{Binding SelectedBaudRate}"
@@ -541,6 +541,12 @@
                             </ItemsControl>
                         </ScrollViewer>
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
+                        <Slider x:Name="BTSlider" Value="{Binding BTSliderVal}" Width="370" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                        <Label Content="Value:" VerticalAlignment="Center"></Label>
+                        <TextBlock Text="{Binding BTSliderVal, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+
                 </Grid>
             </GroupBox>
         </Grid>
