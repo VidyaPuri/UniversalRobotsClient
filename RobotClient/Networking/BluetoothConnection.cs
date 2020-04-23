@@ -3,6 +3,7 @@ using RobotInterface.Models;
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Threading.Tasks;
 
 namespace RobotInterface.Networking
 {
@@ -100,14 +101,17 @@ namespace RobotInterface.Networking
         {
             if (serial.IsOpen)
             {
-                try
+                Task.Run(() =>
                 {
-                    serial.Write(text);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
+                    try
+                    {
+                        serial.Write(text);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                });
             }
         }
 
