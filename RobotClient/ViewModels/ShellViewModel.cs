@@ -758,11 +758,7 @@ namespace RobotClient.ViewModels
                 Debug.WriteLine(ex.Message);
             }
 
-            // If it is connected change the button text
-            if(BTSerialStatus)
-                BTConnectBtnText = "Disconnect";
-            else if(!BTSerialStatus)
-                BTConnectBtnText = "Connect";
+
         }
 
         /// <summary>
@@ -848,6 +844,11 @@ namespace RobotClient.ViewModels
         public void Handle(bool message)
         {
             BTSerialStatus = message;
+            // If it is connected change the button text
+            if (BTSerialStatus)
+                BTConnectBtnText = "Disconnect";
+            else if (!BTSerialStatus)
+                BTConnectBtnText = "Connect";
         }
 
         /// <summary>
