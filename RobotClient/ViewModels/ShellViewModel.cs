@@ -134,6 +134,7 @@ namespace RobotClient.ViewModels
             _serial = new SerialCommunication();
             _BTConnection = new BluetoothConnection(eventAggregator);
 
+            ComPortList = SerialPort.GetPortNames();
         }
 
         #endregion
@@ -701,12 +702,34 @@ namespace RobotClient.ViewModels
         public string BTConnectBtnText
         {
             get { return _BTConnectBtnText; }
-            set 
-            { 
-                _BTConnectBtnText = value;
-                NotifyOfPropertyChange(() => BTConnectBtnText);
-            }
+            set => Set(ref _BTConnectBtnText, value);
         }
+
+        private string[] _ComPortList;
+
+        public string[] ComPortList
+        {
+            get { return _ComPortList; }
+            set => Set(ref _ComPortList, value);
+        }
+
+        private string _SelectedComPort;
+
+        public string SelectedComPort
+        {
+            get { return _SelectedComPort; }
+            set => Set(ref _SelectedComPort, value);
+        }
+
+        private int _SelectedComPortIndex = 0;
+
+        public int SelectedComPortIndex
+        {
+            get { return _SelectedComPortIndex; }
+            set => Set(ref _SelectedComPortIndex, value);
+
+        }
+
 
         /// <summary>
         /// Connect BT
@@ -720,7 +743,7 @@ namespace RobotClient.ViewModels
                 {
                     if (!BTSerialStatus)
                     {
-                        _BTConnection.Connect();
+                        _BTConnection.Connect(SelectedComPort, 38400);
                         //BTSerialStatus = true;
                     }
                     else if (BTSerialStatus)
@@ -740,17 +763,6 @@ namespace RobotClient.ViewModels
                 BTConnectBtnText = "Disconnect";
             else if(!BTSerialStatus)
                 BTConnectBtnText = "Connect";
-
-            // Test 
-            string[] ports = SerialPort.GetPortNames();
-
-            Debug.WriteLine("The following serial ports were found:");
-
-            // Display each port name to the console.
-            foreach (string port in ports)
-            {
-                Debug.WriteLine(port);
-            }
         }
 
         /// <summary>

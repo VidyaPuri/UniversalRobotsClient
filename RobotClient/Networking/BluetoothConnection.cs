@@ -28,10 +28,10 @@ namespace RobotInterface.Networking
         /// <summary>
         /// Connect BT
         /// </summary>
-        public void Connect()
+        public void Connect(string comPort, int baudRate)
         {
-            serial.PortName = "COM4";
-            serial.BaudRate = 38400;
+            serial.PortName = comPort;
+            serial.BaudRate = baudRate;
 
             // Sets the Serial Status 
             SerialStatus = serial.IsOpen;

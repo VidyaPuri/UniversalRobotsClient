@@ -496,7 +496,16 @@
                                      Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
                         </StackPanel>
                         <TextBlock Text="Baud Rate" Margin="10 5" />
-                        <TextBlock Text="COM Port" Margin="10 5"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="COM Port" Margin="10 5"/>
+                            <ComboBox ItemsSource="{Binding ComPortList}"
+                                      SelectedItem="{Binding SelectedComPort}"
+                                      IsSynchronizedWithCurrentItem="True"
+                                      MinWidth="80"
+                                      SelectedIndex="{Binding SelectedComPortIndex}">
+                            </ComboBox>
+                        </StackPanel>
+                        
                         <StackPanel Orientation="Horizontal" Margin="10 5">
                             <TextBox Text="{Binding BluetoothInputText}" Width="150" Margin="5" VerticalContentAlignment="Center"/>
                             <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
