@@ -783,8 +783,8 @@ namespace RobotClient.ViewModels
             set
             {
                 _BTSliderVal = value;
-                _BTConnection.SendStringLine(value.ToString());
                 NotifyOfPropertyChange(() => BTSliderVal);
+                _BTConnection.SendStringLine(value.ToString());
             }
         }
 

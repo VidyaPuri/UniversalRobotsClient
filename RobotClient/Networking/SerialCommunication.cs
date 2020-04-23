@@ -50,6 +50,7 @@ namespace RobotInterface.Networking
                 if (port.IsOpen)
                 {
                     port.WriteLine(value.ToString());
+                    //Debug.WriteLine($"Sent to serial port: {value.ToString()}");
                 }
             }
         }

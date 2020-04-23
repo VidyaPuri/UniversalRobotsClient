@@ -122,11 +122,12 @@ namespace RobotInterface.Networking
         {
             if (serial.IsOpen)
             {
-                Task.Run(() =>
+                Task.Run( () =>
                 {
                     try
                     {
                         serial.WriteLine(text);
+                        Debug.WriteLine(text);
                     }
                     catch (Exception ex)
                     {

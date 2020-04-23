@@ -542,7 +542,7 @@
                         </ScrollViewer>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
-                        <Slider x:Name="BTSlider" Value="{Binding BTSliderVal}" Width="370" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                        <Slider x:Name="BTSlider" Value="{Binding BTSliderVal}" Width="370" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="20" Margin="10 0 0 0" VerticalAlignment="Center"/>
                         <Label Content="Value:" VerticalAlignment="Center"></Label>
                         <TextBlock Text="{Binding BTSliderVal, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
