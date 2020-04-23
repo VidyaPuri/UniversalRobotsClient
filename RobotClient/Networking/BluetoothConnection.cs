@@ -31,7 +31,7 @@ namespace RobotInterface.Networking
         public void Connect(string comPort, string baudRate)
         {
             serial.PortName = comPort;
-            serial.BaudRate = Convert.ToInt32(baudRate);
+            serial.BaudRate = Int32.Parse(baudRate);
 
             // Sets the Serial Status 
             SerialStatus = serial.IsOpen;
