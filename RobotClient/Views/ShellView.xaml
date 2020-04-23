@@ -8,7 +8,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="600" Width="510" MinHeight="1024" MinWidth="540" MaxHeight="387" MaxWidth="510" Background="#2B2F3D">
+        Title="TCP Client" Height="600" Width="532" MinHeight="1024" MinWidth="532" MaxHeight="387" MaxWidth="532" Background="#2B2F3D">
     
 
     <WindowChrome.WindowChrome>
@@ -91,11 +91,19 @@
         </DockPanel>
 
         <!-- Script panel -->
-        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-            <Label Width="Auto" Content="Dashboard Server" Margin="5" FontWeight="Bold" VerticalContentAlignment="Center"/>
-            <TextBox x:Name="Script" Width="303" Margin="5" VerticalContentAlignment="Center"/>
-            <RepeatButton x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle2}" Width="46"/>
-        </StackPanel>
+        <Grid Grid.Row="3" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" Width="Auto" Content="Dashboard Server" Margin="5" FontWeight="Bold" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="Script" Grid.Column="1" Width="auto" Margin="5" VerticalContentAlignment="Center"/>
+            <RepeatButton x:Name="SendScript" Grid.Column="2" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle2}" Width="46" HorizontalAlignment="Right"/>
+
+        </Grid>
 
         <!-- Robot Controls -->
         <Border Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>
@@ -341,9 +349,9 @@
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <Label  Content="Traslation rate" Grid.Column="0" FontSize="12"/>
+                    <Label  Content="Traslation rate" Grid.Column="0" FontSize="12" VerticalAlignment="Center"/>
                     <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="40" VerticalAlignment="Center"></TextBox>
-                    <Label  Content="Rotation rate" Grid.Column="2" FontSize="12"/>
+                    <Label  Content="Rotation rate" Grid.Column="2" FontSize="12" VerticalAlignment="Center"/>
                     <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="40" VerticalAlignment="Center"></TextBox>
                     <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="12" Width="60" HorizontalAlignment="Right" Style="{DynamicResource ButtonStyle1}"/>
                 </Grid>
@@ -368,8 +376,8 @@
                     </GroupBox>
                     <GroupBox Header="Dashboard" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray" Margin="0 5 0 0 ">
                         <StackPanel Orientation="Vertical">
-                            <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Width="80" Style="{DynamicResource ButtonStyle1}"/>
-                            <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Width="80" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Width="102" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Width="102" Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
@@ -498,7 +506,7 @@
                         <TextBlock Text="Baud Rate" Margin="10 5" />
                         <TextBlock Text="COM Port" Margin="10 5"/>
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <TextBox Text="{Binding BluetoothInputText}" Width="150" Margin="5" VerticalContentAlignment="Center"/>
+                            <TextBox Text="{Binding BluetoothInputText}" Width="150" Height="auto" Margin="0 0 10 0" VerticalContentAlignment="Center"/>
                             <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
                     </StackPanel>
@@ -544,26 +552,5 @@
     </Grid>
 
     <!-- Styles and templates-->
-    <Window.Resources>
-        <Style TargetType="ItemsControl" x:Key="LogViewerStyle">
-            <Setter Property="MinHeight" Value="100" />
-            <Setter Property="Width" Value="245" />
-            <Setter Property="MaxHeight" Value="120" />
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#141414" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Border Background="White" BorderBrush="#141414" BorderThickness="1">
-                            <ScrollViewer CanContentScroll="True">
-                                <ItemsPresenter/>
-                            </ScrollViewer>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
 
-        </Style>
-    </Window.Resources>
 </Window>
