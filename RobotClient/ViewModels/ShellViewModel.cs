@@ -715,26 +715,41 @@ namespace RobotClient.ViewModels
         {
             try
             {
+                // Async Task for connecting
                 Task.Run(() =>
                 {
                     if (!BTSerialStatus)
                     {
                         _BTConnection.Connect();
-                        BTConnectBtnText = "Disconnect";
-                        BTSerialStatus = true;
+                        //BTSerialStatus = true;
                     }
                     else if (BTSerialStatus)
                     {
                         _BTConnection.Disconnect();
-                        BTConnectBtnText = "Connect";
-                        BTSerialStatus = false;
-
+                        //BTSerialStatus = false;
                     }
                 });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+            }
+
+            // If it is connected change the button text
+            if(BTSerialStatus)
+                BTConnectBtnText = "Disconnect";
+            else if(!BTSerialStatus)
+                BTConnectBtnText = "Connect";
+
+            // Test 
+            string[] ports = SerialPort.GetPortNames();
+
+            Debug.WriteLine("The following serial ports were found:");
+
+            // Display each port name to the console.
+            foreach (string port in ports)
+            {
+                Debug.WriteLine(port);
             }
         }
 
