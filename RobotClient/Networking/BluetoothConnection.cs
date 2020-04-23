@@ -28,10 +28,10 @@ namespace RobotInterface.Networking
         /// <summary>
         /// Connect BT
         /// </summary>
-        public void Connect(string comPort, int baudRate)
+        public void Connect(string comPort, string baudRate)
         {
             serial.PortName = comPort;
-            serial.BaudRate = baudRate;
+            serial.BaudRate = Convert.ToInt32(baudRate);
 
             // Sets the Serial Status 
             SerialStatus = serial.IsOpen;
@@ -109,6 +109,17 @@ namespace RobotInterface.Networking
                     Debug.WriteLine(ex.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the list of baud rates
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetBaudRates()
+        {
+            string[] output = {"300", "1200","2400","4800", "9600","19200", "38400", "57600","1000000"};
+
+            return output;
         }
 
     }

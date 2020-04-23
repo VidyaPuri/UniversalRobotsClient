@@ -495,16 +495,25 @@
                                      IsEnabled="false" VerticalAlignment="Center" Margin="15 0 0 0"
                                      Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
                         </StackPanel>
-                        <TextBlock Text="Baud Rate" Margin="10 5" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="COM Port" Margin="10 5"/>
+                            <TextBlock Text="COM Port" Margin="10 5" Width="80"/>
                             <ComboBox ItemsSource="{Binding ComPortList}"
-                                      SelectedItem="{Binding SelectedComPort}"
+                                      SelectedItem="{Binding SelectedBaudRate}"
                                       IsSynchronizedWithCurrentItem="True"
                                       MinWidth="80"
                                       SelectedIndex="{Binding SelectedComPortIndex}">
                             </ComboBox>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Baud Rate" Margin="10 5" Width="80" />
+                            <ComboBox ItemsSource="{Binding BaudRateList}"
+                                      SelectedItem="{Binding SelectedComPort}"
+                                      IsSynchronizedWithCurrentItem="True"
+                                      MinWidth="80"
+                                      SelectedIndex="{Binding BaudRateIndex}">
+                            </ComboBox>
+                        </StackPanel>
+
                         
                         <StackPanel Orientation="Horizontal" Margin="10 5">
                             <TextBox Text="{Binding BluetoothInputText}" Width="150" Margin="5" VerticalContentAlignment="Center"/>

@@ -135,6 +135,7 @@ namespace RobotClient.ViewModels
             _BTConnection = new BluetoothConnection(eventAggregator);
 
             ComPortList = SerialPort.GetPortNames();
+            BaudRateList = _BTConnection.GetBaudRates();
         }
 
         #endregion
@@ -663,11 +664,24 @@ namespace RobotClient.ViewModels
 
         #region Bluetooth
 
+        #region Bluetooth Private Members
+
         // Private BT properties 
         private string _BluetoothInputText;
         private BindableCollection<LogModel> _BTReceivedMessage = new BindableCollection<LogModel>();
         private bool _BTSerialStatus = false;
         private string _BTConnectBtnText = "Connect";
+
+        private string[] _ComPortList;
+        private string _SelectedComPort;
+        private int _SelectedComPortIndex = 0;
+        private string[] _BaudRateList;
+        private string _SelectedBaudRate;
+        private int _BaudRateIndex = 6;
+
+        #endregion
+
+        #region Bluetooth Properties Initialisation
 
         /// <summary>
         /// BT Input text initialisation
@@ -705,31 +719,62 @@ namespace RobotClient.ViewModels
             set => Set(ref _BTConnectBtnText, value);
         }
 
-        private string[] _ComPortList;
-
+        /// <summary>
+        /// ComPortList
+        /// </summary>
         public string[] ComPortList
         {
             get { return _ComPortList; }
             set => Set(ref _ComPortList, value);
         }
 
-        private string _SelectedComPort;
-
+        /// <summary>
+        /// SelectedComPort
+        /// </summary>
         public string SelectedComPort
         {
             get { return _SelectedComPort; }
             set => Set(ref _SelectedComPort, value);
         }
 
-        private int _SelectedComPortIndex = 0;
 
+        /// <summary>
+        /// SelectedComPortIndex
+        /// </summary>
         public int SelectedComPortIndex
         {
             get { return _SelectedComPortIndex; }
             set => Set(ref _SelectedComPortIndex, value);
-
         }
 
+        /// <summary>
+        /// BaudRateList
+        /// </summary>
+        public string[] BaudRateList
+        {
+            get { return _BaudRateList; }
+            set => Set(ref _BaudRateList, value);
+        }
+
+        /// <summary>
+        /// SelectedBaudRate
+        /// </summary>
+        public string SelectedBaudRate
+        {
+            get { return _SelectedBaudRate; }
+            set => Set(ref _SelectedBaudRate, value);
+        }
+
+        /// <summary>
+        /// SelectedBaudRateIndex
+        /// </summary>
+        public int BaudRateIndex
+        {
+            get { return _BaudRateIndex; }
+            set => Set(ref _BaudRateIndex, value);
+        }
+
+        #endregion
 
         /// <summary>
         /// Connect BT
@@ -743,7 +788,7 @@ namespace RobotClient.ViewModels
                 {
                     if (!BTSerialStatus)
                     {
-                        _BTConnection.Connect(SelectedComPort, 38400);
+                        _BTConnection.Connect(SelectedComPort, SelectedBaudRate);
                         //BTSerialStatus = true;
                     }
                     else if (BTSerialStatus)
@@ -757,8 +802,6 @@ namespace RobotClient.ViewModels
             {
                 Debug.WriteLine(ex.Message);
             }
-
-
         }
 
         /// <summary>
