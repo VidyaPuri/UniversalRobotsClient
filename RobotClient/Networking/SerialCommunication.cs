@@ -52,9 +52,6 @@ namespace RobotInterface.Networking
                     port.WriteLine(value.ToString());
                 }
             }
-            
         }
-
-
     }
 }

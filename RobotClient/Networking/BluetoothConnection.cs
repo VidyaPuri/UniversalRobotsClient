@@ -116,6 +116,27 @@ namespace RobotInterface.Networking
         }
 
         /// <summary>
+        /// Send string to arduino via BT
+        /// </summary>
+        public void SendStringLine(string text)
+        {
+            if (serial.IsOpen)
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        serial.WriteLine(text);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                });
+            }
+        }
+
+        /// <summary>
         /// Returns the list of baud rates
         /// </summary>
         /// <returns></returns>
