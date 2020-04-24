@@ -1,14 +1,22 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Diagnostics;
+using Caliburn.Micro;
+using RobotInterface.Models;
 
 namespace RobotInterface.Networking
 {
     public class SerialCommunication
     {
 
-        SerialPort port;
+        private SerialPort port;
+        private SerialStatusModel serialStatus = new SerialStatusModel();
+        public IEventAggregator _eventAggregator { get; }
 
+        public SerialCommunication(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+        }
         /// <summary>
         /// Open new serial port
         /// </summary>
@@ -22,7 +30,13 @@ namespace RobotInterface.Networking
 
             try
             {
-                port.Open();
+                if (!port.IsOpen)
+                {
+                    port.Open();
+                    serialStatus.USBSerialStatus = port.IsOpen;
+                    serialStatus.ComType = "USB";
+                    _eventAggregator.BeginPublishOnUIThread(serialStatus);
+                }
             }
               catch(Exception ex)
             {
@@ -35,8 +49,13 @@ namespace RobotInterface.Networking
         /// </summary>
         public void CloseSerialPort()
         {
-            if(port.IsOpen)
+            if (port.IsOpen)
+            {
                 port.Close();
+                serialStatus.USBSerialStatus = port.IsOpen;
+                serialStatus.ComType = "USB";
+                _eventAggregator.BeginPublishOnUIThread(serialStatus);
+            }
         }
 
         /// <summary>
@@ -52,9 +71,6 @@ namespace RobotInterface.Networking
                     port.WriteLine(value.ToString());
                 }
             }
-            
         }
-
-
     }
 }

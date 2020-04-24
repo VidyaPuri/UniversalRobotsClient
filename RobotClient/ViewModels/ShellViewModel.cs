@@ -13,7 +13,7 @@ using System.Text;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<bool>, IHandle<LogModel>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<SerialStatusModel>, IHandle<LogModel>
     {
         #region Window Control
 
@@ -131,9 +131,11 @@ namespace RobotClient.ViewModels
             
             _controllerClass.StartController();
 
-            _serial = new SerialCommunication();
+            _serial = new SerialCommunication(eventAggregator);
             _BTConnection = new BluetoothConnection(eventAggregator);
 
+            ComPortList = SerialPort.GetPortNames();
+            BaudRateList = _BTConnection.GetBaudRates();
         }
 
         #endregion
@@ -306,7 +308,7 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// Slider Value init
+        /// USB Slider Value init
         /// </summary>
         public double SliderValue
         {
@@ -335,12 +337,11 @@ namespace RobotClient.ViewModels
                 }
                 catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
                 NotifyOfPropertyChange(() => ReceivedFocusTarget);
             }
         }
-
 
         #endregion
 
@@ -568,7 +569,6 @@ namespace RobotClient.ViewModels
         #endregion
 
         #region Target Focus Methods
-       
 
         /// <summary>
         /// Adds new focus target to the list
@@ -621,22 +621,63 @@ namespace RobotClient.ViewModels
 
         #endregion
 
-        #region Serial Communication Methods
+        #region USB Serial Communication Methods
+
+        #region Private Members
+
+        private bool _USBSerialStatus;
+        private string _USBConnectBtnText = "Open Port";
+
+        #endregion
+
+        #region USB Property Initialisation 
+
+        /// <summary>
+        /// USB Serial status
+        /// </summary>
+        public bool USBSerialStatus
+        {
+            get { return _USBSerialStatus; }
+            set => Set(ref _USBSerialStatus, value);
+        }
+
+        /// <summary>
+        /// USB Connect serial btn text
+        /// </summary>
+        public string USBConnectBtnText
+        {
+            get { return _USBConnectBtnText; }
+            set => Set(ref _USBConnectBtnText, value);
+        }
+
+        #endregion
 
         /// <summary>
         /// Open up the serial port
         /// </summary>
-        public void OpenSerialPort()
+        public void USBSerialConnect()
         {
-            _serial.OpenSerialPort();
-        }
-
-        /// <summary>
-        /// Close the serial port
-        /// </summary>
-        public void CloseSerialPort()
-        {
-            _serial.CloseSerialPort();
+            try
+            {
+                // Async Task for connecting
+                Task.Run(() =>
+                {
+                    if (!USBSerialStatus)
+                    {
+                        _serial.OpenSerialPort();
+                        //BTSerialStatus = true;
+                    }
+                    else if (USBSerialStatus)
+                    {
+                        _serial.CloseSerialPort();
+                        //BTSerialStatus = false;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         #endregion
@@ -662,11 +703,26 @@ namespace RobotClient.ViewModels
 
         #region Bluetooth
 
+        #region Bluetooth Private Members
+
         // Private BT properties 
         private string _BluetoothInputText;
         private BindableCollection<LogModel> _BTReceivedMessage = new BindableCollection<LogModel>();
         private bool _BTSerialStatus = false;
         private string _BTConnectBtnText = "Connect";
+
+        private string[] _ComPortList;
+        private string _SelectedComPort;
+        private int _SelectedComPortIndex = 0;
+        private string[] _BaudRateList;
+        private string _SelectedBaudRate;
+        private int _BaudRateIndex = 6;
+
+        private double _BTSliderVal = 1500;
+
+        #endregion
+
+        #region Bluetooth Properties Initialisation
 
         /// <summary>
         /// BT Input text initialisation
@@ -701,17 +757,84 @@ namespace RobotClient.ViewModels
         public string BTConnectBtnText
         {
             get { return _BTConnectBtnText; }
-            set 
-            { 
-                _BTConnectBtnText = value;
-                NotifyOfPropertyChange(() => BTConnectBtnText);
+            set => Set(ref _BTConnectBtnText, value);
+        }
+
+        /// <summary>
+        /// ComPortList
+        /// </summary>
+        public string[] ComPortList
+        {
+            get { return _ComPortList; }
+            set => Set(ref _ComPortList, value);
+        }
+
+        /// <summary>
+        /// SelectedComPort
+        /// </summary>
+        public string SelectedComPort
+        {
+            get { return _SelectedComPort; }
+            set => Set(ref _SelectedComPort, value);
+        }
+
+
+        /// <summary>
+        /// SelectedComPortIndex
+        /// </summary>
+        public int SelectedComPortIndex
+        {
+            get { return _SelectedComPortIndex; }
+            set => Set(ref _SelectedComPortIndex, value);
+        }
+
+        /// <summary>
+        /// BaudRateList
+        /// </summary>
+        public string[] BaudRateList
+        {
+            get { return _BaudRateList; }
+            set => Set(ref _BaudRateList, value);
+        }
+
+        /// <summary>
+        /// SelectedBaudRate
+        /// </summary>
+        public string SelectedBaudRate
+        {
+            get { return _SelectedBaudRate; }
+            set => Set(ref _SelectedBaudRate, value);
+        }
+
+        /// <summary>
+        /// SelectedBaudRateIndex
+        /// </summary>
+        public int BaudRateIndex
+        {
+            get { return _BaudRateIndex; }
+            set => Set(ref _BaudRateIndex, value);
+        }
+
+        /// <summary>
+        /// Bluetooth slider value
+        /// </summary>
+        public double BTSliderVal
+        {
+            get { return _BTSliderVal; }
+            set
+            {
+                _BTSliderVal = value;
+                NotifyOfPropertyChange(() => BTSliderVal);
+                _BTConnection.SendStringLine(value.ToString());
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Connect BT
         /// </summary>
-        public void BTConnect()
+        public void BTSerialConnect()
         {
             try
             {
@@ -720,7 +843,7 @@ namespace RobotClient.ViewModels
                 {
                     if (!BTSerialStatus)
                     {
-                        _BTConnection.Connect();
+                        _BTConnection.Connect(SelectedComPort, SelectedBaudRate);
                         //BTSerialStatus = true;
                     }
                     else if (BTSerialStatus)
@@ -733,23 +856,6 @@ namespace RobotClient.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-            }
-
-            // If it is connected change the button text
-            if(BTSerialStatus)
-                BTConnectBtnText = "Disconnect";
-            else if(!BTSerialStatus)
-                BTConnectBtnText = "Connect";
-
-            // Test 
-            string[] ports = SerialPort.GetPortNames();
-
-            Debug.WriteLine("The following serial ports were found:");
-
-            // Display each port name to the console.
-            foreach (string port in ports)
-            {
-                Debug.WriteLine(port);
             }
         }
 
@@ -830,22 +936,32 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// BT connection status
-        /// </summary>
-        /// <param name="message"></param>
-        public void Handle(bool message)
-        {
-            BTSerialStatus = message;
-        }
-
-        /// <summary>
         /// Reeived message from BT string
         /// </summary>
         /// <param name="message"></param>
         public void Handle(LogModel message)
         {
             BTReceivedMessage.Add(message);
-            //BTReceivedMessage.Refresh();
+        }
+
+        public void Handle(SerialStatusModel message)
+        {
+            if(message.ComType == "BT")
+                BTSerialStatus = message.BTSerialStatus;
+            if(message.ComType == "USB")
+                USBSerialStatus = message.USBSerialStatus;
+
+            // BT Serial Status
+            if (BTSerialStatus)
+                BTConnectBtnText = "Disconnect";
+            else if (!BTSerialStatus)
+                BTConnectBtnText = "Connect";
+
+            // USB Serial Status
+            if (USBSerialStatus)
+                USBConnectBtnText = "Close Port";
+            else if (!USBSerialStatus)
+                USBConnectBtnText = "Open Port";
         }
 
         #endregion

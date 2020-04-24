@@ -3,6 +3,7 @@ using RobotInterface.Models;
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Threading.Tasks;
 
 namespace RobotInterface.Networking
 {
@@ -10,7 +11,7 @@ namespace RobotInterface.Networking
     {
         readonly SerialPort serial = new SerialPort();
         public IEventAggregator _eventAggregator { get; }
-        public bool SerialStatus { get; set; }
+        private SerialStatusModel serialStatus = new SerialStatusModel();
         private LogModel logModel = new LogModel();
         private int idx;
 
@@ -28,21 +29,21 @@ namespace RobotInterface.Networking
         /// <summary>
         /// Connect BT
         /// </summary>
-        public void Connect()
+        public void Connect(string comPort, string baudRate)
         {
-            serial.PortName = "COM4";
-            serial.BaudRate = 38400;
-
             // Sets the Serial Status 
-            SerialStatus = serial.IsOpen;
+            serialStatus.BTSerialStatus = serial.IsOpen;
 
             try
             {
                 if (!serial.IsOpen)
                 {
+                    serial.PortName = comPort;
+                    serial.BaudRate = Int32.Parse(baudRate);
                     serial.Open();
-                    SerialStatus = serial.IsOpen;
-                    _eventAggregator.BeginPublishOnUIThread(SerialStatus);
+                    serialStatus.BTSerialStatus = serial.IsOpen;
+                    serialStatus.ComType = "BT";
+                    _eventAggregator.BeginPublishOnUIThread(serialStatus);
                 }
             }
             catch (Exception ex)
@@ -62,8 +63,9 @@ namespace RobotInterface.Networking
             if (serial.IsOpen)
             {
                 serial.Close();
-                SerialStatus = serial.IsOpen;
-                _eventAggregator.BeginPublishOnUIThread(SerialStatus);
+                serialStatus.BTSerialStatus = serial.IsOpen;
+                serialStatus.ComType = "BT";
+                _eventAggregator.BeginPublishOnUIThread(serialStatus);
             }
         }
 
@@ -100,15 +102,51 @@ namespace RobotInterface.Networking
         {
             if (serial.IsOpen)
             {
-                try
+                Task.Run(() =>
                 {
-                    serial.Write(text);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
+                    try
+                    {
+                        serial.Write(text);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                });
             }
+        }
+
+        /// <summary>
+        /// Send string to arduino via BT
+        /// </summary>
+        public void SendStringLine(string text)
+        {
+            if (serial.IsOpen)
+            {
+                Task.Run( () =>
+                {
+                    try
+                    {
+                        serial.WriteLine(text);
+                        Debug.WriteLine(text);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Returns the list of baud rates
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetBaudRates()
+        {
+            string[] output = {"300", "1200","2400","4800", "9600","19200", "38400", "57600","1000000"};
+
+            return output;
         }
 
     }
