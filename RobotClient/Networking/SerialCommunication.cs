@@ -34,6 +34,7 @@ namespace RobotInterface.Networking
                 {
                     port.Open();
                     serialStatus.USBSerialStatus = port.IsOpen;
+                    serialStatus.ComType = "USB";
                     _eventAggregator.BeginPublishOnUIThread(serialStatus);
                 }
             }
@@ -52,6 +53,7 @@ namespace RobotInterface.Networking
             {
                 port.Close();
                 serialStatus.USBSerialStatus = port.IsOpen;
+                serialStatus.ComType = "USB";
                 _eventAggregator.BeginPublishOnUIThread(serialStatus);
             }
         }

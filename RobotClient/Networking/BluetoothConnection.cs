@@ -31,9 +31,6 @@ namespace RobotInterface.Networking
         /// </summary>
         public void Connect(string comPort, string baudRate)
         {
-            serial.PortName = comPort;
-            serial.BaudRate = Int32.Parse(baudRate);
-
             // Sets the Serial Status 
             serialStatus.BTSerialStatus = serial.IsOpen;
 
@@ -41,8 +38,11 @@ namespace RobotInterface.Networking
             {
                 if (!serial.IsOpen)
                 {
+                    serial.PortName = comPort;
+                    serial.BaudRate = Int32.Parse(baudRate);
                     serial.Open();
                     serialStatus.BTSerialStatus = serial.IsOpen;
+                    serialStatus.ComType = "BT";
                     _eventAggregator.BeginPublishOnUIThread(serialStatus);
                 }
             }
@@ -64,6 +64,7 @@ namespace RobotInterface.Networking
             {
                 serial.Close();
                 serialStatus.BTSerialStatus = serial.IsOpen;
+                serialStatus.ComType = "BT";
                 _eventAggregator.BeginPublishOnUIThread(serialStatus);
             }
         }

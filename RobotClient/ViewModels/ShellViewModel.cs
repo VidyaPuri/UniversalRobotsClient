@@ -623,14 +623,14 @@ namespace RobotClient.ViewModels
 
         #region USB Serial Communication Methods
 
-        #region USB Serial Communication Properties
-
         #region Private Members
 
         private bool _USBSerialStatus;
         private string _USBConnectBtnText = "Open Port";
 
         #endregion
+
+        #region USB Property Initialisation 
 
         /// <summary>
         /// USB Serial status
@@ -946,8 +946,11 @@ namespace RobotClient.ViewModels
 
         public void Handle(SerialStatusModel message)
         {
-            BTSerialStatus = message.BTSerialStatus;
-            USBSerialStatus = message.USBSerialStatus;
+            if(message.ComType == "BT")
+                BTSerialStatus = message.BTSerialStatus;
+            if(message.ComType == "USB")
+                USBSerialStatus = message.USBSerialStatus;
+
             // BT Serial Status
             if (BTSerialStatus)
                 BTConnectBtnText = "Disconnect";
