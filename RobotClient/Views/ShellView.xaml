@@ -4,17 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RobotClient.Views"
+        xmlns:converters="clr-namespace:RobotInterface.Converters"
         mc:Ignorable="d"
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="600" Width="510" MinHeight="1024" MinWidth="540" MaxHeight="387" MaxWidth="510" Background="#2B2F3D">
+        Title="TCP Client" Height="auto" Width="510" MinHeight="540" MinWidth="540" MaxWidth="510" MaxHeight="940" Background="#2B2F3D">
+
+
 
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
-
+    
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+    </Window.Resources>
+    
     <!--<Grid>-->
     <Grid Margin="5" Background="#fffcf9">
         <!-- Outer Shell-->
@@ -28,6 +35,7 @@
             <RowDefinition Height="3"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="3"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="3"></RowDefinition>
             <RowDefinition Height="25"></RowDefinition>
@@ -344,16 +352,16 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-                    
+
                     <!-- Dashboard Settings -->
                     <GroupBox Header="Dashboard" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray" Margin="0 5 0 0 ">
                         <StackPanel Orientation="Vertical">
-                            <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Width="80" Style="{DynamicResource ButtonStyle1}"/>
-                            <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Width="80" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Width="102" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Width="102" Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
-                
+
                 <!-- Move Rate -->
                 <GroupBox Header="Move Rate" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="6" BorderThickness="1" BorderBrush="DimGray">
                     <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2">
@@ -374,10 +382,11 @@
                         <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="12" Width="60" HorizontalAlignment="Right" Style="{DynamicResource ButtonStyle1}"/>
                     </Grid>
                 </GroupBox>
-                
+
                 <!-- TCP Socket Server -->
+
                 <GroupBox Header="TCP Socket Server" Grid.Row="4" Grid.Column="1"  Grid.ColumnSpan="6" BorderThickness="1" BorderBrush="DimGray">
-                    <StackPanel Orientation="Horizontal" Margin="10,5,10,0" >
+                    <StackPanel Orientation="Horizontal" Margin="10,5,10,0">
                         <Button x:Name="StartSocketServer" Content="Start server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
                         <Button x:Name="StopSocketServer" Content="Stop server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
                         <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False"
@@ -406,8 +415,10 @@
             </Grid.ColumnDefinitions>
 
             <!-- USB Serial Communication -->
-            <GroupBox Grid.Column="1" Grid.Row="1" Header="USB Serial Communication" FontWeight="DemiBold" BorderThickness="1" BorderBrush="DimGray">
-                <Grid Grid.Row="1">
+            <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="155" VerticalAlignment="top" HorizontalAlignment="Left"
+                          x:Name="ToggleVisibility_02" Panel.ZIndex="1" Style="{DynamicResource VisibilityToggleButton}"/>
+            <GroupBox Grid.Column="1" Grid.Row="1" Header="USB Serial Communication" BorderThickness="1" BorderBrush="DimGray">
+                <Grid Grid.Row="1" Visibility="{Binding ElementName=ToggleVisibility_02, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
@@ -425,7 +436,7 @@
                                          VerticalAlignment="Center">
                             </RadioButton>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Horizontal" Margin="10 5">
                             <TextBox x:Name="SerialInput" Width="414" Height="auto"  VerticalContentAlignment="Center" Margin="0 0 10 0"/>
                             <Button x:Name="SendSerial" Content="Send" Width="45" Style="{DynamicResource ButtonStyle1}"/>
@@ -483,8 +494,10 @@
             </Grid.ColumnDefinitions>
 
             <!-- Arduino Bluetooth -->
-            <GroupBox Grid.Column="1" Grid.Row="1" Header="Bluetooth Serial Communication" FontWeight="DemiBold" BorderThickness="1" BorderBrush="DimGray" Visibility="Visible">
-                <Grid Visibility="Visible">
+            <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="185" VerticalAlignment="top" HorizontalAlignment="Left"
+                          x:Name="ToggleVisibility_03" Panel.ZIndex="1" Style="{DynamicResource VisibilityToggleButton}"/>
+            <GroupBox Grid.Column="1" Grid.Row="1" Header="Bluetooth Serial Communication" BorderThickness="1" BorderBrush="DimGray">
+                <Grid Visibility="{Binding ElementName=ToggleVisibility_03, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
@@ -497,7 +510,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- Column 0-->
-                    <StackPanel Grid.Column="0" Margin="5">
+                    <StackPanel Grid.Column="0" Margin="5,5,5,12" Grid.ColumnSpan="2">
                         <StackPanel Orientation="Horizontal" Margin="10 5">
                             <Button x:Name="BTSerialConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
                                 Style="{DynamicResource ButtonStyle1}" Width="100"/>
@@ -526,13 +539,13 @@
 
 
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <TextBox Text="{Binding BluetoothInputText}" Width="150" Margin="5" VerticalContentAlignment="Center"/>
+                            <TextBox Text="{Binding BluetoothInputText}" Width="150" Height="auto" Margin="0 0 10 0" VerticalContentAlignment="Center"/>
                             <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Column 1-->
-                    <StackPanel Grid.Column="1" Margin="5">
+                    <StackPanel Grid.Column="2" Margin="5,5,5,12">
                         <TextBlock Text="Received from Arduino" Margin="0 5" />
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding BTReceivedMessage}"  Style="{DynamicResource LogViewerStyle}">
@@ -593,26 +606,5 @@
     </Grid>
 
     <!-- Styles and templates-->
-    <Window.Resources>
-        <Style TargetType="ItemsControl" x:Key="LogViewerStyle">
-            <Setter Property="MinHeight" Value="100" />
-            <Setter Property="Width" Value="245" />
-            <Setter Property="MaxHeight" Value="120" />
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#141414" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Border Background="White" BorderBrush="#141414" BorderThickness="1">
-                            <ScrollViewer CanContentScroll="True">
-                                <ItemsPresenter/>
-                            </ScrollViewer>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
 
-        </Style>
-    </Window.Resources>
 </Window>
