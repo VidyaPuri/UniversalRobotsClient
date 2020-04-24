@@ -9,7 +9,7 @@
         WindowStyle="None"
         FontSize="12"
         Title="TCP Client" Height="600" Width="510" MinHeight="1024" MinWidth="540" MaxHeight="387" MaxWidth="510" Background="#2B2F3D">
-    
+
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
@@ -22,9 +22,8 @@
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="3"></RowDefinition>
             <RowDefinition Height="35"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
             <RowDefinition Height="3"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="3"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
@@ -86,11 +85,11 @@
             <Button x:Name="ConnectToRobot" Content="{Binding ConnectToggle, FallbackValue=Connect}" 
                         IsEnabled="{Binding CanConnect}" DockPanel.Dock="Right"
                         Margin="5" Padding="5" VerticalContentAlignment="Center"
-                        Style="{DynamicResource ButtonStyle1}"/>
-            <!--<Button x:Name="Disconnect" Content="Disconnect" Margin="5" Padding="5" VerticalContentAlignment="Center"/>-->
+                        Style="{DynamicResource ButtonStyle1}">
+            </Button>
         </DockPanel>
 
-        <!-- Script panel -->
+        <!-- Dashboard server panel -->
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
             <Label Width="Auto" Content="Dashboard Server" Margin="5" FontWeight="Bold" VerticalContentAlignment="Center"/>
             <TextBox x:Name="Script" Width="303" Margin="5" VerticalContentAlignment="Center"/>
@@ -100,15 +99,11 @@
         <!-- Robot Controls -->
         <Border Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1"/>
         <Grid Grid.Row="5" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-            <Grid Grid.Column="0">
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="3"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="3"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="5"></RowDefinition>
@@ -122,13 +117,13 @@
                     <ColumnDefinition Width="5"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="5"></ColumnDefinition>
-
                     <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="5"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
                 <!-- Move Joints-->
-                <GroupBox Header="Move Joints" Grid.Row="1" Grid.Column="1" BorderThickness="1" BorderBrush="DimGray">
-                    <Grid Grid.Row="2" Grid.Column="1">
+                <GroupBox Header="Move Joints" Grid.Row="0" Grid.Column="1" BorderThickness="1" BorderBrush="DimGray">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
@@ -230,8 +225,8 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Header="Move Tool" Grid.Row="1" Grid.Column="3" BorderThickness="1" BorderBrush="DimGray">
-                    <Grid Grid.Row="2" Grid.Column="3">
+                <GroupBox Header="Move Tool" Grid.Row="0" Grid.Column="3" BorderThickness="1" BorderBrush="DimGray">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
@@ -330,26 +325,8 @@
                     </Grid>
                 </GroupBox>
 
-                <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="DimGray" Margin="1" CornerRadius="3"/>
-                <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <Label  Content="Traslation rate" Grid.Column="0" FontSize="12"/>
-                    <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="40" VerticalAlignment="Center"></TextBox>
-                    <Label  Content="Rotation rate" Grid.Column="2" FontSize="12"/>
-                    <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="40" VerticalAlignment="Center"></TextBox>
-                    <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="12" Width="60" HorizontalAlignment="Right" Style="{DynamicResource ButtonStyle1}"/>
-                </Grid>
-
                 <!--  Digital I/O -->
-                <StackPanel Grid.Row="1" Grid.Column="5">
+                <StackPanel Grid.Row="0" Grid.Column="5">
                     <GroupBox Header="Digital I/O" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Vertical" Margin="5">
@@ -373,12 +350,45 @@
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
+                
+                <!-- Move Rate -->
+                <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="DimGray" Margin="1" CornerRadius="3" Grid.RowSpan="2"/>
+                <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Label  Content="Traslation rate" Grid.Column="0" FontSize="12"/>
+                    <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="40" VerticalAlignment="Center"></TextBox>
+                    <Label  Content="Rotation rate" Grid.Column="2" FontSize="12"/>
+                    <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="40" VerticalAlignment="Center"></TextBox>
+                    <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="12" Width="60" HorizontalAlignment="Right" Style="{DynamicResource ButtonStyle1}"/>
+                </Grid>
+
+                <!-- TCP Socket Server -->
+                <GroupBox Header="TCP Socket Server" Grid.Row="4" Grid.Column="1"  Grid.ColumnSpan="6" BorderThickness="1" BorderBrush="DimGray">
+                    <StackPanel Orientation="Horizontal" Margin="10,5,10,0" >
+                        <Button x:Name="StartSocketServer" Content="Start server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                        <Button x:Name="StopSocketServer" Content="Stop server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                        <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False"
+                                     FlowDirection="RightToLeft" Margin="15 0 0 0" 
+                                     Style="{DynamicResource RadioButtonStyle1}" 
+                                     VerticalAlignment="Center">
+                        </RadioButton>
+                    </StackPanel>
+                </GroupBox>
             </Grid>
         </Grid>
 
-        <!-- TCP Socket Server -->
-        <Border Grid.Row="8" Grid.Column="1" Grid.RowSpan="1" BorderBrush="Black" BorderThickness="1"/>
-        <Grid Grid.Row="8" Grid.Column="1">
+        <!-- USB Serial Port -->
+        <Border Grid.Row="7" Grid.Column="1" Grid.RowSpan="1" BorderBrush="Black" BorderThickness="1"/>
+        <Grid Grid.Row="7" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="auto"/>
@@ -391,8 +401,8 @@
                 <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
 
-            <!-- TCP Server-->
-            <GroupBox Grid.Column="1" Grid.Row="1" Header="TCP Socket Server" BorderThickness="1" BorderBrush="DimGray">
+            <!-- USB Serial Communication -->
+            <GroupBox Grid.Column="1" Grid.Row="1" Header="USB Serial Communication" BorderThickness="1" BorderBrush="DimGray">
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
@@ -404,25 +414,18 @@
 
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <Button x:Name="StartSocketServer" Content="Start server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
-                            <Button x:Name="StopSocketServer" Content="Stop server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
-                            <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False"
-                                         FlowDirection="RightToLeft" Margin="15 0 0 0" Style="{DynamicResource RadioButtonStyle1}" 
-                                         VerticalAlignment="Center"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Margin="10 5">
                             <Button x:Name="OpenSerialPort" Content="Open serial port" Width="100" Style="{DynamicResource ButtonStyle1}"/>
                             <Button x:Name="CloseSerialPort" Content="Close serial port" Width="100" Style="{DynamicResource ButtonStyle1}"/>
-                            <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False" 
+                            <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False" IsChecked="{Binding USBSerialStatus}" 
                                          FlowDirection="RightToLeft" Margin="15 0 0 0" Style="{DynamicResource RadioButtonStyle1}" 
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center">
+                            </RadioButton>
                         </StackPanel>
+                        
                         <StackPanel Orientation="Horizontal" Margin="10 5">
                             <TextBox x:Name="SerialInput" Width="414" Height="auto"  VerticalContentAlignment="Center" Margin="0 0 10 0"/>
                             <Button x:Name="SendSerial" Content="Send" Width="45" Style="{DynamicResource ButtonStyle1}"/>
                         </StackPanel>
-
 
                         <StackPanel Orientation="Horizontal">
                             <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="370" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5" Margin="10 0 0 0" VerticalAlignment="Center"/>
@@ -460,8 +463,8 @@
         </Grid>
 
         <!-- Bluetooth Serial -->
-        <Border Grid.Row="10" Grid.Column="1" Grid.RowSpan="1" BorderBrush="Black" BorderThickness="1"/>
-        <Grid Grid.Row="10" Grid.Column="1">
+        <Border Grid.Row="9" Grid.Column="1" Grid.RowSpan="1" BorderBrush="Black" BorderThickness="1"/>
+        <Grid Grid.Row="9" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="auto"/>
@@ -473,9 +476,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
-            
+
             <!-- Arduino Bluetooth -->
-            <GroupBox Grid.Column="1" Grid.Row="1" Header="Bluetooth Arduino" BorderThickness="1" BorderBrush="DimGray">
+            <GroupBox Grid.Column="1" Grid.Row="1" Header="Bluetooth Serial Communication" BorderThickness="1" BorderBrush="DimGray">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
@@ -514,7 +517,7 @@
                             </ComboBox>
                         </StackPanel>
 
-                        
+
                         <StackPanel Orientation="Horizontal" Margin="10 5">
                             <TextBox Text="{Binding BluetoothInputText}" Width="150" Margin="5" VerticalContentAlignment="Center"/>
                             <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
@@ -563,7 +566,7 @@
                     <Label Content="{Binding ControllerMoveToggle}" Foreground="Gainsboro" FontSize="10"></Label>
                 </StackPanel>
             </DockPanel>
-            
+
         </Grid>
     </Grid>
 

@@ -308,7 +308,7 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// Slider Value init
+        /// USB Slider Value init
         /// </summary>
         public double SliderValue
         {
@@ -621,7 +621,27 @@ namespace RobotClient.ViewModels
 
         #endregion
 
-        #region Serial Communication Methods
+        #region USB Serial Communication Methods
+
+        #region USB Serial Communication Properties
+
+        #region Private Members
+
+        private bool _USBSerialStatus;
+
+        #endregion
+
+        /// <summary>
+        /// USB Serial status
+        /// </summary>
+        public bool USBSerialStatus
+        {
+            get { return _USBSerialStatus; }
+            set => Set(ref _USBSerialStatus, value);
+        }
+
+
+        #endregion
 
         /// <summary>
         /// Open up the serial port
