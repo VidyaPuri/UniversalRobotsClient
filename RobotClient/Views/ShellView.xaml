@@ -9,7 +9,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="auto" Width="510" MinHeight="540" MinWidth="540" MaxWidth="510" MaxHeight="940" Background="#2B2F3D">
+        Title="TCP Client" Height="auto" Width="510" MinHeight="540" MinWidth="540" MaxWidth="510" MaxHeight="1080" Background="#2B2F3D">
 
 
 
