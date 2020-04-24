@@ -38,6 +38,7 @@ namespace RobotInterface.Networking
             {
                 if (!serial.IsOpen)
                 {
+                    serial.RtsEnable = true;
                     serial.PortName = comPort;
                     serial.BaudRate = Int32.Parse(baudRate);
                     serial.Open();
@@ -60,13 +61,21 @@ namespace RobotInterface.Networking
         /// </summary>
         public void Disconnect()
         {
-            if (serial.IsOpen)
+            try
             {
-                serial.Close();
-                serialStatus.BTSerialStatus = serial.IsOpen;
-                serialStatus.ComType = "BT";
-                _eventAggregator.BeginPublishOnUIThread(serialStatus);
+                if (serial.IsOpen)
+                {
+                    serial.Close();
+                    serialStatus.BTSerialStatus = serial.IsOpen;
+                    serialStatus.ComType = "BT";
+                    _eventAggregator.BeginPublishOnUIThread(serialStatus);
+                }
             }
+            catch ( Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            
         }
 
         /// <summary>

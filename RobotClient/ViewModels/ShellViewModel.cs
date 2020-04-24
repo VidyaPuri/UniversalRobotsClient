@@ -718,7 +718,7 @@ namespace RobotClient.ViewModels
         private string _SelectedBaudRate;
         private int _BaudRateIndex = 6;
 
-        private double _BTSliderVal = 1500;
+        private double _BTSliderVal = 0;
 
         #endregion
 
