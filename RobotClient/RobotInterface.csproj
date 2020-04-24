@@ -80,6 +80,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Models\ConnectionStatusModel.cs" />
     <Compile Include="Models\ControllerSettingsModel.cs" />
     <Compile Include="Models\FocusModel.cs" />
