@@ -10,6 +10,7 @@ using System.IO.Ports;
 using System.Diagnostics;
 using RobotInterface.Networking;
 using System.Text;
+using RobotInterface.Helpers;
 
 namespace RobotClient.ViewModels
 {
@@ -75,11 +76,10 @@ namespace RobotClient.ViewModels
         private SerialCommunication _serial;
         private BluetoothConnection _BTConnection;
 
-        private int _ReceivedFocusTarget;
-
         private BindableCollection<FocusModel> _FocusList = new BindableCollection<FocusModel>();
-        private int _SelectedFocusTargetIdx = 0;
 
+        private int _ReceivedFocusTarget;
+        private int _SelectedFocusTargetIdx = 0;
         private double _SliderValue = 1500;
 
         private RobotCommand _robotCommand;
@@ -135,7 +135,8 @@ namespace RobotClient.ViewModels
             _BTConnection = new BluetoothConnection(eventAggregator);
 
             ComPortList = SerialPort.GetPortNames();
-            BaudRateList = _BTConnection.GetBaudRates();
+            BaudRateList = DataLists.GetBaudRates();
+            MotorStepTypeList = DataLists.GetStepTypes();
         }
 
         #endregion
@@ -831,6 +832,8 @@ namespace RobotClient.ViewModels
 
         #endregion
 
+        #region Bluetooth Methods
+
         /// <summary>
         /// Connect BT
         /// </summary>
@@ -879,6 +882,57 @@ namespace RobotClient.ViewModels
         }
 
         #endregion
+
+        #endregion
+
+        #region Stepper Motor Module
+
+        private string[] _MotorStepTypeList;
+        private string _MotorStepType;
+        private int _MotorStepTypeIdx;
+        private int _StepMotorSpeed = 0;
+
+
+
+        /// <summary>
+        /// Motor step type
+        /// </summary>
+        public string MotorStepType
+        {
+            get { return _MotorStepType; }
+            set => Set(ref _MotorStepType, value);
+        }
+
+        /// <summary>
+        /// Motor step type index
+        /// </summary>
+        public int MotorStepTypeIdx
+        {
+            get { return _MotorStepTypeIdx; }
+            set => Set(ref _MotorStepTypeIdx, value);
+        }
+
+        /// <summary>
+        /// Motor step type list
+        /// </summary>
+        public string[] MotorStepTypeList
+        {
+            get { return _MotorStepTypeList; }
+            set => Set(ref _MotorStepTypeList, value);
+        }
+
+        /// <summary>
+        /// Stepper motor speed in RPM
+        /// </summary>
+        public int StepMotorSpeed
+        {
+            get { return _StepMotorSpeed; }
+            set => Set(ref _StepMotorSpeed, value);
+        }
+
+
+        #endregion
+
 
         #region Handlers
 

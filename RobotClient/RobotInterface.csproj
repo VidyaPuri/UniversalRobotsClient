@@ -81,6 +81,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Helpers\DataLists.cs" />
     <Compile Include="Models\ConnectionStatusModel.cs" />
     <Compile Include="Models\ControllerSettingsModel.cs" />
     <Compile Include="Models\FocusModel.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Command Helpers\RobotCommand.cs" />
     <Compile Include="Models\SerialStatusModel.cs" />
     <Compile Include="Models\StateObject.cs" />
+    <Compile Include="Models\StepperModel.cs" />
     <Compile Include="Networking\BluetoothConnection.cs" />
     <Compile Include="Networking\PacketHandler.cs" />
     <Compile Include="Networking\SerialCommunication.cs" />

@@ -9,10 +9,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Height="auto" Width="510" MinHeight="540" MinWidth="540" MaxWidth="510" MaxHeight="1080" Background="#2B2F3D">
-
-
-
+        Title="TCP Client" Height="1080" Width="510" MinHeight="800" MinWidth="540" MaxWidth="510" MaxHeight="1080" Background="#2B2F3D">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
@@ -415,7 +412,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- USB Serial Communication -->
-            <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="155" VerticalAlignment="top" HorizontalAlignment="Left"
+            <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="155" VerticalAlignment="top" HorizontalAlignment="Left" IsChecked="True"
                           x:Name="ToggleVisibility_02" Panel.ZIndex="1" Style="{DynamicResource VisibilityToggleButton}"/>
             <GroupBox Grid.Column="1" Grid.Row="1" Header="USB Serial Communication" BorderThickness="1" BorderBrush="DimGray">
                 <Grid Grid.Row="1" Visibility="{Binding ElementName=ToggleVisibility_02, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
@@ -494,7 +491,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Arduino Bluetooth -->
-            <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="185" VerticalAlignment="top" HorizontalAlignment="Left"
+            <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="185" VerticalAlignment="top" HorizontalAlignment="Left" IsChecked="True"
                           x:Name="ToggleVisibility_03" Panel.ZIndex="1" Style="{DynamicResource VisibilityToggleButton}"/>
             <GroupBox Grid.Column="1" Grid.Row="1" Header="Bluetooth Serial Communication" BorderThickness="1" BorderBrush="DimGray">
                 <Grid Visibility="{Binding ElementName=ToggleVisibility_03, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
@@ -573,16 +570,21 @@
                     <!-- Stepper Motor Settings -->
                     <GroupBox Grid.Row="3" Header="Stepper Motor Settings" FontWeight="DemiBold" BorderThickness="1" BorderBrush="DimGray">
                         <StackPanel>
-                            <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding asdf}" 
-                                      VerticalAlignment="Center" Margin="15 0 0 0"
-                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
-                            <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
-                                      VerticalAlignment="Center" Margin="15 0 0 0"
-                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
-                            <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
-                                      VerticalAlignment="Center" Margin="15 0 0 0"
-                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
+                            <StackPanel Orientation="Horizontal" Margin="0 5">
+                                <Label Content="Step type"/>
+                                <ComboBox ItemsSource="{Binding MotorStepTypeList}"
+                                      SelectedItem="{Binding MotorStepType}"
+                                      SelectedIndex="{Binding MotorStepTypeIdx}"
+                                      MinWidth="80" Margin="20 0">
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Motor Speed" />
+                                <Slider  Value="{Binding StepMotorSpeed}" Minimum="0" Maximum="1000" IsSnapToTickEnabled="True" TickFrequency="100" Width="80"></Slider>
+                                <TextBox Text="{Binding StepMotorSpeed}"></TextBox>
+                            </StackPanel>
                         </StackPanel>
+                        
                     </GroupBox>
                     
                 </Grid>
