@@ -492,6 +492,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="3"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <!-- Column 0-->
@@ -554,7 +556,22 @@
                         <Label Content="Value:" VerticalAlignment="Center"></Label>
                         <TextBlock Text="{Binding BTSliderVal, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
-
+                    
+                    <!-- Stepper Motor Settings -->
+                    <GroupBox Grid.Row="3" Header="Stepper Motor Settings" FontWeight="DemiBold" BorderThickness="1" BorderBrush="DimGray">
+                        <StackPanel>
+                            <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding asdf}" 
+                                      VerticalAlignment="Center" Margin="15 0 0 0"
+                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
+                            <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
+                                      VerticalAlignment="Center" Margin="15 0 0 0"
+                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
+                            <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
+                                      VerticalAlignment="Center" Margin="15 0 0 0"
+                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
+                        </StackPanel>
+                    </GroupBox>
+                    
                 </Grid>
             </GroupBox>
         </Grid>
