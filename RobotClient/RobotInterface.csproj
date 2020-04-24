@@ -88,6 +88,7 @@
     <Compile Include="Models\RobotOutputModel.cs" />
     <Compile Include="Command Helpers\ControllerClass.cs" />
     <Compile Include="Command Helpers\RobotCommand.cs" />
+    <Compile Include="Models\SerialStatusModel.cs" />
     <Compile Include="Models\StateObject.cs" />
     <Compile Include="Networking\BluetoothConnection.cs" />
     <Compile Include="Networking\PacketHandler.cs" />

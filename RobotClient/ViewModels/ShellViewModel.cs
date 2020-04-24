@@ -13,7 +13,7 @@ using System.Text;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<bool>, IHandle<LogModel>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<SerialStatusModel>, IHandle<LogModel>
     {
         #region Window Control
 
@@ -131,7 +131,7 @@ namespace RobotClient.ViewModels
             
             _controllerClass.StartController();
 
-            _serial = new SerialCommunication();
+            _serial = new SerialCommunication(eventAggregator);
             _BTConnection = new BluetoothConnection(eventAggregator);
 
             ComPortList = SerialPort.GetPortNames();
@@ -628,6 +628,7 @@ namespace RobotClient.ViewModels
         #region Private Members
 
         private bool _USBSerialStatus;
+        private string _USBConnectBtnText = "Open Port";
 
         #endregion
 
@@ -640,23 +641,43 @@ namespace RobotClient.ViewModels
             set => Set(ref _USBSerialStatus, value);
         }
 
+        /// <summary>
+        /// USB Connect serial btn text
+        /// </summary>
+        public string USBConnectBtnText
+        {
+            get { return _USBConnectBtnText; }
+            set => Set(ref _USBConnectBtnText, value);
+        }
 
         #endregion
 
         /// <summary>
         /// Open up the serial port
         /// </summary>
-        public void OpenSerialPort()
+        public void USBSerialConnect()
         {
-            _serial.OpenSerialPort();
-        }
-
-        /// <summary>
-        /// Close the serial port
-        /// </summary>
-        public void CloseSerialPort()
-        {
-            _serial.CloseSerialPort();
+            try
+            {
+                // Async Task for connecting
+                Task.Run(() =>
+                {
+                    if (!USBSerialStatus)
+                    {
+                        _serial.OpenSerialPort();
+                        //BTSerialStatus = true;
+                    }
+                    else if (USBSerialStatus)
+                    {
+                        _serial.CloseSerialPort();
+                        //BTSerialStatus = false;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         #endregion
@@ -808,13 +829,12 @@ namespace RobotClient.ViewModels
             }
         }
 
-
         #endregion
 
         /// <summary>
         /// Connect BT
         /// </summary>
-        public void BTConnect()
+        public void BTSerialConnect()
         {
             try
             {
@@ -916,27 +936,29 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// BT connection status
-        /// </summary>
-        /// <param name="message"></param>
-        public void Handle(bool message)
-        {
-            BTSerialStatus = message;
-            // If it is connected change the button text
-            if (BTSerialStatus)
-                BTConnectBtnText = "Disconnect";
-            else if (!BTSerialStatus)
-                BTConnectBtnText = "Connect";
-        }
-
-        /// <summary>
         /// Reeived message from BT string
         /// </summary>
         /// <param name="message"></param>
         public void Handle(LogModel message)
         {
             BTReceivedMessage.Add(message);
-            //BTReceivedMessage.Refresh();
+        }
+
+        public void Handle(SerialStatusModel message)
+        {
+            BTSerialStatus = message.BTSerialStatus;
+            USBSerialStatus = message.USBSerialStatus;
+            // BT Serial Status
+            if (BTSerialStatus)
+                BTConnectBtnText = "Disconnect";
+            else if (!BTSerialStatus)
+                BTConnectBtnText = "Connect";
+
+            // USB Serial Status
+            if (USBSerialStatus)
+                USBConnectBtnText = "Close Port";
+            else if (!USBSerialStatus)
+                USBConnectBtnText = "Open Port";
         }
 
         #endregion

@@ -414,9 +414,9 @@
 
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <Button x:Name="OpenSerialPort" Content="Open serial port" Width="100" Style="{DynamicResource ButtonStyle1}"/>
-                            <Button x:Name="CloseSerialPort" Content="Close serial port" Width="100" Style="{DynamicResource ButtonStyle1}"/>
-                            <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False" IsChecked="{Binding USBSerialStatus}" 
+                            <Button x:Name="USBSerialConnect" Content="{Binding USBConnectBtnText, FallbackValue='Open Port'}"
+                                    Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                            <RadioButton Content="Status" HorizontalAlignment="Center"  IsChecked="{Binding USBSerialStatus}" IsEnabled="False"
                                          FlowDirection="RightToLeft" Margin="15 0 0 0" Style="{DynamicResource RadioButtonStyle1}" 
                                          VerticalAlignment="Center">
                             </RadioButton>
@@ -492,7 +492,7 @@
                     <!-- Column 0-->
                     <StackPanel Grid.Column="0" Margin="5">
                         <StackPanel Orientation="Horizontal" Margin="10 5">
-                            <Button x:Name="BTConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
+                            <Button x:Name="BTSerialConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
                                 Style="{DynamicResource ButtonStyle1}" Width="100"/>
                             <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
                                      IsEnabled="false" VerticalAlignment="Center" Margin="15 0 0 0"

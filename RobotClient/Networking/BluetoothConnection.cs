@@ -11,7 +11,7 @@ namespace RobotInterface.Networking
     {
         readonly SerialPort serial = new SerialPort();
         public IEventAggregator _eventAggregator { get; }
-        public bool SerialStatus { get; set; }
+        private SerialStatusModel serialStatus = new SerialStatusModel();
         private LogModel logModel = new LogModel();
         private int idx;
 
@@ -35,15 +35,15 @@ namespace RobotInterface.Networking
             serial.BaudRate = Int32.Parse(baudRate);
 
             // Sets the Serial Status 
-            SerialStatus = serial.IsOpen;
+            serialStatus.BTSerialStatus = serial.IsOpen;
 
             try
             {
                 if (!serial.IsOpen)
                 {
                     serial.Open();
-                    SerialStatus = serial.IsOpen;
-                    _eventAggregator.BeginPublishOnUIThread(SerialStatus);
+                    serialStatus.BTSerialStatus = serial.IsOpen;
+                    _eventAggregator.BeginPublishOnUIThread(serialStatus);
                 }
             }
             catch (Exception ex)
@@ -63,8 +63,8 @@ namespace RobotInterface.Networking
             if (serial.IsOpen)
             {
                 serial.Close();
-                SerialStatus = serial.IsOpen;
-                _eventAggregator.BeginPublishOnUIThread(SerialStatus);
+                serialStatus.BTSerialStatus = serial.IsOpen;
+                _eventAggregator.BeginPublishOnUIThread(serialStatus);
             }
         }
 
