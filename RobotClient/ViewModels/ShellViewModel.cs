@@ -826,7 +826,7 @@ namespace RobotClient.ViewModels
             {
                 _BTSliderVal = value;
                 NotifyOfPropertyChange(() => BTSliderVal);
-                _BTConnection.SendStringLine(value.ToString());
+                _BTConnection.SendStepperString(MotorStepType, StepMotorSpeed, Convert.ToInt32(value));
             }
         }
 
@@ -892,8 +892,6 @@ namespace RobotClient.ViewModels
         private int _MotorStepTypeIdx;
         private int _StepMotorSpeed = 0;
 
-
-
         /// <summary>
         /// Motor step type
         /// </summary>
@@ -932,7 +930,6 @@ namespace RobotClient.ViewModels
 
 
         #endregion
-
 
         #region Handlers
 

@@ -126,6 +126,30 @@ namespace RobotInterface.Networking
         }
 
         /// <summary>
+        /// Run Stepper Motor by Bluetooth
+        /// </summary>
+        /// <param name="stepType"></param>
+        /// <param name="stepSpeed"></param>
+        /// <param name="stepPos"></param>
+        public void SendStepperString(string stepType, int stepSpeed, int stepPos)
+        {
+            if (serial.IsOpen)
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        serial.Write($"{stepType},{stepSpeed},{stepPos}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                });
+            }
+        }
+
+        /// <summary>
         /// Send string to arduino via BT
         /// </summary>
         public void SendStringLine(string text)
@@ -137,7 +161,7 @@ namespace RobotInterface.Networking
                     try
                     {
                         serial.WriteLine(text);
-                        Debug.WriteLine(text);
+                        Debug.WriteLine($"Sending to Arduino: {text}");
                     }
                     catch (Exception ex)
                     {
