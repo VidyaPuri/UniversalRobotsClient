@@ -947,27 +947,37 @@ namespace RobotClient.ViewModels
         private int _MousePosX = 0;
         private Clock _Clock;
 
-
+        /// <summary>
+        /// FLoater position
+        /// </summary>
         public int FloaterPos
         {
             get { return _FloaterPos; }
             set => Set(ref _FloaterPos, value);
         }
 
+        /// <summary>
+        /// Mouse click status
+        /// </summary>
         public bool MouseStatus
         {
             get { return _MouseStatus; }
             set => Set(ref _MouseStatus, value);
         }
 
-
+        /// <summary>
+        /// Position of the mouse within canvas (actually goes out of bound to the right but dont know why)
+        /// </summary>
         public int MousePosX
         {
             get { return _MousePosX; }
             set => Set(ref _MousePosX, value);
         }
 
-
+        /// <summary>
+        /// Mouse Move Event within canvas
+        /// </summary>
+        /// <param name="source"></param>
         public void MouseMove(Canvas source)
         {
             if(MouseStatus)
@@ -978,30 +988,36 @@ namespace RobotClient.ViewModels
             }
         }
 
+        /// <summary>
+        /// Mouse click down
+        /// </summary>
         public void MouseDown()
         {
             MouseStatus = true;
         }
 
+        /// <summary>
+        /// Mouse release
+        /// </summary>
         public void MouseUp()
         {
             MouseStatus = false;
-
         }
 
-
+        /// <summary>
+        /// Clock object
+        /// </summary>
         public Clock Clock
         {
             get { return _Clock; }
             set { _Clock = value; }
         }
-        public void MyEventHandler(object sender, EventArgs eventArgs)
-        {
-            Debug.WriteLine("this was done");
-        }
 
         private string _CurrentTime;
 
+        /// <summary>
+        /// Current time 
+        /// </summary>
         public string CurrentTime
         {
             get { return _CurrentTime; }
@@ -1082,6 +1098,10 @@ namespace RobotClient.ViewModels
             BTReceivedMessage.Add(message);
         }
 
+        /// <summary>
+        /// SErial status Handler
+        /// </summary>
+        /// <param name="message"></param>
         public void Handle(SerialStatusModel message)
         {
             if(message.ComType == "BT")
@@ -1110,6 +1130,9 @@ namespace RobotClient.ViewModels
         {
             Debug.WriteLine($"Current time is: {message.CurrentTime}");
             CurrentTime = message.CurrentTime.ToString();
+            var progress = message.CurrentProgress;
+            Debug.WriteLine($"Progres: {progress * 100} % ");
+            FloaterPos = Convert.ToInt32(progress * 500);
         }
 
         #endregion

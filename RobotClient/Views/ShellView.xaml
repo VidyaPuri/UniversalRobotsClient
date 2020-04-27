@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:RobotClient.Views"
         xmlns:converters="clr-namespace:RobotInterface.Converters"
         xmlns:cal="http://www.caliburnproject.org"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         WindowState="{Binding WindowState}"
         WindowStyle="None"
@@ -642,17 +643,17 @@
                         <Path Stroke="Black" StrokeThickness="2" Data="M 500,-7 L 500, 0" />
 
                         <StackPanel  Orientation="Horizontal" >
-                            <Slider Value="{Binding FloaterPosdf}" Width="500" Minimum="0" Maximum="500"></Slider>
+                           <!--a <Slider Value="{Binding FloaterPosdf}" Width="500" Minimum="0" Maximum="500"></Slider>-->
                             <TextBlock Text="{Binding FloaterPos, FallbackValue=504}" ></TextBlock>
                         </StackPanel>
                     </StackPanel>
 
 
                     <Canvas Grid.Column="1" Grid.Row="1" Width="500" MaxWidth="500" Height="100" 
-                            Background="Yellow" HorizontalAlignment="Left" x:Name="Canvas"
+                            Background="Gray" HorizontalAlignment="Left" x:Name="Canvas"
                             cal:Message.Attach= "[Event MouseMove] = [Action MouseMove($source)]">
-                        <Rectangle x:Name="Floater" Width="15" Height="100" 
-                                   Fill="AliceBlue" Stroke="Black" StrokeThickness="5" 
+                        <Rectangle x:Name="Floater" Width="9" Height="100" 
+                                   Fill="AliceBlue" Stroke="Black" StrokeThickness="3" 
                                    Canvas.Left="{Binding FloaterPos}"
                                    cal:Message.Attach = "[Event MouseDown] = [Action MouseDown]">
                         </Rectangle>
@@ -682,7 +683,7 @@
                                             Storyboard.TargetName="Floater"
                                             Storyboard.TargetProperty="(Canvas.Left)"
                                             Duration="0:0:5" 
-                                            From="0" To="500"
+                                            From="104" To="500"
                                             >
                                         </DoubleAnimation>
                                     </Storyboard>
@@ -703,7 +704,7 @@
 
                         </StackPanel.Triggers>
 
-                        <Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>
+                        <!--<Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>-->
                         <StackPanel Orientation="Horizontal">
                             <Button Name="restartButton">Restart</Button>
                             <Button Name="pauseButton">Pause</Button>
@@ -723,6 +724,13 @@
                             <Label Content="Time: "></Label>
                             <TextBlock Text="{Binding CurrentTime, FallbackValue=0, StringFormat={}{0:#}}" VerticalAlignment="Center" ></TextBlock>
                         </StackPanel>
+                        <Button>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="Test" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
                     </StackPanel>
 
                 </Grid>
