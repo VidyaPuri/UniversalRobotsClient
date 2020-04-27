@@ -11,10 +11,14 @@ using System.Diagnostics;
 using RobotInterface.Networking;
 using System.Text;
 using RobotInterface.Helpers;
+using System.Windows.Input;
+using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation;
 
 namespace RobotClient.ViewModels
 {
-    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<SerialStatusModel>, IHandle<LogModel>
+    public class ShellViewModel : Screen, IHandle<RobotOutputModel>, IHandle<ConnectionStatusModel>, IHandle<ControllerSettingsModel>, IHandle<MoveRateModel>, IHandle<int>, IHandle<SerialStatusModel>, IHandle<LogModel>, IHandle<Clock>
     {
         #region Window Control
 
@@ -65,7 +69,7 @@ namespace RobotClient.ViewModels
         private string _ConnectionStatusStr = "Disconnected";
         private string _ConnectToggle = "Connect";
         private bool _CanConnect = true;
-        
+
         // EventAggregator
         private IEventAggregator _eventAggregator { get; }
 
@@ -128,7 +132,8 @@ namespace RobotClient.ViewModels
 
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
-            
+            DialogEventAggregatorProvider.EG.Subscribe(this);
+
             _controllerClass.StartController();
 
             _serial = new SerialCommunication(eventAggregator);
@@ -137,7 +142,9 @@ namespace RobotClient.ViewModels
             ComPortList = SerialPort.GetPortNames();
             BaudRateList = DataLists.GetBaudRates();
             MotorStepTypeList = DataLists.GetStepTypes();
+
         }
+
 
         #endregion
 
@@ -190,7 +197,7 @@ namespace RobotClient.ViewModels
         public string IpAddress
         {
             get { return _IpAddress; }
-            set => Set(ref _IpAddress, value); 
+            set => Set(ref _IpAddress, value);
         }
 
         /// <summary>
@@ -267,7 +274,7 @@ namespace RobotClient.ViewModels
         /// <summary>
         /// Rate of rotation
         /// </summary>
-        public double  RotationRate
+        public double RotationRate
         {
             get { return _RotationRate; }
             set
@@ -328,8 +335,8 @@ namespace RobotClient.ViewModels
         public int ReceivedFocusTarget
         {
             get { return _ReceivedFocusTarget; }
-            set 
-            { 
+            set
+            {
                 _ReceivedFocusTarget = value;
                 Debug.WriteLine($"I have received the order to execute servo focus position #{ReceivedFocusTarget}");
                 try
@@ -604,11 +611,11 @@ namespace RobotClient.ViewModels
         /// </summary>
         public void EditFocusTarget()
         {
-            if(FocusList.Count > 0)
+            if (FocusList.Count > 0)
                 FocusList[SelectedFocusTargetIdx].Val = SliderValue;
 
             FocusList.Refresh();
-         }
+        }
 
         /// <summary>
         /// Removes selected focus target from the list
@@ -931,6 +938,86 @@ namespace RobotClient.ViewModels
 
         #endregion
 
+        #region Timeline
+
+        #region Timeline Properties
+
+        private int _FloaterPos = 0;
+        private bool _MouseStatus = false;
+        private int _MousePosX = 0;
+        private Clock _Clock;
+
+
+        public int FloaterPos
+        {
+            get { return _FloaterPos; }
+            set => Set(ref _FloaterPos, value);
+        }
+
+        public bool MouseStatus
+        {
+            get { return _MouseStatus; }
+            set => Set(ref _MouseStatus, value);
+        }
+
+
+        public int MousePosX
+        {
+            get { return _MousePosX; }
+            set => Set(ref _MousePosX, value);
+        }
+
+
+        public void MouseMove(Canvas source)
+        {
+            if(MouseStatus)
+            {
+                Point p = Mouse.GetPosition(source);
+                MousePosX = Convert.ToInt32(p.X);
+                FloaterPos = MousePosX;
+            }
+        }
+
+        public void MouseDown()
+        {
+            MouseStatus = true;
+        }
+
+        public void MouseUp()
+        {
+            MouseStatus = false;
+
+        }
+
+
+        public Clock Clock
+        {
+            get { return _Clock; }
+            set { _Clock = value; }
+        }
+        public void MyEventHandler(object sender, EventArgs eventArgs)
+        {
+            Debug.WriteLine("this was done");
+        }
+
+        private string _CurrentTime;
+
+        public string CurrentTime
+        {
+            get { return _CurrentTime; }
+            set 
+            { 
+                _CurrentTime = value;
+                NotifyOfPropertyChange(() => CurrentTime);
+            }
+        }
+
+
+
+        #endregion
+
+        #endregion
+
         #region Handlers
 
         /// <summary>
@@ -1013,6 +1100,16 @@ namespace RobotClient.ViewModels
                 USBConnectBtnText = "Close Port";
             else if (!USBSerialStatus)
                 USBConnectBtnText = "Open Port";
+        }
+
+        /// <summary>
+        /// CurrentTimeInvalidatedEventHandler's message
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(Clock message)
+        {
+            Debug.WriteLine($"Current time is: {message.CurrentTime}");
+            CurrentTime = message.CurrentTime.ToString();
         }
 
         #endregion
