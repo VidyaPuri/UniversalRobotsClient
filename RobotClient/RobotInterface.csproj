@@ -81,6 +81,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\EventLengthConverter.cs" />
     <Compile Include="Helpers\DataLists.cs" />
     <Compile Include="Helpers\DialogEventAggregatorProvider.cs" />
     <Compile Include="Models\ConnectionStatusModel.cs" />
@@ -99,6 +100,8 @@
     <Compile Include="Networking\SerialCommunication.cs" />
     <Compile Include="Networking\SocketClient.cs" />
     <Compile Include="Networking\SocketServer.cs" />
+    <Compile Include="Timeline\TimeLine.cs" />
+    <Compile Include="Timeline\TimeLineEvent.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>

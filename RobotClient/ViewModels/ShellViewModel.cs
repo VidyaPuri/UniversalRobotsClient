@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
+using RobotInterface.Timeline;
 
 namespace RobotClient.ViewModels
 {
@@ -945,6 +946,9 @@ namespace RobotClient.ViewModels
         private int _FloaterPos = 0;
         private bool _MouseStatus = false;
         private int _MousePosX = 0;
+        private string _CurrentTimeStr = "0";
+        private TimeSpan totalTime = new TimeSpan(0, 0, 10);
+        private Duration _StoryDuration;
         private Clock _Clock;
 
         /// <summary>
@@ -953,7 +957,12 @@ namespace RobotClient.ViewModels
         public int FloaterPos
         {
             get { return _FloaterPos; }
-            set => Set(ref _FloaterPos, value);
+            set
+            {
+                _FloaterPos = value;
+                GetCurrentTimeStr();
+                NotifyOfPropertyChange(() => FloaterPos);
+            }
         }
 
         /// <summary>
@@ -975,33 +984,21 @@ namespace RobotClient.ViewModels
         }
 
         /// <summary>
-        /// Mouse Move Event within canvas
+        /// Current time string
         /// </summary>
-        /// <param name="source"></param>
-        public void MouseMove(Canvas source)
+        public string CurrentTimeStr
         {
-            if(MouseStatus)
-            {
-                Point p = Mouse.GetPosition(source);
-                MousePosX = Convert.ToInt32(p.X);
-                FloaterPos = MousePosX;
-            }
+            get { return _CurrentTimeStr; }
+            set => Set(ref _CurrentTimeStr, value);
         }
 
         /// <summary>
-        /// Mouse click down
+        /// Duration of a story 
         /// </summary>
-        public void MouseDown()
+        public Duration StoryDuration
         {
-            MouseStatus = true;
-        }
-
-        /// <summary>
-        /// Mouse release
-        /// </summary>
-        public void MouseUp()
-        {
-            MouseStatus = false;
+            get  { return _StoryDuration; }
+            set => Set(ref _StoryDuration, value);
         }
 
         /// <summary>
@@ -1021,18 +1018,167 @@ namespace RobotClient.ViewModels
         public string CurrentTime
         {
             get { return _CurrentTime; }
-            set 
-            { 
+            set
+            {
                 _CurrentTime = value;
                 NotifyOfPropertyChange(() => CurrentTime);
             }
         }
 
+        #endregion
+
+        #region Timeline Methods
+
+        /// <summary>
+        /// Mouse Move Event within canvas
+        /// </summary>
+        /// <param name="source"></param>
+        public void MouseMove(Canvas source)
+        {
+            Point p = Mouse.GetPosition(source);
+            MousePosX = Convert.ToInt32(p.X);
+
+            if(MouseStatus)
+            {
+                if (MousePosX > 500)
+                    MousePosX = 500;
+
+                FloaterPos = MousePosX;
+                TimeDuration();
+            }
+        }
+
+        /// <summary>
+        /// Gets seconds out of position of the Floater
+        /// </summary>
+        /// <returns></returns>
+        private void TimeDuration()
+        {
+            double totTime = totalTime.TotalMilliseconds;
+            if (FloaterPos != 0)
+            {
+                totTime -= (totTime * FloaterPos / 500);
+            }
+
+            StoryDuration = new Duration(TimeSpan.FromMilliseconds(totTime));
+        }
+
+        /// <summary>
+        /// Get current time str
+        /// </summary>
+        private void GetCurrentTimeStr()
+        {
+            int totTime = (int)totalTime.TotalMilliseconds;
+            TimeSpan curTime = new TimeSpan();
+            if (FloaterPos != 0)
+            {
+                curTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(totTime * FloaterPos / 500));
+                CurrentTimeStr = curTime.ToString();
+            }
+            else if (FloaterPos == 0)
+            {
+                curTime = new TimeSpan(0, 0, 0, 0, 0);
+                CurrentTimeStr = curTime.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Stop button click event
+        /// </summary>
+        public void StopButton()
+        {
+            FloaterPos = 0;
+            TimeDuration();
+        }
+
+        /// <summary>
+        /// Start button click event
+        /// </summary>
+        public void StartButton()
+        {
+        }
+
+        /// <summary>
+        /// Mouse click down
+        /// </summary>
+        public void Butter()
+        {
+            MouseStatus = true;
+        }
+        
+        /// <summary>
+        /// Mouse Down event inside canvas
+        /// </summary>
+        public void MouseDown()
+        {
+            MouseStatus = true;
+        }
+
+        /// <summary>
+        /// Mouse release
+        /// </summary>
+        public void MouseUp()
+        {
+            MouseStatus = false;
+        }
+
+        #endregion
+
+        private TimeSpan _TimelineStart;
+
+        public TimeSpan TimelineStart
+        {
+            get { return _TimelineStart; }
+            set => Set(ref _TimelineStart, value);
+        }
+
+        private TimeSpan _TimelineDuration;
+
+        public TimeSpan TimelineDuration
+        {
+            get { return _TimelineDuration; }
+            set { _TimelineDuration = value; }
+        }
+
+        private BindableCollection<TimeLine> _Timelines = new BindableCollection<TimeLine>();
+
+        public BindableCollection<TimeLine> Timelines
+        {
+            get { return _Timelines; }
+            set { _Timelines = value; }
+        }
+
+        public void FeedTimelines()
+        {
+            TimeLine first = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
+            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
+            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
+            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
+            Timelines.Add(first);
+
+            TimeLine second = new TimeLine() { Duration = new TimeSpan(0, 0, 25) };
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Visje1" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 19), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
+            Timelines.Add(second);
+
+            TimeLine third = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Buksy1" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Buksy2" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
+            Timelines.Add(third);
+        }
+
+        public void TimeLineEvent(object saf)
+        {
+
+        }
 
 
         #endregion
 
-        #endregion
 
         #region Handlers
 
