@@ -1097,14 +1097,6 @@ namespace RobotClient.ViewModels
         public void StartButton()
         {
         }
-
-        /// <summary>
-        /// Mouse click down
-        /// </summary>
-        public void Butter()
-        {
-            MouseStatus = true;
-        }
         
         /// <summary>
         /// Mouse Down event inside canvas
@@ -1123,6 +1115,24 @@ namespace RobotClient.ViewModels
         }
 
         #endregion
+
+
+        private string _DebugString;
+
+        public string DebugString
+        {
+            get { return _DebugString; }
+            set => Set(ref _DebugString, value);
+        }
+
+        private double _TimeLineEventPosX;      
+
+        public double TimeLineEventPosX
+        {
+            get { return _TimeLineEventPosX; }
+            set => Set(ref _TimeLineEventPosX, value);
+
+        }
 
         private TimeSpan _TimelineStart;
 
@@ -1148,8 +1158,18 @@ namespace RobotClient.ViewModels
             set { _Timelines = value; }
         }
 
+        private TimeLineEvent _SelectedTimeLineEvent;   
+
+        public TimeLineEvent SelectedTimeLineEvent
+        {
+            get { return _SelectedTimeLineEvent; }
+            set => Set(ref _SelectedTimeLineEvent, value);
+        }
+
+
         public void FeedTimelines()
         {
+            Timelines.Clear();
             TimeLine first = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
             first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
             first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
@@ -1171,14 +1191,116 @@ namespace RobotClient.ViewModels
             Timelines.Add(third);
         }
 
-        public void TimeLineEvent(object saf)
-        {
 
+        public bool LeftButtonDown { get; set; }
+        public int TimeLineIdx { get; set; }
+        public int TimeLineEventIdx { get; set; }
+        public TimeSpan mouseDownStartTime { get; set; }
+        public double mouseDownX { get; set; }
+
+        public void TimeLineEventLeftDown(object rect, EventArgs args)
+        {
+            if (!(rect is Rectangle selectedRect))
+                return;
+
+            LeftButtonDown = true;
+
+            //Grid rectParent = selectedRect.Parent as Grid;
+            //selectedRect.CaptureMouse();
+
+            TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
+            //Timelines.Contains()
+
+            // Finding the selected time line event
+            foreach (var timeline in Timelines)
+            {
+                foreach(var tlEvent in timeline.Events)
+                {
+                    if(tlEvent == clickedEvent)
+                    {
+                        SelectedTimeLineEvent = tlEvent;
+                        TimeLineIdx = Timelines.IndexOf(timeline);
+                        TimeLineEventIdx = timeline.Events.IndexOf(tlEvent);
+                    }
+                }
+            }
+
+            DebugString = SelectedTimeLineEvent.Name;
+
+            Debug.WriteLine($"The timeline index {TimeLineIdx}");
+            Debug.WriteLine($"The timeline event index {TimeLineEventIdx}");
+
+            //Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = new TimeSpan(0, 0, 0, 1, 5);
+
+            mouseDownX = Mouse.GetPosition(selectedRect).X;
+
+            mouseDownStartTime = SelectedTimeLineEvent.Start;
+
+            //Timelines[0].Events[0].Name = "maricka";
+            //selectedRect.Width = 60;
+            //selectedRect.Margin = new Thickness(MousePosX, 0, 0, 0);
+            //double mouseDownX = Mouse.GetPosition(rectParent).X;
+            //TimeLineEventPosX = mouseDownX;
+            //selectedRect.Name = "Marija";
+
+
+            //var tle = selectedRect.DataContext as TimeLineEvent;
+
+            Timelines.Refresh();
         }
 
 
-        #endregion
 
+        public void TimeLineEventLeftUp(object rect)
+        {
+            LeftButtonDown = false;
+
+
+            //if (!(rect is Rectangle selectedRect))
+            //    return;
+
+            //selectedRect.ReleaseMouseCapture();
+
+            //selectedRect.Width = 60;
+            //selectedRect.Margin = new Thickness(MousePosX, 0, 0, 0);
+            //var tle = selectedRect.DataContext as TimeLineEvent;
+
+        }
+
+        public void TimeLineEventMouseMove(object rect)
+        {
+            if (!(rect is Rectangle selectedRect))
+                return;
+
+            if (!LeftButtonDown)
+                return;
+
+            if (SelectedTimeLineEvent == null)
+                return;
+
+            double thisX = Mouse.GetPosition(selectedRect).X;
+            double distanceMoved = thisX - mouseDownX;
+
+            if (distanceMoved == 0)
+                return;
+
+            double pixelsPerSecond =  500 / Timelines[TimeLineIdx].Duration.TotalSeconds;
+            TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
+            SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
+
+            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = mouseDownStartTime + timeMoved; 
+
+            Timelines.Refresh();
+
+            //Debug.WriteLine($"Move inside rectangle: {p.X}");
+        }
+
+
+
+
+
+
+        #endregion
 
         #region Handlers
 

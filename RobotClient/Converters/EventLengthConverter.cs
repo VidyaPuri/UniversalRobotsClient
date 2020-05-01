@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Data;
 
@@ -14,8 +15,10 @@ namespace RobotInterface.Converters
             double factor = relativeTime.TotalSeconds / timelineDuration.TotalSeconds;
             double rval = factor * containerWidth;
 
+            //Debug.WriteLine($"Container width: {containerWidth}");
             if (targetType == typeof(Thickness))
             {
+
                 return new Thickness(rval, 0, 0, 0);
             }
             else

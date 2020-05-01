@@ -11,7 +11,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        cal:Message.Attach="[Event MouseUp] = [Action MouseUp]"
+        cal:Message.Attach="[Event MouseUp] = [Action MouseUp];[Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)]"
         Title="TCP Client" Width="1240" Height="1080"  MinHeight="800" MinWidth="540" MaxWidth="1240" MaxHeight="1080" Background="#2B2F3D">
 
     <WindowChrome.WindowChrome>
@@ -628,6 +628,8 @@
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Column="1" Grid.Row="1" >
@@ -655,51 +657,27 @@
                                 <!--<TextBlock Text="{Binding FloaterPos, FallbackValue=504}" ></TextBlock>-->
                             </StackPanel>
                         </StackPanel>
-                        
+
                         <Canvas Grid.Column="1" Grid.Row="1" Width="500" MaxWidth="500" Height="90" 
                             Background="Gray" HorizontalAlignment="Left" x:Name="Canvas"
                             cal:Message.Attach= "[Event MouseMove] = [Action MouseMove($source)]">
-                            <!--<StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                    <Rectangle Width="100" Height="30" StrokeThickness="1" Stroke="Black" Fill="AliceBlue" ></Rectangle>
-                                </StackPanel>
-                            </StackPanel>-->
-                            <StackPanel  Background="AliceBlue" Width="500" >
-                                <ItemsControl ItemsSource="{Binding Timelines}" x:Name="TL">
+                            <ListView  Background="AliceBlue" Width="500" >
+                                <ItemsControl ItemsSource="{Binding Timelines}" x:Name="TL" >
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <ItemsControl x:Name="TimeLine" ItemsSource="{Binding Events}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <Grid x:Name="EventContainer" Height="25" Margin="3" Background="DarkRed"
-                                                              />
+                                                        <Grid x:Name="EventContainer" Height="25" Background="DarkRed" Width="500" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid>
                                                             <Rectangle Grid.Column="1" Fill="Green" VerticalAlignment="Stretch" HorizontalAlignment="Left"
-                                                                       cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TL}"
-                                                                        cal:Message.Attach= "[Event PreviewMouseDown] = [Action TimeLineEvent($source)]"
-                                                                       >
+                                                                       cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
+                                                                       cal:Message.Attach= "[Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
+                                                                       [Event PreviewMouseMove] = [Action TimeLineEventMouseMove($source)]" >
                                                                 <Rectangle.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
                                                                         <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
@@ -731,7 +709,7 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                            </StackPanel>
+                            </ListView>
 
                             <Rectangle x:Name="Floater" Width="9" Height="90" 
                                    Fill="MediumVioletRed" Stroke="Black" StrokeThickness="3" 
@@ -768,90 +746,65 @@
                     </Canvas>
 
                         <!--<Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>-->
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Grid.Row="2">
                             <Button Name="StartButton">Start</Button>
                             <Button Name="PauseButton">Pause</Button>
                             <Button Name="ResumeButton">Resume</Button>
                             <Button Name="SkipToEndButton">Skip To End</Button>
                             <Button Name="StopButton">Stop</Button>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Mouse status: "></Label>
-                            <TextBlock Text="{Binding MouseStatus, FallbackValue=0}" VerticalAlignment="Center" ></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Mouse Y pos: "></Label>
-                            <TextBlock Text="{Binding MousePosX, FallbackValue=0}" VerticalAlignment="Center" ></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Floater pos: "></Label>
-                            <TextBlock Text="{Binding FloaterPos, FallbackValue=0}" VerticalAlignment="Center" ></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Time: "></Label>
-                            <TextBlock Text="{Binding CurrentTime, FallbackValue=0, StringFormat={}{0:#}}" VerticalAlignment="Center" ></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Time string: "></Label>
-                            <TextBlock Text="{Binding CurrentTimeStr, FallbackValue=0, StringFormat={}{0:#}}" VerticalAlignment="Center" ></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Duration: "></Label>
-                            <TextBlock Text="{Binding StoryDuration, FallbackValue=0, StringFormat={}{0:#}}" VerticalAlignment="Center" ></TextBlock>
-                        </StackPanel>
-                        <Button x:Name="FeedTimelines" Content="Stop SB" >
+                        
+                        <!-- Debug row-->
+                        <Grid  Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" >
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Mouse status: "></Label>
+                                    <TextBlock Text="{Binding MouseStatus, FallbackValue=0}" VerticalAlignment="Center" ></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Mouse Y pos: "></Label>
+                                    <TextBlock Text="{Binding MousePosX, FallbackValue=0}" VerticalAlignment="Center" ></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Floater pos: "></Label>
+                                    <TextBlock Text="{Binding FloaterPos, FallbackValue=0}" VerticalAlignment="Center" ></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Time: "></Label>
+                                    <TextBlock Text="{Binding CurrentTime, FallbackValue=0, StringFormat={}{0:#}}" VerticalAlignment="Center" ></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Time string: "></Label>
+                                    <TextBlock Text="{Binding CurrentTimeStr, FallbackValue=0, StringFormat={}{0:#}}" VerticalAlignment="Center" ></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Duration: "></Label>
+                                    <TextBlock Text="{Binding StoryDuration, FallbackValue=0, StringFormat={}{0:#}}" VerticalAlignment="Center" ></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Debug text:"></Label>
+                                    <TextBlock Text="{Binding DebugString}" VerticalAlignment="Center"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="TimeLine Pos X text:"></Label>
+                                    <TextBlock Text="{Binding TimeLineEventPosX}" VerticalAlignment="Center"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            
+                        </Grid>
+                        
+                        <Button Grid.Row="4" x:Name="FeedTimelines" Content="Stop SB" >
                             
                         </Button>
                         
                     </StackPanel>
-                    <StackPanel Grid.Row="2" Grid.Column="1" Background="AliceBlue" Width="500" >
-                        <ItemsControl ItemsSource="{Binding Timelines}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <ItemsControl x:Name="TimeLine" ItemsSource="{Binding Path=Events}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <Grid x:Name="EventContainer" Height="25" Margin="3" Background="Gainsboro"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid cal:Message.Attach = "[Event MouseLeftButtonDown] = [Action MouseDown]">
-                                                    <Rectangle Grid.Column="1" Fill="Green" VerticalAlignment="Stretch" HorizontalAlignment="Left" 
-                                                                       >
-                                                        <Rectangle.Margin>
-                                                            <MultiBinding Converter="{StaticResource mEventLengthConverter}">
-                                                                <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
-                                                                <Binding Path="Start"/>
-                                                                <Binding ElementName="EventContainer" Path="ActualWidth"/>
-                                                            </MultiBinding>
-                                                        </Rectangle.Margin>
-                                                        <Rectangle.Width>
-                                                            <MultiBinding Converter="{StaticResource mEventLengthConverter}">
-                                                                <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
-                                                                <Binding Path="Duration"/>
-                                                                <Binding ElementName="EventContainer" Path="ActualWidth"/>
-                                                            </MultiBinding>
-                                                        </Rectangle.Width>
-                                                    </Rectangle>
-                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Padding="5" IsHitTestVisible="False">
-                                                        <TextBlock.Margin>
-                                                            <MultiBinding Converter="{StaticResource mEventLengthConverter}">
-                                                                <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
-                                                                <Binding Path="Start"/>
-                                                                <Binding ElementName="EventContainer" Path="ActualWidth"/>
-                                                            </MultiBinding>
-                                                        </TextBlock.Margin>
-                                                    </TextBlock>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
                     <!--<StackPanel Grid.Row="2" Grid.Column="1" Background="AliceBlue" Width="500"  Grid.RowSpan="3">
                         <ItemsControl ItemsSource="{Binding Timelines}">
                             <ItemsControl.ItemTemplate>
