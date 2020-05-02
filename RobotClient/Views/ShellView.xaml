@@ -677,6 +677,7 @@
                                                             <Rectangle Grid.Column="1" Fill="Green" VerticalAlignment="Stretch" HorizontalAlignment="Left"
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
                                                                        cal:Message.Attach= "[Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
+                                                                       [Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
                                                                        [Event PreviewMouseMove] = [Action TimeLineEventMouseMove($source)]" >
                                                                 <Rectangle.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">

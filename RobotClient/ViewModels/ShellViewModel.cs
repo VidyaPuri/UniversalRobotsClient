@@ -1211,7 +1211,7 @@ namespace RobotClient.ViewModels
             TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
             //Timelines.Contains()
 
-            // Finding the selected time line event
+            // Finding the selected timeline event 
             foreach (var timeline in Timelines)
             {
                 foreach(var tlEvent in timeline.Events)
@@ -1236,6 +1236,11 @@ namespace RobotClient.ViewModels
 
             mouseDownStartTime = SelectedTimeLineEvent.Start;
 
+            Debug.WriteLine("###################");
+            Debug.WriteLine("Mouse Down");
+            Debug.WriteLine($"mouse down start time: {mouseDownStartTime}");
+            Debug.WriteLine("###################");
+
             //Timelines[0].Events[0].Name = "maricka";
             //selectedRect.Width = 60;
             //selectedRect.Margin = new Thickness(MousePosX, 0, 0, 0);
@@ -1254,6 +1259,8 @@ namespace RobotClient.ViewModels
         public void TimeLineEventLeftUp(object rect)
         {
             LeftButtonDown = false;
+
+            Debug.WriteLine("Mouse button up");
 
 
             //if (!(rect is Rectangle selectedRect))
@@ -1288,7 +1295,17 @@ namespace RobotClient.ViewModels
             TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
             SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
 
-            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = mouseDownStartTime + timeMoved; 
+            Debug.WriteLine("###################");
+            Debug.WriteLine("Mouse Move");
+            Debug.WriteLine($"Berfore Move {Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start}");
+            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start + timeMoved;
+            Debug.WriteLine($"Distance Moved {distanceMoved}");
+
+
+            Debug.WriteLine($"Moved time: {timeMoved}");
+            Debug.WriteLine($"After Move: {Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start}");
+
+            Debug.WriteLine("###################");
 
             Timelines.Refresh();
 
