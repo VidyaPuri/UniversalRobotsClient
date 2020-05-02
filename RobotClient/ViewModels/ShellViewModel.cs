@@ -1249,7 +1249,7 @@ namespace RobotClient.ViewModels
             LeftButtonDown = true;
             MouseClickedEvent = LeftButtonDown;
 
-            //Grid rectParent = selectedRect.Parent as Grid;
+            Grid rectParent = selectedRect.Parent as Grid;
 
             TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
 
@@ -1269,7 +1269,7 @@ namespace RobotClient.ViewModels
 
             DebugString = SelectedTimeLineEvent.Name;
 
-            mouseDownX = Mouse.GetPosition(selectedRect).X;
+            mouseDownX = Mouse.GetPosition(rectParent).X;
             TimeLineEventPosX = mouseDownX; 
 
             mouseDownStartTime = SelectedTimeLineEvent.Start;
@@ -1303,8 +1303,10 @@ namespace RobotClient.ViewModels
 
             //if (SelectedTimeLineEvent == null)
             //    return;
+            Grid rectParent = selectedRect.Parent as Grid;
 
-            double thisX = Mouse.GetPosition(selectedRect).X;
+
+            double thisX = Mouse.GetPosition(rectParent).X;
             MouseCurrentPosX = thisX;
             double distanceMoved = thisX - mouseDownX;
             double pixelsPerSecond =  500 / Timelines[TimeLineIdx].Duration.TotalSeconds;
