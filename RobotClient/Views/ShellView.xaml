@@ -668,17 +668,17 @@
                                             <ItemsControl x:Name="TimeLine" ItemsSource="{Binding Events}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <Grid x:Name="EventContainer" Height="25" Background="DarkRed" Width="500" />
+                                                        <Grid x:Name="EventContainer" Height="25" Background="gray" Width="500" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid>
-                                                            <Rectangle Grid.Column="1" Fill="Green" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                                                            <Rectangle Grid.Column="1" Fill="DimGray" VerticalAlignment="Stretch" HorizontalAlignment="Left"
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
                                                                        cal:Message.Attach= "[Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
                                                                        [Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
-                                                                       [Event PreviewMouseMove] = [Action TimeLineEventMouseMove($source)]" >
+                                                                       [Event PreviewMouseMove] = [Action TimeLineEventMouseMove($source, $eventArgs)]" >
                                                                 <Rectangle.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
                                                                         <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
@@ -796,9 +796,25 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="TimeLine Pos X text:"></Label>
                                     <TextBlock Text="{Binding TimeLineEventPosX}" VerticalAlignment="Center"></TextBlock>
+                                </StackPanel> 
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="TimeLine Pos X text:"></Label>
+                                    <TextBlock Text="{Binding MouseCurrentPosX}" VerticalAlignment="Center"></TextBlock>
                                 </StackPanel>
-                            </StackPanel>
-                            
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Mouse distance moved in pixels: "></Label>
+                                    <TextBlock Text="{Binding MouseDistanceMoved}" VerticalAlignment="Center"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Mouse distance moved in seconds: "></Label>
+                                    <TextBlock Text="{Binding MouseMovedInSeconds}" VerticalAlignment="Center"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Mouse clicked: "></Label>
+                                    <TextBlock Text="{Binding MouseClickedEvent}" VerticalAlignment="Center"></TextBlock>
+                                </StackPanel>
+                            </StackPanel> 
+
                         </Grid>
                         
                         <Button Grid.Row="4" x:Name="FeedTimelines" Content="Stop SB" >

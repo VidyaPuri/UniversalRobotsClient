@@ -1172,22 +1172,22 @@ namespace RobotClient.ViewModels
             Timelines.Clear();
             TimeLine first = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
             first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
-            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
-            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
+            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
+            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
             Timelines.Add(first);
 
             TimeLine second = new TimeLine() { Duration = new TimeSpan(0, 0, 25) };
             second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Visje1" });
-            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
-            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
-            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 19), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
+            //second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
+            //second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
+            //second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 19), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
             Timelines.Add(second);
 
             TimeLine third = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Buksy1" });
-            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
-            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Buksy2" });
-            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
+            //third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
+            //third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Buksy2" });
+            //third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
             Timelines.Add(third);
         }
 
@@ -1198,18 +1198,60 @@ namespace RobotClient.ViewModels
         public TimeSpan mouseDownStartTime { get; set; }
         public double mouseDownX { get; set; }
 
-        public void TimeLineEventLeftDown(object rect, EventArgs args)
+
+        private TimeSpan _MouseMovedInSeconds;
+
+        public TimeSpan MouseMovedInSeconds
         {
+            get { return _MouseMovedInSeconds; }
+            set => Set(ref _MouseMovedInSeconds, value);
+        }
+
+
+        private double _MouseDistanceMoved;
+
+        public double MouseDistanceMoved
+        {
+            get { return _MouseDistanceMoved; }
+            set => Set(ref _MouseDistanceMoved, value);
+        }
+
+        private bool _MouseClickedEvent;
+
+        public bool MouseClickedEvent
+        {
+            get { return _MouseClickedEvent; }
+            set => Set(ref _MouseClickedEvent, value);
+        }
+
+        private double _MouseCurrentPosX;
+
+        public double MouseCurrentPosX
+        {
+            get { return _MouseCurrentPosX; }
+            set => Set(ref _MouseCurrentPosX, value);
+        }
+
+
+
+        //public void TimeLineMouseLeave(object rect)
+        //{
+        //    LeftButtonDown = false;
+        //}
+
+        public void TimeLineEventLeftDown(object rect, MouseButtonEventArgs args)
+        {
+            args.Handled = false;
+
             if (!(rect is Rectangle selectedRect))
                 return;
 
             LeftButtonDown = true;
+            MouseClickedEvent = LeftButtonDown;
 
             //Grid rectParent = selectedRect.Parent as Grid;
-            //selectedRect.CaptureMouse();
 
             TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
-            //Timelines.Contains()
 
             // Finding the selected timeline event 
             foreach (var timeline in Timelines)
@@ -1227,95 +1269,55 @@ namespace RobotClient.ViewModels
 
             DebugString = SelectedTimeLineEvent.Name;
 
-            Debug.WriteLine($"The timeline index {TimeLineIdx}");
-            Debug.WriteLine($"The timeline event index {TimeLineEventIdx}");
-
-            //Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = new TimeSpan(0, 0, 0, 1, 5);
-
             mouseDownX = Mouse.GetPosition(selectedRect).X;
+            TimeLineEventPosX = mouseDownX; 
 
             mouseDownStartTime = SelectedTimeLineEvent.Start;
 
-            Debug.WriteLine("###################");
-            Debug.WriteLine("Mouse Down");
-            Debug.WriteLine($"mouse down start time: {mouseDownStartTime}");
-            Debug.WriteLine("###################");
-
-            //Timelines[0].Events[0].Name = "maricka";
-            //selectedRect.Width = 60;
-            //selectedRect.Margin = new Thickness(MousePosX, 0, 0, 0);
-            //double mouseDownX = Mouse.GetPosition(rectParent).X;
-            //TimeLineEventPosX = mouseDownX;
-            //selectedRect.Name = "Marija";
-
-
-            //var tle = selectedRect.DataContext as TimeLineEvent;
 
             Timelines.Refresh();
+            selectedRect.CaptureMouse();
+
+            args.Handled = true;
         }
-
-
 
         public void TimeLineEventLeftUp(object rect)
         {
             LeftButtonDown = false;
 
-            Debug.WriteLine("Mouse button up");
+            if (!(rect is Rectangle selectedRect))
+                return;
 
-
-            //if (!(rect is Rectangle selectedRect))
-            //    return;
-
-            //selectedRect.ReleaseMouseCapture();
-
-            //selectedRect.Width = 60;
-            //selectedRect.Margin = new Thickness(MousePosX, 0, 0, 0);
-            //var tle = selectedRect.DataContext as TimeLineEvent;
-
+            selectedRect.ReleaseMouseCapture();
+            MouseClickedEvent = LeftButtonDown;
         }
 
-        public void TimeLineEventMouseMove(object rect)
+        public void TimeLineEventMouseMove(object rect, MouseEventArgs args)
         {
+            args.Handled = false;
             if (!(rect is Rectangle selectedRect))
                 return;
 
             if (!LeftButtonDown)
                 return;
 
-            if (SelectedTimeLineEvent == null)
-                return;
+            //if (SelectedTimeLineEvent == null)
+            //    return;
 
             double thisX = Mouse.GetPosition(selectedRect).X;
+            MouseCurrentPosX = thisX;
             double distanceMoved = thisX - mouseDownX;
-
-            if (distanceMoved == 0)
-                return;
-
             double pixelsPerSecond =  500 / Timelines[TimeLineIdx].Duration.TotalSeconds;
+
             TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
-            SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
 
-            Debug.WriteLine("###################");
-            Debug.WriteLine("Mouse Move");
-            Debug.WriteLine($"Berfore Move {Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start}");
-            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start + timeMoved;
-            Debug.WriteLine($"Distance Moved {distanceMoved}");
-
-
-            Debug.WriteLine($"Moved time: {timeMoved}");
-            Debug.WriteLine($"After Move: {Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start}");
-
-            Debug.WriteLine("###################");
+            MouseMovedInSeconds = timeMoved;
+            //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
+            MouseDistanceMoved = distanceMoved;
+            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = mouseDownStartTime + timeMoved;
 
             Timelines.Refresh();
-
-            //Debug.WriteLine($"Move inside rectangle: {p.X}");
         }
-
-
-
-
-
 
         #endregion
 
