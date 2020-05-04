@@ -144,6 +144,9 @@ namespace RobotClient.ViewModels
             BaudRateList = DataLists.GetBaudRates();
             MotorStepTypeList = DataLists.GetStepTypes();
 
+            // Timeline initialisatiors
+            FloaterPos = 0;
+            TimeDuration();
         }
 
 
@@ -1040,8 +1043,8 @@ namespace RobotClient.ViewModels
 
             if(MouseStatus)
             {
-                if (MousePosX > 500)
-                    MousePosX = 500;
+                if (MousePosX > 650)
+                    MousePosX = 650;
 
                 FloaterPos = MousePosX;
                 TimeDuration();
@@ -1057,7 +1060,7 @@ namespace RobotClient.ViewModels
             double totTime = totalTime.TotalMilliseconds;
             if (FloaterPos != 0)
             {
-                totTime -= (totTime * FloaterPos / 500);
+                totTime -= (totTime * FloaterPos / 650);
             }
 
             StoryDuration = new Duration(TimeSpan.FromMilliseconds(totTime));
@@ -1172,22 +1175,22 @@ namespace RobotClient.ViewModels
             Timelines.Clear();
             TimeLine first = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
             first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
-            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
-            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
+            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
+            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
             Timelines.Add(first);
 
             TimeLine second = new TimeLine() { Duration = new TimeSpan(0, 0, 25) };
             second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Visje1" });
-            //second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
-            //second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
-            //second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 19), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 19), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
             Timelines.Add(second);
 
             TimeLine third = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Buksy1" });
-            //third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
-            //third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Buksy2" });
-            //third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Buksy2" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
             Timelines.Add(third);
         }
 
@@ -1231,7 +1234,6 @@ namespace RobotClient.ViewModels
             get { return _MouseCurrentPosX; }
             set => Set(ref _MouseCurrentPosX, value);
         }
-
 
 
         //public void TimeLineMouseLeave(object rect)
@@ -1309,7 +1311,7 @@ namespace RobotClient.ViewModels
             double thisX = Mouse.GetPosition(rectParent).X;
             MouseCurrentPosX = thisX;
             double distanceMoved = thisX - mouseDownX;
-            double pixelsPerSecond =  500 / Timelines[TimeLineIdx].Duration.TotalSeconds;
+            double pixelsPerSecond =  650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
 
             TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
 

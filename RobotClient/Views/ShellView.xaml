@@ -610,7 +610,7 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5"></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="5"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
@@ -619,7 +619,7 @@
                 <Grid Grid.Row="1" Grid.Column="1" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="5"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
@@ -632,49 +632,32 @@
                         <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Column="1" Grid.Row="1" >
+                    <StackPanel Grid.Row="1"  Grid.Column="1" >
                         <StackPanel  Margin="0 5">
                             <DockPanel>
                                 <Label DockPanel.Dock="Left" Content="0"></Label>
                                 <Label DockPanel.Dock="Right" Content="10" HorizontalAlignment="Right"></Label>
                             </DockPanel>
-                            <StackPanel>
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 0,0 L 100,0" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 00,-2 L 0,5" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 100,0 L 100,-5" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 100,-6 L 200,-6" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 200,-6 L 200,0" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 200,-6 L 200,-6" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 200,-6 L 300,-6" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 300,-6 L 300, 0" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 300,-6 L 400, -6" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 400,-6 L 400, -0" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 400,-6 L 500, -6" />
-                                <Path Stroke="Black" StrokeThickness="2" Data="M 500,-7 L 500, 0" />
-                            </StackPanel>
-                            <StackPanel  Orientation="Horizontal" >
-                                <!--a <Slider Value="{Binding FloaterPosdf}" Width="500" Minimum="0" Maximum="500"></Slider>-->
-                                <!--<TextBlock Text="{Binding FloaterPos, FallbackValue=504}" ></TextBlock>-->
-                            </StackPanel>
                         </StackPanel>
 
-                        <Canvas Grid.Column="1" Grid.Row="1" Width="500" MaxWidth="500" Height="90" 
+                        <Canvas Grid.Row="1" Grid.Column="1" Width="650" MaxWidth="650" Height="90" 
                             Background="Gray" HorizontalAlignment="Left" x:Name="Canvas"
                             cal:Message.Attach= "[Event MouseMove] = [Action MouseMove($source)]">
-                            <ListView  Background="AliceBlue" Width="500" >
+                            <ItemsControl  Background="AliceBlue" Width="650" >
                                 <ItemsControl ItemsSource="{Binding Timelines}" x:Name="TL" >
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <ItemsControl x:Name="TimeLine" ItemsSource="{Binding Events}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <Grid x:Name="EventContainer" Height="25" Background="gray" Width="500" />
+                                                        <Grid x:Name="EventContainer" Height="30" Background="gray" Width="650" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Grid>
-                                                            <Rectangle Grid.Column="1" Fill="DimGray" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                                                        <Grid Margin="0 1">
+                                                            <Rectangle Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
+                                                                       Stroke="Black" StrokeThickness="1.5" 
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
                                                                        cal:Message.Attach= "[Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
                                                                        [Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
@@ -693,8 +676,11 @@
                                                                         <Binding ElementName="EventContainer" Path="ActualWidth"/>
                                                                     </MultiBinding>
                                                                 </Rectangle.Width>
+                                                                <Rectangle.Fill>
+                                                                    <SolidColorBrush Color="MediumPurple"></SolidColorBrush>
+                                                                </Rectangle.Fill>
                                                             </Rectangle>
-                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Padding="5" IsHitTestVisible="False">
+                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Padding="5" IsHitTestVisible="False" Panel.ZIndex="5">
                                                                 <TextBlock.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
                                                                         <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
@@ -710,10 +696,10 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                            </ListView>
+                            </ItemsControl>
 
                             <Rectangle x:Name="Floater" Width="9" Height="90" 
-                                   Fill="MediumVioletRed" Stroke="Black" StrokeThickness="3" 
+                                   Fill="LightGoldenrodYellow" Stroke="Black" StrokeThickness="2.5" 
                                    Canvas.Left="{Binding FloaterPos,Mode=TwoWay}"
                                    cal:Message.Attach = "[Event MouseLeftButtonDown] = [Action MouseDown]">
                             <Rectangle.Triggers>
@@ -722,40 +708,36 @@
                                 </EventTrigger>
                             </Rectangle.Triggers>
                         </Rectangle>
-                        <!--<RepeatButton x:Name="Butter" Width="9" Height="100" Canvas.Left="{Binding FloaterPos}"
-                            Background="AliceBlue" BorderBrush="Black" BorderThickness="3"
-                                >
-                        </RepeatButton>--> 
-                        <!--cal:Message.Attach = "[Event MouseRightButtonUp] = [Action MouseUp]"
-                            cal:Message.Attach = "[Event MouseDown] = [Action MouseDown]"
-                            -->
-                            
-                        <!--<Canvas.Triggers>
-                            <EventTrigger RoutedEvent="MouseMove">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="Floater"
-                                            Storyboard.TargetProperty="(Canvas.Left)"
-                                            Duration="0:0:0" 
-                                            To="{Binding FloaterPos}">
-                                        </DoubleAnimation>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Canvas.Triggers>-->
+                            <StackPanel Panel.ZIndex="3">
+                                <Path Stroke="Black" StrokeThickness="3" Data="M -1,-5 h 652" />
+                                <Path Stroke="Black" StrokeThickness="3" Data="M 0,-5 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 65,-100 v 100"/>
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 130, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 195, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 260, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 325, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 390, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 455, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 520, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 585, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="3" Data="M 650, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="3" Data="M 0,0 h 650" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 0,-33 h 650" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 0,-66 h 650" />
+                            </StackPanel>
                     </Canvas>
 
                         <!--<Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>-->
-                        <StackPanel Orientation="Horizontal" Grid.Row="2">
-                            <Button Name="StartButton">Start</Button>
-                            <Button Name="PauseButton">Pause</Button>
-                            <Button Name="ResumeButton">Resume</Button>
-                            <Button Name="SkipToEndButton">Skip To End</Button>
-                            <Button Name="StopButton">Stop</Button>
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5 10 0 5">
+                            <Button Name="StartButton" Style="{DynamicResource ButtonStyle1}">Start</Button>
+                            <Button Name="PauseButton" Style="{DynamicResource ButtonStyle1}">Pause</Button>
+                            <Button Name="ResumeButton" Style="{DynamicResource ButtonStyle1}">Resume</Button>
+                            <Button Name="SkipToEndButton" Style="{DynamicResource ButtonStyle1}">Skip To End</Button>
+                            <Button Name="StopButton" Style="{DynamicResource ButtonStyle1}">Stop</Button>
                         </StackPanel>
                         
                         <!-- Debug row-->
+                        <GroupBox Header="Status console" Grid.Row="3"  BorderThickness="1" BorderBrush="DimGray">
                         <Grid  Grid.Row="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -814,49 +796,13 @@
                                     <TextBlock Text="{Binding MouseClickedEvent}" VerticalAlignment="Center"></TextBlock>
                                 </StackPanel>
                             </StackPanel> 
-
                         </Grid>
-                        
-                        <Button Grid.Row="4" x:Name="FeedTimelines" Content="Stop SB" >
+                        </GroupBox>
+                        <Button Grid.Row="4" x:Name="FeedTimelines" Content="Feed Timeline"  Style="{DynamicResource ButtonStyle1}">
                             
                         </Button>
                         
                     </StackPanel>
-                    <!--<StackPanel Grid.Row="2" Grid.Column="1" Background="AliceBlue" Width="500"  Grid.RowSpan="3">
-                        <ItemsControl ItemsSource="{Binding Timelines}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <ItemsControl x:Name="TimeLine" ItemsSource="{Binding Path=Events}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <Grid x:Name="EventContainer" Height="25" Margin="3" Background="Gainsboro"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Rectangle Grid.Column="1" Fill="Green" VerticalAlignment="Stretch" HorizontalAlignment="Left">
-                                                    <Rectangle.Margin>
-                                                        <MultiBinding Converter="{StaticResource mEventLengthConverter}">
-                                                            <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
-                                                            <Binding Path="Start"/>
-                                                            <Binding ElementName="EventContainer" Path="ActualWidth"/>
-                                                        </MultiBinding>
-                                                    </Rectangle.Margin>
-                                                    <Rectangle.Width>
-                                                        <MultiBinding Converter="{StaticResource mEventLengthConverter}">
-                                                            <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
-                                                            <Binding Path="Duration"/>
-                                                            <Binding ElementName="EventContainer" Path="ActualWidth"/>
-                                                        </MultiBinding>
-                                                    </Rectangle.Width>
-                                                </Rectangle>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>-->
                     
                     <Grid.Triggers>
                         <EventTrigger SourceName="StartButton" RoutedEvent="Button.Click">
@@ -868,7 +814,7 @@
                                             Storyboard.TargetProperty="(Canvas.Left)"
                                             FillBehavior="HoldEnd"
                                             Duration="{Binding StoryDuration}"
-                                            From="{Binding FloaterPos}" To="500">
+                                            From="{Binding FloaterPos}" To="650">
                                     </DoubleAnimation>
                                 </Storyboard>
                             </BeginStoryboard>
