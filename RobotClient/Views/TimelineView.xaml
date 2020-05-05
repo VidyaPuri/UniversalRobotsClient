@@ -72,7 +72,7 @@
                                                     <DataTemplate>
                                                         <Grid Margin="0 1">
                                                             <Rectangle Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
-                                                                       Stroke="Black" StrokeThickness="1.5" 
+                                                                       Stroke="DimGray" StrokeThickness="1.5" 
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
                                                                        cal:Message.Attach= "[Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
                                                                        [Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
@@ -92,10 +92,10 @@
                                                                     </MultiBinding>
                                                                 </Rectangle.Width>
                                                                 <Rectangle.Fill>
-                                                                    <SolidColorBrush Color="MediumPurple"></SolidColorBrush>
+                                                                    <SolidColorBrush Color="#2A0456"></SolidColorBrush>
                                                                 </Rectangle.Fill>
                                                             </Rectangle>
-                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Padding="5" IsHitTestVisible="False" Panel.ZIndex="5">
+                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Padding="5" IsHitTestVisible="False" Panel.ZIndex="5" Foreground="DarkGray">
                                                                 <TextBlock.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
                                                                         <Binding ElementName="TimeLine" Path="DataContext.Duration"/>

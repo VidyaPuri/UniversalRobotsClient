@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Caliburn.Micro;
 using System.Windows;
 using System;
+using RobotInterface.Helpers;
 
 namespace RobotInterface.ViewModels
 {
@@ -18,6 +19,8 @@ namespace RobotInterface.ViewModels
             // Event Aggregator
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
+
+            DialogEventAggregatorProvider.EA.Subscribe(this);
 
             // Timeline initialisatiors
             FloaterPos = 0;
