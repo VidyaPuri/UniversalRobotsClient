@@ -10,7 +10,7 @@ using System;
 
 namespace RobotInterface.ViewModels
 {
-    public class TimelineViewModel : Screen, IHandle<Clock>, IHandle<string>
+    public class TimelineViewModel : Screen, IHandle<Clock>
     {
         public TimelineViewModel(
             IEventAggregator eventAggregator)
@@ -456,12 +456,6 @@ namespace RobotInterface.ViewModels
             Debug.WriteLine($"Progres: {progress * 100} % ");
             FloaterPos = Convert.ToInt32(progress * 650);
         }
-
-        public void Handle(string message)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
     }

@@ -25,7 +25,6 @@ namespace RobotInterface.Views
         {
             Clock time = (Clock)sender;
             DialogEventAggregatorProvider.EA.PublishOnUIThread(time);
-            DialogEventAggregatorProvider.Presure();
         }
     }
 }
