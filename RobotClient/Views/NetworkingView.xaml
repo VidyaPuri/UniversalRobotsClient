@@ -1,0 +1,553 @@
+﻿<UserControl x:Class="RobotInterface.Views.NetworkingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RobotInterface.Views"
+             xmlns:converters="clr-namespace:RobotInterface.Converters"
+             xmlns:cal="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+             cal:Message.Attach="[Event MouseUp] = [Action MouseUp];[Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)]"
+             d:DesignHeight="1080" d:DesignWidth="800">
+    
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:EventLengthConverter x:Key="mEventLengthConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <!-- Network (socket) controls -->
+        <Border BorderBrush="Black" BorderThickness="1" Background="#fffcf9"/>
+        <Grid  Margin="5" Background="#fffcf9">
+            <!-- Outer Shell-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!-- Connection panel -->
+            <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="1"/>
+            <DockPanel Grid.Row="1" Grid.Column="1">
+                <Label Content="IP Address" Margin="5" Foreground="Black" FontWeight="Bold"/>
+                <TextBox x:Name="IpAddress" Width="200" Margin="5" VerticalContentAlignment="Center"/>
+                <Label Content="Port" Margin="5" Foreground="Black" FontWeight="Bold"/>
+                <TextBox x:Name="Port" Width="60" Margin="5" VerticalContentAlignment="Center" />
+                <Button x:Name="ConnectToRobot" Content="{Binding ConnectToggle, FallbackValue=Connect}" 
+                        IsEnabled="{Binding CanConnect}" DockPanel.Dock="Right"
+                        Margin="5" Padding="5" VerticalContentAlignment="Center"
+                        Style="{DynamicResource ButtonStyle1}">
+                </Button>
+            </DockPanel>
+
+            <!-- Dashboard server panel -->
+            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                <Label Width="Auto" Content="Dashboard Server" Margin="5" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                <TextBox x:Name="Script" Width="303" Margin="5" VerticalContentAlignment="Center"/>
+                <RepeatButton x:Name="SendScript" Content="Send" Margin="5" Padding="5" Style="{DynamicResource ButtonStyle2}" Width="46"/>
+            </StackPanel>
+
+            <!-- Robot Controls -->
+            <Border Grid.Row="5" Grid.Column="1" BorderBrush="Black" BorderThickness="1"/>
+            <Grid Grid.Row="5" Grid.Column="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="3"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="3"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="5"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="5"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="5"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="5"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="5"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Move Joints-->
+                    <GroupBox Header="Move Joints" Grid.Row="0" Grid.Column="1" BorderThickness="1" BorderBrush="DimGray">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto" MinWidth="40"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Move Joints data-->
+                            <Label Content="J0" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotJoints[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="°" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="J1" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotJoints[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="°" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="J2" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotJoints[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="°" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="J3" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotJoints[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="°" Grid.Row="3" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="J4" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotJoints[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="°" Grid.Row="4" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="J5" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotJoints[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="°" Grid.Row="5" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <!-- Move Joints buttons-->
+                            <RepeatButton x:Name="J0Sub" Content="J0-" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="J0Add" Content="J0+" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="J1Sub" Content="J1-" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="J1Add" Content="J1+" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="J2Sub" Content="J2-" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="J2Add" Content="J2+" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="J3Sub" Content="J3-" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="J3Add" Content="J3+" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="J4Sub" Content="J4-" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="J4Add" Content="J4+" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="J5Sub" Content="J5-" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="J5Add" Content="J5+" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="Move Tool" Grid.Row="0" Grid.Column="3" BorderThickness="1" BorderBrush="DimGray">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto" MinWidth="40"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Move Tool data-->
+                            <Label Content="X" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotPose[0], StringFormat={}{0:0.####}}" Grid.Row="0" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="mm" Grid.Row="0" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="Y" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotPose[1], StringFormat={}{0:0.####}}" Grid.Row="1" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="mm" Grid.Row="1" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="Z" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotPose[2], StringFormat={}{0:0.####}}" Grid.Row="2" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="mm" Grid.Row="2" Grid.Column="2" MinWidth="20" VerticalAlignment="Center"/>-->
+
+                            <Label Content="Rx" Grid.Row="3" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotPose[3], StringFormat={}{0:0.####}}" Grid.Row="3" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+
+                            <Label Content="Ry" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotPose[4], StringFormat={}{0:0.####}}" Grid.Row="4" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+
+                            <Label Content="Rz" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding RobotPose[5], StringFormat={}{0:0.####}}" Grid.Row="5" Grid.Column="1" MinWidth="20" VerticalAlignment="Center"/>
+
+                            <!-- Move Tool buttons-->
+                            <RepeatButton x:Name="TxSub" Content="Tx-" Grid.Row="0" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="TxAdd" Content="Tx+" Grid.Row="0" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="45" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="TySub" Content="Ty-" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="TyAdd" Content="Ty+" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="TzSub" Content="Tz-" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="TzAdd" Content="Tz+" Grid.Row="2" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="RxSub" Content="Rx-" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="RxAdd" Content="Rx+" Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                            <RepeatButton x:Name="RySub" Content="Ry-" Grid.Row="4" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="RyAdd" Content="Ry+" Grid.Row="4" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+
+                            <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+                            <RepeatButton x:Name="RzAdd" Content="Rz+" Grid.Row="5" Grid.Column="4" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                            IsEnabled="{Binding ConnectionStatusBool}"
+                            Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
+                            </RepeatButton>
+
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- IO and Dashboard settings -->
+                    <StackPanel Grid.Row="0" Grid.Column="5">
+                        <!-- Digital I/O -->
+                        <GroupBox Header="Digital I/O" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical" Margin="5">
+                                    <CheckBox Content="0" Name="Io0" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                    <CheckBox Content="1" Name="Io1" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                    <CheckBox Content="2" Name="Io2" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                    <CheckBox Content="3" Name="Io3" VerticalAlignment="Center" FlowDirection="RightToLeft" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="5">
+                                    <CheckBox Content="4" Name="Io4" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                    <CheckBox Content="5" Name="Io5" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                    <CheckBox Content="6" Name="Io6" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                    <CheckBox Content="7" Name="Io7" VerticalAlignment="Center" FlowDirection="LeftToRight" IsEnabled="{Binding ConnectionStatusBool}"></CheckBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!-- Dashboard Settings -->
+                        <GroupBox Header="Dashboard" Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="DimGray" Margin="0 5 0 0 ">
+                            <StackPanel Orientation="Vertical">
+                                <Button x:Name="ClosePopup" Content="Close msg" Margin="5" Width="102" Style="{DynamicResource ButtonStyle1}"/>
+                                <Button x:Name="EnableRobot" Content="Enable robot" Margin="5" Width="102" Style="{DynamicResource ButtonStyle1}"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+
+                    <!-- Move Rate -->
+                    <GroupBox Header="Move Rate" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="6" BorderThickness="1" BorderBrush="DimGray">
+                        <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Label  Content="Traslation rate" Grid.Column="0" FontSize="12"/>
+                            <TextBox Text="{Binding TranslationRate, StringFormat={}{0:0.###}}" Grid.Column="1" MinWidth="40" VerticalAlignment="Center"></TextBox>
+                            <Label  Content="Rotation rate" Grid.Column="2" FontSize="12"/>
+                            <TextBox Text="{Binding RotationRate, StringFormat={}{0:0.###}}" Grid.Column="3" MinWidth="40" VerticalAlignment="Center"></TextBox>
+                            <Button x:Name="Home" Grid.Column="4" Content="Home" Margin="4" FontSize="12" Width="60" HorizontalAlignment="Right" Style="{DynamicResource ButtonStyle1}"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- TCP Socket Server -->
+                    <GroupBox Header="TCP Socket Server" Grid.Row="4" Grid.Column="1"  Grid.ColumnSpan="6" BorderThickness="1" BorderBrush="DimGray">
+                        <StackPanel Orientation="Horizontal" Margin="10,5,10,0">
+                            <Button x:Name="StartSocketServer" Content="Start server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                            <Button x:Name="StopSocketServer" Content="Stop server" Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                            <RadioButton Content="Status" HorizontalAlignment="Center" IsEnabled="False"
+                                     FlowDirection="RightToLeft" Margin="15 0 0 0" 
+                                     Style="{DynamicResource RadioButtonStyle1}" 
+                                     VerticalAlignment="Center">
+                            </RadioButton>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+
+            <!-- USB Serial Port -->
+            <Border Grid.Row="7" Grid.Column="1" BorderBrush="Black" BorderThickness="1"/>
+            <Grid Grid.Row="7" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- USB Serial Communication -->
+                <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="155" VerticalAlignment="top" HorizontalAlignment="Left" IsChecked="True"
+                          x:Name="ToggleVisibility_02" Panel.ZIndex="1" Style="{DynamicResource VisibilityToggleButton}"/>
+                <GroupBox Grid.Column="1" Grid.Row="1" Header="USB Serial Communication" BorderThickness="1" BorderBrush="DimGray">
+                    <Grid Grid.Row="1" Visibility="{Binding ElementName=ToggleVisibility_02, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="10 5">
+                                <Button x:Name="USBSerialConnect" Content="{Binding USBConnectBtnText, FallbackValue='Open Port'}"
+                                    Width="100" Style="{DynamicResource ButtonStyle1}"/>
+                                <RadioButton Content="Status" HorizontalAlignment="Center"  IsChecked="{Binding USBSerialStatus}" IsEnabled="False"
+                                         FlowDirection="RightToLeft" Margin="15 0 0 0" Style="{DynamicResource RadioButtonStyle1}" 
+                                         VerticalAlignment="Center">
+                                </RadioButton>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="10 5">
+                                <TextBox x:Name="SerialInput" Width="414" Height="auto"  VerticalContentAlignment="Center" Margin="0 0 10 0"/>
+                                <Button x:Name="SendSerial" Content="Send" Width="45" Style="{DynamicResource ButtonStyle1}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Slider x:Name="Slider" Value="{Binding SliderValue}" Width="370" Minimum="520" Maximum="2380" IsSnapToTickEnabled="True" TickFrequency="5" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                                <Label Content="Value:" VerticalAlignment="Center"></Label>
+                                <TextBlock Text="{Binding SliderValue, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" VerticalAlignment="Center"></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="10">
+                                <StackPanel >
+                                    <Button Content="Add" x:Name="AddFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                    <Button Content="Insert" x:Name="InsertFocusTarget" Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                    <Button Content="Edit" x:Name="EditFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                    <Button Content="Remove" x:Name="RemoveFocusTarget"  Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                </StackPanel>
+                                <ListView  ItemsSource="{Binding FocusList}" SelectionMode="Single"
+                                       MinHeight="50" MaxHeight="100" MinWidth="365"
+                                       SelectedIndex="{Binding SelectedFocusTargetIdx}"
+                                       SelectedItem="{Binding SelectedFocusTarget}" BorderBrush="#141414" BorderThickness="1">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="   " Height="20"/>
+                                                <TextBox Text="{Binding Name}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18" Width="248"/>
+                                                <TextBlock Text="   " Height="20"/>
+                                                <TextBlock Text="{Binding Val, StringFormat={}{0:0.#}}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18" Width="30"/>
+                                                <TextBlock Text="   " Height="20"/>
+                                                <TextBox Text="{Binding Idx}" Foreground="#FFB4B4B4" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Height="18"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <!-- Bluetooth Serial -->
+            <Border Grid.Row="9" Grid.Column="1" BorderBrush="Black" BorderThickness="1"/>
+            <Grid Grid.Row="9" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Arduino Bluetooth -->
+                <ToggleButton Grid.Column="1" Grid.Row="1" Height="20" Width="185" VerticalAlignment="top" HorizontalAlignment="Left" IsChecked="True"
+                          x:Name="ToggleVisibility_03" Panel.ZIndex="1" Style="{DynamicResource VisibilityToggleButton}"/>
+                <GroupBox Grid.Column="1" Grid.Row="1" Header="Bluetooth Serial Communication" BorderThickness="1" BorderBrush="DimGray">
+                    <Grid Visibility="{Binding ElementName=ToggleVisibility_03, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="3"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <!-- Column 0-->
+                        <StackPanel Grid.Column="0" Margin="5,5,5,12" Grid.ColumnSpan="2">
+                            <StackPanel Orientation="Horizontal" Margin="10 5">
+                                <Button x:Name="BTSerialConnect" Content="{Binding BTConnectBtnText, FallbackValue='Connect'}" 
+                                Style="{DynamicResource ButtonStyle1}" Width="100"/>
+                                <RadioButton Content="Status" FlowDirection="RightToLeft"  IsChecked="{Binding BTSerialStatus}" 
+                                     IsEnabled="false" VerticalAlignment="Center" Margin="15 0 0 0"
+                                     Style="{DynamicResource RadioButtonStyle1}"></RadioButton>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"  Margin="5 3">
+                                <TextBlock Text="COM Port" Margin="10 5" Width="80"/>
+                                <ComboBox ItemsSource="{Binding ComPortList}"
+                                      SelectedItem="{Binding SelectedComPort}"
+                                      IsSynchronizedWithCurrentItem="True"
+                                      MinWidth="80"
+                                      SelectedIndex="{Binding SelectedComPortIndex}">
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"  Margin="5 3">
+                                <TextBlock Text="Baud Rate" Margin="10 5" Width="80" />
+                                <ComboBox ItemsSource="{Binding BaudRateList}"
+                                      SelectedItem="{Binding SelectedBaudRate}"
+                                      IsSynchronizedWithCurrentItem="True"
+                                      MinWidth="80"
+                                      SelectedIndex="{Binding BaudRateIndex}">
+                                </ComboBox>
+                            </StackPanel>
+
+
+                            <StackPanel Orientation="Horizontal" Margin="10 5">
+                                <TextBox Text="{Binding BluetoothInputText}" Width="150" Height="auto" Margin="0 0 10 0" VerticalContentAlignment="Center"/>
+                                <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Column 1-->
+                        <StackPanel Grid.Column="2" Margin="5,5,5,12">
+                            <TextBlock Text="Received from Arduino" Margin="0 5" />
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding BTReceivedMessage}"  Style="{DynamicResource LogViewerStyle}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="#" FontWeight="DemiBold"></TextBlock>
+                                                <TextBlock Text="{Binding Idx}" FontWeight="DemiBold"></TextBlock>
+                                                <TextBlock Text=" "></TextBlock>
+                                                <TextBlock Text="{Binding Timestamp}" FontWeight="DemiBold" FontStyle="Italic"></TextBlock>
+                                                <TextBlock Text=": " FontWeight="DemiBold"></TextBlock>
+                                                <TextBlock Text="{Binding Message}"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
+                            <Slider x:Name="BTSlider" Value="{Binding BTSliderVal}" Width="370" Minimum="-1000" Maximum="1000" IsSnapToTickEnabled="True" TickFrequency="100" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                            <Label Content="Value:" VerticalAlignment="Center"></Label>
+                            <TextBlock Text="{Binding BTSliderVal, StringFormat={}{0:0.#}}" Margin="10 0" Width="50" VerticalAlignment="Center"></TextBlock>
+                        </StackPanel>
+
+                        <!-- Stepper Motor Settings -->
+                        <GroupBox Grid.Row="3" Header="Stepper Motor Settings" FontWeight="DemiBold" BorderThickness="1" BorderBrush="DimGray">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0 5">
+                                    <Label Content="Step type"/>
+                                    <ComboBox ItemsSource="{Binding MotorStepTypeList}"
+                                      SelectedItem="{Binding MotorStepType}"
+                                      SelectedIndex="{Binding MotorStepTypeIdx}"
+                                      MinWidth="80" Margin="20 0">
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Motor Speed" />
+                                    <Slider  Value="{Binding StepMotorSpeed}" Minimum="0" Maximum="1000" IsSnapToTickEnabled="True" TickFrequency="100" Width="80"></Slider>
+                                    <TextBox Text="{Binding StepMotorSpeed}"></TextBox>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </GroupBox>
+
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

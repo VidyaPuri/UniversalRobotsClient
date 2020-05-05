@@ -162,6 +162,9 @@ namespace RobotClient.Networking
         /// <param name="data"></param>
         public void Send(Socket client, String data)
         {
+            if (client == null)
+                return;
+
             try
             {
                 var stringData = data + "\n";

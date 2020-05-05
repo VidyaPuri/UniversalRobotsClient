@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using RobotClient.Networking;
 using RobotClient.Move;
+using RobotInterface.ViewModels;
 
 namespace RobotClient
 {
@@ -21,6 +22,9 @@ namespace RobotClient
         {
             _container.Instance(_container);
             _container.Singleton<ShellViewModel>();
+            _container.Singleton<NetworkingViewModel>();
+            //_container.Singleton<TimelineViewModel>();
+
             _container.PerRequest<SocketClient>();
             _container.PerRequest<RobotCommand>();
             _container.PerRequest<ControllerClass>();
