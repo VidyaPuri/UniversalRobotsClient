@@ -1,11 +1,11 @@
-﻿using Caliburn.Micro;
-using System.Windows;
-using RobotClient.ViewModels;
-using System;
+﻿using RobotInterface.ViewModels;
 using System.Collections.Generic;
+using RobotClient.ViewModels;
 using RobotClient.Networking;
 using RobotClient.Move;
-using RobotInterface.ViewModels;
+using Caliburn.Micro;
+using System.Windows;
+using System;
 
 namespace RobotClient
 {
@@ -23,7 +23,7 @@ namespace RobotClient
             _container.Instance(_container);
             _container.Singleton<ShellViewModel>();
             _container.Singleton<NetworkingViewModel>();
-            //_container.Singleton<TimelineViewModel>();
+            _container.Singleton<TimelineViewModel>();
 
             _container.PerRequest<SocketClient>();
             _container.PerRequest<RobotCommand>();

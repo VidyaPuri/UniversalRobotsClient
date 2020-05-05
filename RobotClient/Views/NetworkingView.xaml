@@ -7,7 +7,6 @@
              xmlns:converters="clr-namespace:RobotInterface.Converters"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             cal:Message.Attach="[Event MouseUp] = [Action MouseUp];[Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)]"
              d:DesignHeight="1080" d:DesignWidth="800">
     
     <UserControl.Resources>
@@ -185,8 +184,6 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                             </RepeatButton>
-
-
                         </Grid>
                     </GroupBox>
 
@@ -277,7 +274,6 @@
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                             </RepeatButton>
 
-
                             <RepeatButton x:Name="RzSub" Content="Rz-" Grid.Row="5" Grid.Column="3" VerticalContentAlignment="Center" VerticalAlignment="Center"
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
@@ -286,7 +282,6 @@
                             IsEnabled="{Binding ConnectionStatusBool}"
                             Margin="5" MinWidth="35" Style="{DynamicResource RepeatButtonStyle1}">
                             </RepeatButton>
-
                         </Grid>
                     </GroupBox>
 
@@ -491,8 +486,6 @@
                                       SelectedIndex="{Binding BaudRateIndex}">
                                 </ComboBox>
                             </StackPanel>
-
-
                             <StackPanel Orientation="Horizontal" Margin="10 5">
                                 <TextBox Text="{Binding BluetoothInputText}" Width="150" Height="auto" Margin="0 0 10 0" VerticalContentAlignment="Center"/>
                                 <Button x:Name="SendToArduinoBlueTooth" Content="Send"  Style="{DynamicResource ButtonStyle1}"/>
@@ -542,9 +535,7 @@
                                     <TextBox Text="{Binding StepMotorSpeed}"></TextBox>
                                 </StackPanel>
                             </StackPanel>
-
                         </GroupBox>
-
                     </Grid>
                 </GroupBox>
             </Grid>

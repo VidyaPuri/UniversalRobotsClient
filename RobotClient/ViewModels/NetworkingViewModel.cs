@@ -12,6 +12,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 
 namespace RobotInterface.ViewModels
 {
@@ -23,27 +24,30 @@ namespace RobotInterface.ViewModels
             RobotCommand moveCommand,
             ControllerClass controllerClass)
         {
-
+            // Clients
             _socketClient = socketClient;
             _dashboardClient = new SocketClient(eventAggregator);
 
+            // Server
             _roboServer = new SocketServer(eventAggregator);
 
+            // Helper commands
             _robotCommand = moveCommand;
             _controllerClass = controllerClass;
-
             _controllerClass.StartController();
 
             // Event Aggregator
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
+
+            // Serial Initializers
             _serial = new SerialCommunication(eventAggregator);
             _BTConnection = new BluetoothConnection(eventAggregator);
 
+            // Port Helpers
             ComPortList = SerialPort.GetPortNames();
             BaudRateList = DataLists.GetBaudRates();
             MotorStepTypeList = DataLists.GetStepTypes();
-
         }
 
         #region Private Members
