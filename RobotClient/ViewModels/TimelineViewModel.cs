@@ -8,6 +8,7 @@ using Caliburn.Micro;
 using System.Windows;
 using System;
 using RobotInterface.Helpers;
+using System.Windows.Documents;
 
 namespace RobotInterface.ViewModels
 {
@@ -362,8 +363,15 @@ namespace RobotInterface.ViewModels
             MouseClickedEvent = LeftButtonDown;
 
             Grid rectParent = selectedRect.Parent as Grid;
-
             TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
+
+            MouseHitType = SetHitType(selectedRect, rectParent);
+
+            SetMouseCursor();
+            if (MouseHitType == HitType.None) return;
+
+            LastPoint = Mouse.GetPosition(rectParent);
+            DragInProgress = true;
 
             // Finding the selected timeline event 
             foreach (var timeline in Timelines)
@@ -386,7 +394,6 @@ namespace RobotInterface.ViewModels
 
             mouseDownStartTime = SelectedTimeLineEvent.Start;
 
-
             Timelines.Refresh();
             selectedRect.CaptureMouse();
 
@@ -400,6 +407,9 @@ namespace RobotInterface.ViewModels
         public void TimeLineEventLeftUp(object rect)
         {
             LeftButtonDown = false;
+            DragInProgress = false;
+
+            Mouse.OverrideCursor = Cursors.Arrow;
 
             if (!(rect is Rectangle selectedRect))
                 return;
@@ -426,22 +436,160 @@ namespace RobotInterface.ViewModels
             //    return;
             Grid rectParent = selectedRect.Parent as Grid;
 
-            double thisX = Mouse.GetPosition(rectParent).X;
-            MouseCurrentPosX = thisX;
-            double distanceMoved = thisX - mouseDownX;
-            double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
+            if(MouseHitType == HitType.Left || MouseHitType == HitType.Right)
+            {
+                if (DragInProgress)
+                {
+                    // See how much the mouse has moved.
+                    Point point = Mouse.GetPosition(rectParent);
+                    double offset_x = point.X - LastPoint.X;
+                    Debug.WriteLine($"Current point: {point.X}");
+                    Debug.WriteLine($"Last point: {LastPoint.X}");
+                    Debug.WriteLine($"Offset: {offset_x}");
+                    Point p = selectedRect.TranslatePoint(new Point(0, 0), rectParent);
 
-            TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
 
-            MouseMovedInSeconds = timeMoved;
-            //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
-            MouseDistanceMoved = distanceMoved;
-            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = mouseDownStartTime + timeMoved;
+                    // Get the rectangle's current position.
+                    //double new_x = Canvas.GetLeft(selectedRect);
+                    double new_x = p.X;
+                    double thisX = Mouse.GetPosition(rectParent).X;
+                    double new_width = selectedRect.Width;
+
+                    // Update the rectangle.
+                    switch (MouseHitType)
+                    {
+                        case HitType.Left:
+                            new_x += offset_x;
+                            new_width -= offset_x;
+                            break;
+                        case HitType.Right:
+                            new_width += offset_x;
+                            break;
+                    }
+
+                    // Don't use negative width or height.
+                    if ((new_width > 0))
+                    {
+
+
+                        double distanceMoved = thisX - mouseDownX;
+                        double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
+
+                        TimeSpan newDuration = TimeSpan.FromSeconds(new_width / pixelsPerSecond);
+                        TimeSpan newStart = TimeSpan.FromSeconds(new_x / pixelsPerSecond);
+
+
+                        // Update the rectangle.
+                        Canvas.SetLeft(selectedRect, new_x);
+                        selectedRect.Width = new_width;
+                        Debug.WriteLine($"New width {newDuration}");
+                        Debug.WriteLine($"New start {newStart}");
+
+                        Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = newStart;
+                        Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = newDuration;
+                        // Save the mouse's new location.
+                        LastPoint = point;
+                    }
+                }
+                else
+                {
+                    MouseHitType = SetHitType(selectedRect, rectParent);
+                    SetMouseCursor();
+                }
+            }
+            else if (MouseHitType == HitType.Body)
+            {
+                double thisX = Mouse.GetPosition(rectParent).X;
+                MouseCurrentPosX = thisX;
+                double distanceMoved = thisX - mouseDownX;
+                double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
+
+                TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
+
+                MouseMovedInSeconds = timeMoved;
+                //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
+                MouseDistanceMoved = distanceMoved;
+                Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = mouseDownStartTime + timeMoved;
+            }
 
             Timelines.Refresh();
         }
 
         #endregion
+
+        #endregion
+
+        #region Tests
+
+        public HitType MouseHitType { get; set; }
+        private bool DragInProgress = false;
+
+        private Point LastPoint;
+
+
+        public void Cursor()
+        {
+            Cursor desired_cursor = Cursors.SizeWE;
+
+            Mouse.OverrideCursor = desired_cursor;
+        }
+
+        public enum HitType
+        {
+            None,
+            Body,
+            Left,
+            Right
+        };
+
+        public HitType SetHitType(Rectangle rect, Grid rectParent)
+        {
+            Point p = rect.TranslatePoint(new Point(0, 0), rectParent);
+
+            double left = p.X;
+            Point point = Mouse.GetPosition(rectParent);
+            double right = left + rect.Width;
+            if (point.X < left) return HitType.None;
+            if (point.X > right) return HitType.None;
+
+            const double GAP = 10;
+            if (point.X - left < GAP)
+            {
+                // Left edge.
+                return HitType.Left;
+            }
+            else if (right - point.X < GAP)
+            {
+                // Right edge.
+                return HitType.Right;
+            }
+
+            return HitType.Body;
+        }
+
+        //Set a mouse cursor appropriate for the current hit type.
+        public void SetMouseCursor()
+        {
+            // See what cursor we should display.
+            Cursor desired_cursor = Cursors.Arrow;
+            switch (MouseHitType)
+            {
+                case HitType.None:
+                    desired_cursor = Cursors.Arrow;
+                    break;
+                case HitType.Body:
+                    desired_cursor = Cursors.Arrow;
+                    break;
+                case HitType.Left:
+                case HitType.Right:
+                    desired_cursor = Cursors.SizeWE;
+                    break;
+            }
+
+            // Display the desired cursor.
+            Mouse.OverrideCursor = desired_cursor;
+        }
+
 
         #endregion
 

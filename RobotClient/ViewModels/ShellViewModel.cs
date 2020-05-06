@@ -54,7 +54,6 @@ namespace RobotClient.ViewModels
             // View model screens initialisation
             NetworkingViewModel = networkingViewModel;
             TimelineViewModel = timelineViewModel;
-
         }
 
         #endregion
@@ -65,7 +64,6 @@ namespace RobotClient.ViewModels
         public TimelineViewModel TimelineViewModel { get; set; }
 
         #endregion
-
 
     }
 }

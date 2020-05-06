@@ -84,6 +84,7 @@
     <Compile Include="Converters\EventLengthConverter.cs" />
     <Compile Include="Helpers\DataLists.cs" />
     <Compile Include="Helpers\DialogEventAggregatorProvider.cs" />
+    <Compile Include="Helpers\ResizerHelper.cs" />
     <Compile Include="Models\ConnectionStatusModel.cs" />
     <Compile Include="Models\ControllerSettingsModel.cs" />
     <Compile Include="Models\FocusModel.cs" />

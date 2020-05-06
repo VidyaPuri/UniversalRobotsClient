@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RobotInterface.Views"
+             xmlns:help="clr-namespace:RobotInterface.Helpers"
              xmlns:converters="clr-namespace:RobotInterface.Converters"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
@@ -57,7 +58,8 @@
 
                         <Canvas Grid.Row="1" Grid.Column="1" Width="650" MaxWidth="650" Height="90" 
                             Background="Gray" HorizontalAlignment="Left" x:Name="Canvas"
-                            cal:Message.Attach= "[Event MouseMove] = [Action MouseMove($source)]">
+                            cal:Message.Attach= "[Event MouseMove] = [Action MouseMove($source)]"
+                                >
                             <ItemsControl  Background="AliceBlue" Width="650" >
                                 <ItemsControl ItemsSource="{Binding Timelines}" x:Name="TL" >
                                     <ItemsControl.ItemTemplate>
