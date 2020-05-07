@@ -9,6 +9,8 @@ using System.Windows;
 using System;
 using RobotInterface.Helpers;
 using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace RobotInterface.ViewModels
 {
@@ -328,8 +330,8 @@ namespace RobotInterface.ViewModels
             Timelines.Clear();
             TimeLine first = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
             first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
-            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
-            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
+            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
+            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
             Timelines.Add(first);
 
             TimeLine second = new TimeLine() { Duration = new TimeSpan(0, 0, 25) };
@@ -424,7 +426,7 @@ namespace RobotInterface.ViewModels
         public void TimeLineEventMouseMove(object rect, MouseEventArgs args)
         {
             args.Handled = false;
-            if (!(rect is Rectangle selectedRect))
+            if (!(rect is Thumb selectedRect))
                 return;
 
             Grid rectParent = selectedRect.Parent as Grid;
@@ -522,7 +524,7 @@ namespace RobotInterface.ViewModels
         /// <param name="args"></param>
         public void MouseOutsideTimelineEvent(object rect, MouseEventArgs args)
         {
-            if (!(rect is Rectangle selectedRect))
+            if (!(rect is Thumb selectedRect))
                 return;
 
             Grid rectParent = selectedRect.Parent as Grid;
@@ -544,7 +546,7 @@ namespace RobotInterface.ViewModels
 
         public void MouseMoveTest(object rect, MouseEventArgs args)
         {
-            if (!(rect is Rectangle selectedRect))
+            if (!(rect is Thumb selectedRect))
                 return;
 
             Grid rectParent = selectedRect.Parent as Grid;
@@ -584,7 +586,7 @@ namespace RobotInterface.ViewModels
             Right
         };
 
-        public HitType SetHitType(Rectangle rect, Grid rectParent)
+        public HitType SetHitType(Thumb rect, Grid rectParent)
         {
             Point p = rect.TranslatePoint(new Point(0, 0), rectParent);
 
@@ -630,6 +632,95 @@ namespace RobotInterface.ViewModels
 
             // Display the desired cursor.
             Mouse.OverrideCursor = desired_cursor;
+        }
+
+
+        #endregion
+
+        #region Thumb
+
+        public void OnDragStarted(object obj, EventArgs args)
+        {
+            if (!(obj is Thumb selectedThumb))
+                return;
+            selectedThumb.Background = Brushes.Orange;
+
+        }
+
+        public void OnDragCompleted(object obj, EventArgs args)
+        {
+            if (!(obj is Thumb selectedThumb))
+                return;
+            selectedThumb.Background = Brushes.AliceBlue;
+            //Canvas.SetLeft(selectedThumb, 30);
+
+        }
+
+        public void OnDragDelta(object obj, DragDeltaEventArgs args)
+        {
+
+            //Debug.WriteLine(args.HorizontalChange);
+            if (!(obj is Thumb selectedThumb))
+                return;
+
+            Grid parent = selectedThumb.Parent as Grid;
+
+
+            TimeLineEvent clickedEvent = selectedThumb.DataContext as TimeLineEvent;
+
+            MouseHitType = SetHitType(selectedThumb, parent);
+
+            SetMouseCursor();
+
+            //if (!LeftButtonDown)
+            //    return;
+
+            foreach (var timeline in Timelines)
+            {
+                foreach (var tlEvent in timeline.Events)
+                {
+                    if (tlEvent == clickedEvent)
+                    {
+                        SelectedTimeLineEvent = tlEvent;
+                        TimeLineIdx = Timelines.IndexOf(timeline);
+                        TimeLineEventIdx = timeline.Events.IndexOf(tlEvent);
+                    }
+                }
+            }
+
+            //DebugString = SelectedTimeLineEvent.Name;
+
+
+            ////double thisX = Mouse.GetPosition(parent).X;
+            ////MouseCurrentPosX = thisX;
+            double distanceMoved = args.HorizontalChange;
+            Debug.WriteLine($"Distance moved {distanceMoved} px");
+
+            var posX = Canvas.GetLeft(selectedThumb);
+            Point p = selectedThumb.TranslatePoint(new Point(0, 0), parent);
+            Debug.WriteLine($"Pos {posX} px");
+
+            Canvas.SetLeft(selectedThumb, posX + args.HorizontalChange);
+
+            double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
+
+            TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
+            Debug.WriteLine($"Distance moved {timeMoved} seconds");
+
+            MouseDistanceMoved = distanceMoved;
+            MouseMovedInSeconds = timeMoved;
+            //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
+            MouseDistanceMoved = distanceMoved;
+            Debug.WriteLine($"Distance before {Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start} seconds");
+
+            //Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start += timeMoved;
+
+            Debug.WriteLine($"Distance after {Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start} seconds");
+
+
+
+            Timelines.Refresh();
+
         }
 
 

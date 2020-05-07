@@ -73,31 +73,35 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0 1">
-                                                            <Rectangle Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
-                                                                       Stroke="DimGray" StrokeThickness="1.5" 
+                                                            <Thumb Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
+                                                                   
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
-                                                                       cal:Message.Attach= "[Event MouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
+                                                                       cal:Message.Attach= 
+                                                                      "[Event MouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
                                                                        [Event MouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
                                                                        [Event MouseLeave] = [Action MouseOutsideTimelineEvent($source, $eventArgs];
+                                                                       [Event DragStarted] = [Action OnDragStarted($source, $eventArgs];
+                                                                         [Event DragDelta] = [Action OnDragDelta($source, $eventArgs];
+                                                                         [Event DragCompleted] = [Action OnDragCompleted($source, $eventArgs];
                                                                        [Event MouseMove] = [Action TimeLineEventMouseMove($source, $eventArgs)]" >
-                                                                <Rectangle.Margin>
+                                                                <Thumb.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
                                                                         <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
                                                                         <Binding Path="Start"/>
                                                                         <Binding ElementName="EventContainer" Path="ActualWidth"/>
                                                                     </MultiBinding>
-                                                                </Rectangle.Margin>
-                                                                <Rectangle.Width>
+                                                                </Thumb.Margin>
+                                                                <Thumb.Width>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
                                                                         <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
                                                                         <Binding Path="Duration"/>
                                                                         <Binding ElementName="EventContainer" Path="ActualWidth"/>
                                                                     </MultiBinding>
-                                                                </Rectangle.Width>
-                                                                <Rectangle.Fill>
+                                                                </Thumb.Width>
+                                                                <Thumb.Background>
                                                                     <SolidColorBrush Color="#2A0456"></SolidColorBrush>
-                                                                </Rectangle.Fill>
-                                                            </Rectangle>
+                                                                </Thumb.Background>
+                                                            </Thumb>
                                                             <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Padding="5" IsHitTestVisible="False" Panel.ZIndex="5" Foreground="DarkGray">
                                                                 <TextBlock.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
@@ -107,6 +111,7 @@
                                                                     </MultiBinding>
                                                                 </TextBlock.Margin>
                                                             </TextBlock>
+                                                            
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -220,7 +225,16 @@
                                 Content="Feed Timeline"  
                                 Style="{DynamicResource ButtonStyle1}">
                         </Button>
-                        <Thumb Width="50" Height="30" Background="AliceBlue" BorderBrush="Black" BorderThickness="5"></Thumb>
+                        <Canvas Width="300" Height="200" Background="Bisque" HorizontalAlignment="Left">
+                            <Thumb Width="25" Height="30" Background="AliceBlue"  Canvas.Left="0" Canvas.Top="0"
+                               BorderBrush="Black" BorderThickness="5"
+                               cal:Message.Attach = 
+                                "[Event DragStarted] = [Action OnDragStarted($source, $eventArgs];
+                                 [Event DragDelta] = [Action OnDragDelta($source, $eventArgs];
+                                 [Event DragCompleted] = [Action OnDragCompleted($source, $eventArgs]"
+                            ></Thumb>
+                        </Canvas>
+                        
                     </StackPanel>
                     <Rectangle
                         Grid.Row="4" Grid.Column="1"
