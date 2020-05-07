@@ -365,9 +365,7 @@ namespace RobotInterface.ViewModels
             Grid rectParent = selectedRect.Parent as Grid;
             TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
 
-            MouseHitType = SetHitType(selectedRect, rectParent);
-
-            SetMouseCursor();
+            
             if (MouseHitType == HitType.None) return;
 
             LastPoint = Mouse.GetPosition(rectParent);
@@ -429,14 +427,16 @@ namespace RobotInterface.ViewModels
             if (!(rect is Rectangle selectedRect))
                 return;
 
+            Grid rectParent = selectedRect.Parent as Grid;
+
+            MouseHitType = SetHitType(selectedRect, rectParent);
+
+            SetMouseCursor();
+
             if (!LeftButtonDown)
                 return;
 
-            //if (SelectedTimeLineEvent == null)
-            //    return;
-            Grid rectParent = selectedRect.Parent as Grid;
-
-            if(MouseHitType == HitType.Left || MouseHitType == HitType.Right)
+            if (MouseHitType == HitType.Left || MouseHitType == HitType.Right)
             {
                 if (DragInProgress)
                 {
@@ -515,6 +515,22 @@ namespace RobotInterface.ViewModels
             Timelines.Refresh();
         }
 
+        /// <summary>
+        /// When mouse leaves rectangle area
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="args"></param>
+        public void MouseOutsideTimelineEvent(object rect, MouseEventArgs args)
+        {
+            if (!(rect is Rectangle selectedRect))
+                return;
+
+            Grid rectParent = selectedRect.Parent as Grid;
+
+            MouseHitType = SetHitType(selectedRect, rectParent);
+            SetMouseCursor();
+        }
+
         #endregion
 
         #endregion
@@ -526,6 +542,32 @@ namespace RobotInterface.ViewModels
 
         private Point LastPoint;
 
+        public void MouseMoveTest(object rect, MouseEventArgs args)
+        {
+            if (!(rect is Rectangle selectedRect))
+                return;
+
+            Grid rectParent = selectedRect.Parent as Grid;
+
+            MouseHitType = SetHitType(selectedRect, rectParent);
+            Debug.WriteLine($"MouseHitType: {MouseHitType}");
+            SetMouseCursor();
+        }
+
+        public void MouseInsideElement(object rect, MouseEventArgs args)
+        {
+            if (!(rect is Rectangle selectedRect))
+                return;
+
+
+            Mouse.OverrideCursor = Cursors.ArrowCD;
+        }
+
+        public void MouseOutsideElement()
+        {
+            Mouse.OverrideCursor = Cursors.Arrow;
+
+        }
 
         public void Cursor()
         {

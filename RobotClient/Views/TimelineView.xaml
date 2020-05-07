@@ -76,9 +76,10 @@
                                                             <Rectangle Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
                                                                        Stroke="DimGray" StrokeThickness="1.5" 
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
-                                                                       cal:Message.Attach= "[Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
-                                                                       [Event PreviewMouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
-                                                                       [Event PreviewMouseMove] = [Action TimeLineEventMouseMove($source, $eventArgs)]" >
+                                                                       cal:Message.Attach= "[Event MouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
+                                                                       [Event MouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
+                                                                       [Event MouseLeave] = [Action MouseOutsideTimelineEvent($source, $eventArgs];
+                                                                       [Event MouseMove] = [Action TimeLineEventMouseMove($source, $eventArgs)]" >
                                                                 <Rectangle.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
                                                                         <Binding ElementName="TimeLine" Path="DataContext.Duration"/>
@@ -125,11 +126,11 @@
                                     </EventTrigger>
                                 </Rectangle.Triggers>
                             </Rectangle>
-                            <StackPanel Panel.ZIndex="3">
+                            <!--<StackPanel Panel.ZIndex="5">
                                 <Path Stroke="Black" StrokeThickness="3" Data="M -1,-5 h 652" />
                                 <Path Stroke="Black" StrokeThickness="3" Data="M 0,-5 v 100" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 65,-100 v 100"/>
-                                <Path Stroke="Black" StrokeThickness="1" Data="M 130, -100 v 100" />
+                                <Path Stroke="Black" StrokeThickness="1" Data="M 130, -100 v 100" Panel.ZIndex="5" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 195, -100 v 100" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 260, -100 v 100" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 325, -100 v 100" />
@@ -141,7 +142,7 @@
                                 <Path Stroke="Black" StrokeThickness="3" Data="M 0,0 h 650" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 0,-33 h 650" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 0,-66 h 650" />
-                            </StackPanel>
+                            </StackPanel>-->
                         </Canvas>
 
                         <!--<Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>-->
@@ -215,9 +216,22 @@
                                 </StackPanel>
                             </Grid>
                         </GroupBox>
-                        <Button Grid.Row="4" x:Name="FeedTimelines" Content="Feed Timeline"  Style="{DynamicResource ButtonStyle1}">
+                        <Button Grid.Row="4" x:Name="FeedTimelines" 
+                                Content="Feed Timeline"  
+                                Style="{DynamicResource ButtonStyle1}">
                         </Button>
+                        <Thumb Width="50" Height="30" Background="AliceBlue" BorderBrush="Black" BorderThickness="5"></Thumb>
                     </StackPanel>
+                    <Rectangle
+                        Grid.Row="4" Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        Width="100" Height="50" Margin="5"
+                        Fill="AliceBlue" Stroke="Aquamarine" StrokeThickness="10" 
+                        cal:Message.Attach = "[Event MouseEnter] = [Action MouseInsideElement($source, $eventArgs];
+                        [Event MouseLeave] = [Action MouseOutsideElement];
+                        [Event MouseMove] = [Action MouseMoveTest($source, $eventArgs]"
+                        ></Rectangle>
+
 
                     <Grid.Triggers>
                         <EventTrigger SourceName="StartButton" RoutedEvent="Button.Click">
