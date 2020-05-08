@@ -359,6 +359,8 @@ namespace RobotInterface.ViewModels
             MouseStatus = false;
             LeftButtonDown = false;
             RectangleChangeType = "";
+            Mouse.OverrideCursor = Cursors.Arrow;
+
         }
 
         #endregion
@@ -388,7 +390,6 @@ namespace RobotInterface.ViewModels
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Buksy2" });
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
             Timelines.Add(third);
-            a = 0;
         }
 
         /// <summary>
@@ -404,7 +405,6 @@ namespace RobotInterface.ViewModels
             SelectedEventRectangle = selectedRect;
             LeftButtonDown = true;
             MouseClickedEvent = true;
-            DragInProgress = true;
 
             Grid rectParent = selectedRect.Parent as Grid;
             TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
@@ -449,21 +449,18 @@ namespace RobotInterface.ViewModels
             if (!LeftButtonDown)
                 return;
 
+            // Pixel / Seconds constant make width a variable TO-DO
             double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
-
-            var directParent = SelectedEventRectangle.Parent as Grid;
 
             switch (RectangleChangeType)
             {
                 case "Resize":
                     // See how much the mouse has moved.
-                    Point point = Mouse.GetPosition(directParent);
-                    double offset_x = point.X - LastPoint.X;
-                    Point p = SelectedEventRectangle.TranslatePoint(new Point(0, 0), directParent);
-                    Debug.WriteLine($"offset x {offset_x}");
+                    double offset_x = thisX - LastPoint.X;
+                    double marginLeft= SelectedEventRectangle.Margin.Left;
+
                     // Get the rectangle's current position.
-                    //double new_x = Canvas.GetLeft(selectedRect);
-                    double new_x = p.X;
+                    double new_x = marginLeft;
                     double new_width = SelectedEventRectangle.Width;
 
                     // Update the rectangle.
@@ -482,18 +479,17 @@ namespace RobotInterface.ViewModels
                     if ((new_width > 0))
                     {
                         //double distanceMoved = thisX - mouseDownX;
-
-                        TimeSpan newDuration = TimeSpan.FromSeconds(new_width / pixelsPerSecond);
                         TimeSpan newStart = TimeSpan.FromSeconds(new_x / pixelsPerSecond);
+                        TimeSpan newDuration = TimeSpan.FromSeconds(new_width / pixelsPerSecond);
 
                         // Update the rectangle.
-                        //Canvas.SetLeft(SelectedEventRectangle, new_x);
                         SelectedEventRectangle.Width = new_width;
+                        SelectedEventRectangle.Margin = new Thickness(new_x);
 
                         Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = newStart;
                         Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = newDuration;
                         // Save the mouse's new location.
-                        LastPoint = point;
+                        LastPoint.X = thisX;
                     }
                     break;
                 case "Move":
@@ -515,109 +511,14 @@ namespace RobotInterface.ViewModels
         }
 
         /// <summary>
-        /// Mouse move in timeline
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="args"></param>
-        public void TimeLineEventMouseMove(object rect, MouseEventArgs args)
-        {
-            if (!(rect is Rectangle selectedRect))
-                return;
-
-            Grid rectParent = selectedRect.Parent as Grid;
-
-            MouseHitType = SetHitType(selectedRect, rectParent);
-
-            SetMouseCursor();
-
-            if (!LeftButtonDown)
-                return;
-
-            if (MouseHitType == HitType.Left || MouseHitType == HitType.Right)
-            {
-                if (DragInProgress)
-                {
-                    // See how much the mouse has moved.
-                    Point point = Mouse.GetPosition(rectParent);
-                    double offset_x = point.X - LastPoint.X;
-                    Debug.WriteLine($"Current point: {point.X}");
-                    Debug.WriteLine($"Last point: {LastPoint.X}");
-                    Debug.WriteLine($"Offset: {offset_x}");
-                    Point p = selectedRect.TranslatePoint(new Point(0, 0), rectParent);
-
-
-                    // Get the rectangle's current position.
-                    //double new_x = Canvas.GetLeft(selectedRect);
-                    double new_x = p.X;
-                    double thisX = Mouse.GetPosition(rectParent).X;
-                    double new_width = selectedRect.Width;
-
-                    // Update the rectangle.
-                    switch (MouseHitType)
-                    {
-                        case HitType.Left:
-                            new_x += offset_x;
-                            new_width -= offset_x;
-                            break;
-                        case HitType.Right:
-                            new_width += offset_x;
-                            break;
-                    }
-
-                    // Don't use negative width or height.
-                    if ((new_width > 0))
-                    {
-                        double distanceMoved = thisX - mouseDownX;
-                        double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
-
-                        TimeSpan newDuration = TimeSpan.FromSeconds(new_width / pixelsPerSecond);
-                        TimeSpan newStart = TimeSpan.FromSeconds(new_x / pixelsPerSecond);
-
-
-                        // Update the rectangle.
-                        Canvas.SetLeft(selectedRect, new_x);
-                        selectedRect.Width = new_width;
-                        Debug.WriteLine($"New width {newDuration}");
-                        Debug.WriteLine($"New start {newStart}");
-
-                        Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = newStart;
-                        Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = newDuration;
-                        // Save the mouse's new location.
-                        LastPoint = point;
-                    }
-                }
-                else
-                {
-                    MouseHitType = SetHitType(selectedRect, rectParent);
-                    SetMouseCursor();
-                }
-            }
-            else if (MouseHitType == HitType.Body)
-            {
-                double thisX = Mouse.GetPosition(rectParent).X;
-                MouseCurrentPosX = thisX;
-                double distanceMoved = thisX - mouseDownX;
-                double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
-
-                TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
-
-                MouseMovedInSeconds = timeMoved;
-                //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
-                MouseDistanceMoved = distanceMoved;
-                Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = mouseDownStartTime + timeMoved;
-            }
-
-            Timelines.Refresh();
-        }
-
-
-        /// <summary>
         /// When mouse leaves rectangle area
         /// </summary>
         /// <param name="rect"></param>
         /// <param name="args"></param>
         public void MouseRectangleLeave(object rect)
         {
+            if (LeftButtonDown)
+                return;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -643,6 +544,9 @@ namespace RobotInterface.ViewModels
         public void MouseRectangleMove(object rect)
         {
             if (!(rect is Rectangle selectedRect))
+                return;
+
+            if (RectangleChangeType == "Resize")
                 return;
 
             Grid rectParent = selectedRect.Parent as Grid;
@@ -683,10 +587,7 @@ namespace RobotInterface.ViewModels
         #region Tests
 
         public HitType MouseHitType { get; set; }
-        private bool DragInProgress = false;
-
         private Point LastPoint;
-
 
         public enum HitType
         {
@@ -749,100 +650,7 @@ namespace RobotInterface.ViewModels
 
         #endregion
 
-        #region Thumb
-
-        public void OnDragStarted(object obj, EventArgs args)
-        {
-            if (!(obj is Thumb selectedThumb))
-                return;
-            selectedThumb.Background = Brushes.Orange;
-
-        }
-
-        public void OnDragCompleted(object obj, EventArgs args)
-        {
-            if (!(obj is Thumb selectedThumb))
-                return;
-            selectedThumb.Background = Brushes.AliceBlue;
-            //Canvas.SetLeft(selectedThumb, 30);
-
-        }
-        int a = 0;
-        public void OnDragDelta(object obj, DragDeltaEventArgs args)
-        {
-            if(a>0)
-            {
-                Debug.WriteLine("sthap");
-            }
-            a++;
-            //Debug.WriteLine(args.HorizontalChange);
-            if (!(obj is Thumb selectedThumb))
-                return;
-
-            Grid parent = selectedThumb.Parent as Grid;
-
-
-            TimeLineEvent clickedEvent = selectedThumb.DataContext as TimeLineEvent;
-
-            //MouseHitType = SetHitType(selectedThumb, parent);
-
-            SetMouseCursor();
-
-            //if (!LeftButtonDown)
-            //    return;
-
-            foreach (var timeline in Timelines)
-            {
-                foreach (var tlEvent in timeline.Events)
-                {
-                    if (tlEvent == clickedEvent)
-                    {
-                        SelectedTimeLineEvent = tlEvent;
-                        TimeLineIdx = Timelines.IndexOf(timeline);
-                        TimeLineEventIdx = timeline.Events.IndexOf(tlEvent);
-                    }
-                }
-            }
-
-            //DebugString = SelectedTimeLineEvent.Name;
-            var currentPos = Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start;
-
-            ////double thisX = Mouse.GetPosition(parent).X;
-            ////MouseCurrentPosX = thisX;
-            double distanceMoved = args.HorizontalChange;
-            Debug.WriteLine($"Distance moved {distanceMoved} px");
-
-            var posX = Canvas.GetLeft(selectedThumb);
-            Point p = selectedThumb.TranslatePoint(new Point(0, 0), parent);
-            Debug.WriteLine($"Pos point {p.X} px");
-            Debug.WriteLine($"Pos getLeft {posX} px");
-
-
-            //Canvas.SetLeft(selectedThumb, posX + args.HorizontalChange);
-
-            double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
-
-            TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
-            Debug.WriteLine($"Distance moved {timeMoved} seconds");
-
-            MouseDistanceMoved = distanceMoved;
-            MouseMovedInSeconds = timeMoved;
-            //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
-            MouseDistanceMoved = distanceMoved;
-            Debug.WriteLine($"Distance before {currentPos} seconds");
-
-            //Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = currentPos + timeMoved;
-
-            Debug.WriteLine($"Distance after {Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start} seconds");
-
-
-
-            Timelines.Refresh();
-
-        }
-
-
-        #endregion
+        
 
         #region Handlers
 
