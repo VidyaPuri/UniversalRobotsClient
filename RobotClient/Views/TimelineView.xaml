@@ -65,33 +65,6 @@
                             <Label Content="Mouse position" VerticalAlignment="Center"></Label>
                             <TextBlock Text="{Binding GridMousePosX}"  VerticalAlignment="Center"></TextBlock>
                         </StackPanel>
-
-                        <!--
-                         "[Event MouseLeftButtonDown] = [Action TimeLineEventLeftDown($source, $eventArgs)];
-                                                                       [Event MouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
-                                                                       [Event MouseLeave] = [Action MouseOutsideTimelineEvent($source, $eventArgs];
-                        
-                        [Event DragStarted] = [Action OnDragStarted($source, $eventArgs];
-                                                                         [Event DragDelta] = [Action OnDragDelta($source, $eventArgs];
-                                                                         [Event DragCompleted] = [Action OnDragCompleted($source, $eventArgs];
-                        
-                        [Event MouseMove] = [Action TimeLineEventMouseMove($source, $eventArgs)]
-                                [Event MouseMove] = [Action CanvasMouseMove($source, $eventArgs)]
-                                [Event MouseMove] = [Action MouseMove($source)];
-                        
-                                     cal:Message.Attach= "
-                                [Event MouseMove] = [Action CanvasMouseMove($source)]
-                                "
-                                                                       [Event MouseLeave] = [Action MouseOutsideTimelineEvent($source, $eventArgs];
-                                                                       [Event MouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
-                        
-                        
-                        cal:Message.Attach = "
-                                                                       [Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown)];
-                                                                       [Event MouseLeftButtonUp] = [Action TimeLineEventLeftUp($source)];
-                                                                       "
-                        -->
-
                         <Canvas Grid.Row="1" Grid.Column="1" Width="650" MaxWidth="650" Height="90" 
                             Background="Gray" HorizontalAlignment="Left" x:Name="Canvas"
                             cal:Message.Attach = "
@@ -105,17 +78,15 @@
                                             <ItemsControl x:Name="TimeLine" ItemsSource="{Binding Events}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <Grid x:Name="EventContainer" Height="30" 
-                                                              Background="gray" Width="650"
-                                                               cal:Message.Attach = "[Event MouseLeftButtonUp] = [Action MouseLeftUp]"
-                                                              />
+                                                        <Grid x:Name="EventContainer" Height="30"  Width="650" Background="gray"
+                                                               cal:Message.Attach = "[Event MouseLeftButtonUp] = [Action MouseLeftUp]" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0 1">
                                                             <Rectangle Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
-                                                                       Stroke="Bisque" StrokeThickness="5"
+                                                                       Stroke="LightGray" StrokeThickness="3"
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
                                                                        cal:Message.Attach = "
                                                                        [Event PreviewMouseLeftButtonDown] = [Action TimeLineEventLeftDown($source)];
@@ -151,7 +122,6 @@
                                                                     </MultiBinding>
                                                                 </TextBlock.Margin>
                                                             </TextBlock>
-                                                            
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -171,7 +141,7 @@
                                     </EventTrigger>
                                 </Rectangle.Triggers>
                             </Rectangle>
-                            <!--<StackPanel Panel.ZIndex="5">
+                            <StackPanel Panel.ZIndex="5">
                                 <Path Stroke="Black" StrokeThickness="3" Data="M -1,-5 h 652" />
                                 <Path Stroke="Black" StrokeThickness="3" Data="M 0,-5 v 100" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 65,-100 v 100"/>
@@ -187,7 +157,7 @@
                                 <Path Stroke="Black" StrokeThickness="3" Data="M 0,0 h 650" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 0,-33 h 650" />
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 0,-66 h 650" />
-                            </StackPanel>-->
+                            </StackPanel>
                         </Canvas>
 
                         <!--<Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>-->
@@ -265,28 +235,8 @@
                                 Content="Feed Timeline"  
                                 Style="{DynamicResource ButtonStyle1}">
                         </Button>
-                        <!--<Canvas Width="300" Height="200" Background="Bisque" HorizontalAlignment="Left">
-                            <Thumb Width="25" Height="30" Background="AliceBlue"  Canvas.Left="0" Canvas.Top="0"
-                               BorderBrush="Black" BorderThickness="5"
-                               cal:Message.Attach = 
-                                "[Event DragStarted] = [Action OnDragStarted($source, $eventArgs];
-                                 [Event DragDelta] = [Action OnDragDelta($source, $eventArgs];
-                                 [Event DragCompleted] = [Action OnDragCompleted($source, $eventArgs]"
-                            ></Thumb>
-                        </Canvas>-->
-                        
                     </StackPanel>
-                    <!--<Rectangle
-                        Grid.Row="4" Grid.Column="1"
-                        HorizontalAlignment="Left"
-                        Width="100" Height="50" Margin="5"
-                        Fill="AliceBlue" Stroke="Aquamarine" StrokeThickness="10" 
-                        cal:Message.Attach = "[Event MouseEnter] = [Action MouseInsideElement($source, $eventArgs];
-                        [Event MouseLeave] = [Action MouseOutsideElement];
-                        [Event MouseMove] = [Action MouseMoveTest($source, $eventArgs]"
-                        ></Rectangle>-->
-
-
+                    
                     <Grid.Triggers>
                         <EventTrigger SourceName="StartButton" RoutedEvent="Button.Click">
                             <StopStoryboard BeginStoryboardName="TheTimelineStoryboard" />

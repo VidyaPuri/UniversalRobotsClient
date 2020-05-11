@@ -337,13 +337,6 @@ namespace RobotInterface.ViewModels
         }
 
         /// <summary>
-        /// Start button click event
-        /// </summary>
-        public void StartButton()
-        {
-        }
-
-        /// <summary>
         /// Mouse Down event inside canvas
         /// </summary>
         public void MouseDown()
@@ -525,10 +518,13 @@ namespace RobotInterface.ViewModels
         /// <summary>
         /// Mouse enter rectangle handles mouse pointer
         /// </summary>
-        /// <param name="rect"></param>
+        /// <param name="rect"></param>s
         public void MouseRectangleEnter(object rect)
         {
             if (!(rect is Rectangle selectedRect))
+                return;
+
+            if (RectangleChangeType == "Resize")
                 return;
 
             Grid rectParent = selectedRect.Parent as Grid;
