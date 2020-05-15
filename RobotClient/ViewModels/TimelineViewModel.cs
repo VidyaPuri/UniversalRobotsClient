@@ -35,7 +35,7 @@ namespace RobotInterface.ViewModels
         // EventAggregator
         private IEventAggregator _eventAggregator { get; }
 
-        private const int GridCanvasOffset = 16;
+        private const int GridCanvasOffset = 72;
 
         #endregion
 
@@ -50,9 +50,10 @@ namespace RobotInterface.ViewModels
         private TimeSpan _MouseMovedInSeconds;
         private string _CurrentTimeStr = "0";
         private bool _MouseStatus = false;
+        private TimeLine _SelectedTimeLine;
         private double _MouseDistanceMoved;
-        private Duration _StoryDuration;
         private double _MouseCurrentPosX;
+        private Duration _StoryDuration;
         private bool _MouseClickedEvent;
         private double _GridMousePosX;
         private string _DebugString;
@@ -203,6 +204,16 @@ namespace RobotInterface.ViewModels
         }
 
         /// <summary>
+        /// Selected timeline
+        /// </summary>
+        public TimeLine SelectedTimeLine
+        {
+            get { return _SelectedTimeLine; }
+            set => Set(ref _SelectedTimeLine, value);
+        }
+
+
+        /// <summary>
         /// Mouse moved in seconds
         /// </summary>
         public TimeSpan MouseMovedInSeconds
@@ -267,7 +278,6 @@ namespace RobotInterface.ViewModels
             set => Set(ref _RectangleChangeType, value);
         }
 
-
         #endregion
 
         #region Timeline Methods
@@ -287,6 +297,8 @@ namespace RobotInterface.ViewModels
             {
                 if (MousePosX > 650)
                     MousePosX = 650;
+                if (MousePosX < 0)
+                    MousePosX = 0;
 
                 FloaterPos = MousePosX;
                 TimeDuration();
@@ -317,7 +329,7 @@ namespace RobotInterface.ViewModels
             TimeSpan curTime = new TimeSpan();
             if (FloaterPos != 0)
             {
-                curTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(totTime * FloaterPos / 500));
+                curTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(totTime * FloaterPos / 650));
                 CurrentTimeStr = curTime.ToString();
             }
             else if (FloaterPos == 0)
@@ -353,39 +365,13 @@ namespace RobotInterface.ViewModels
             LeftButtonDown = false;
             RectangleChangeType = "";
             Mouse.OverrideCursor = Cursors.Arrow;
-
         }
 
         #endregion
 
-        /// <summary>
-        /// Method for feeding the timeline with dummy data
-        /// </summary>
-        public void FeedTimelines()
-        {
-            Timelines.Clear();
-            TimeLine first = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
-            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
-            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
-            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
-            Timelines.Add(first);
+        #region Timeline Mouse Events
 
-            TimeLine second = new TimeLine() { Duration = new TimeSpan(0, 0, 25) };
-            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Visje1" });
-            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
-            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
-            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 19), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
-            Timelines.Add(second);
-
-            TimeLine third = new TimeLine() { Duration = new TimeSpan(0, 0, 20) };
-            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Buksy1" });
-            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
-            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 9, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Buksy2" });
-            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
-            Timelines.Add(third);
-        }
-
-        /// <summary>
+        // <summary>
         /// Left button down on timeline event (rectangle)
         /// </summary>
         /// <param name="rect"></param>
@@ -403,7 +389,7 @@ namespace RobotInterface.ViewModels
             TimeLineEvent clickedEvent = selectedRect.DataContext as TimeLineEvent;
 
             //Gets the selected timeline event
-            SetSelectedTimelineEvent(clickedEvent);
+            GetSelectedTimelineEvent(clickedEvent);
 
             LastPoint = Mouse.GetPosition(rectParent);
             mouseDownX = Mouse.GetPosition(rectParent).X;
@@ -417,14 +403,28 @@ namespace RobotInterface.ViewModels
             MouseHitType = SetHitType(selectedRect, rectParent);
             SetMouseCursor();
 
-            if(MouseHitType == HitType.Left || MouseHitType == HitType.Right)
+            if (MouseHitType == HitType.Left || MouseHitType == HitType.Right)
             {
                 RectangleChangeType = "Resize";
             }
-            else if(MouseHitType == HitType.Body)
+            else if (MouseHitType == HitType.Body)
             {
                 RectangleChangeType = "Move";
             }
+        }
+
+        /// <summary>
+        /// Right Mouse Button Down inside timeline canvas
+        /// </summary>
+        /// <param name="source"></param>
+        public void MouseRightDown(object source)
+        {
+            if (!(source is Grid timelineGrid))
+                return;
+
+            TimeLine clickedTimeline = timelineGrid.DataContext as TimeLine;
+
+            GetSelectedTimeline(clickedTimeline);
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace RobotInterface.ViewModels
                 return;
 
             double thisX = Mouse.GetPosition(parent).X - GridCanvasOffset;
-            GridMousePosX = thisX;   
+            GridMousePosX = thisX;
 
             if (!LeftButtonDown)
                 return;
@@ -450,7 +450,7 @@ namespace RobotInterface.ViewModels
                 case "Resize":
                     // See how much the mouse has moved.
                     double offset_x = thisX - LastPoint.X;
-                    double marginLeft= SelectedEventRectangle.Margin.Left;
+                    double marginLeft = SelectedEventRectangle.Margin.Left;
 
                     // Get the rectangle's current position.
                     double new_x = marginLeft;
@@ -479,8 +479,21 @@ namespace RobotInterface.ViewModels
                         SelectedEventRectangle.Width = new_width;
                         SelectedEventRectangle.Margin = new Thickness(new_x);
 
-                        Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = newStart;
-                        Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = newDuration;
+                        // Checking if Resizing of event would go outside of timeline scope
+                        if (newStart < new TimeSpan(0, 0, 0))
+                        {
+                            newStart = new TimeSpan(0, 0, 0);
+                        }
+                        else if (Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start + newDuration > Timelines[TimeLineIdx].Duration)
+                        {
+                            newDuration = Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration;
+                        }
+                        else
+                        {
+                            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = newStart;
+                            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = newDuration;
+                        }
+
                         // Save the mouse's new location.
                         LastPoint.X = thisX;
                     }
@@ -494,7 +507,19 @@ namespace RobotInterface.ViewModels
                     MouseMovedInSeconds = timeMoved;
                     //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
                     MouseDistanceMoved = distanceMoved;
-                    Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = mouseDownStartTime + timeMoved;
+
+                    // new local variable
+                    var newEventPos = mouseDownStartTime + timeMoved;
+
+                    // Check if start time is less than zero
+                    if (newEventPos < new TimeSpan(0, 0, 0)) newEventPos = new TimeSpan(0, 0, 0);
+
+                    // Check if move would push the event out of timeline
+                    if (newEventPos + Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration > Timelines[TimeLineIdx].Duration)
+                        newEventPos = Timelines[TimeLineIdx].Duration - Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration;
+
+                    // Set new start time
+                    Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = newEventPos;
                     break;
                 default:
                     return;
@@ -551,12 +576,68 @@ namespace RobotInterface.ViewModels
             SetMouseCursor();
         }
 
+        
+
+        #endregion
+
+
+        /// <summary>
+        /// Method for feeding the timeline with dummy data
+        /// </summary>
+        
+        public void FeedTimelines()
+        {
+            Timelines.Clear();
+            TimeLine first = new TimeLine();
+            first.Name = "Focus";
+            first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
+            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
+            //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
+            Timelines.Add(first);
+
+            TimeLine second = new TimeLine();
+            second.Name = "Zoom";
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Visje1" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 6), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 10, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
+            second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 14), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
+            Timelines.Add(second);
+
+            TimeLine third = new TimeLine();
+            third.Name = "Outputs";
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Buksy1" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 8, 5), Duration = new TimeSpan(0, 0, 0, 2, 5), Name = "Buksy2" });
+            third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
+            Timelines.Add(third);
+        }
+
+
+        public void AddEventToTimeLine(object source)
+        {
+            if (!(source is MenuItem timelineMenuItem))
+                return;
+
+            TimeLine clickedTimeline = timelineMenuItem.DataContext as TimeLine;
+
+            GetSelectedTimeline(clickedTimeline);
+            Timelines[TimeLineIdx].Events.Add(
+                new TimeLineEvent()
+                {
+                    Start = new TimeSpan(0, 0, 4),
+                    Duration = new TimeSpan(0, 0, 1),
+                    Name = "Žlikrof"
+                });
+
+            Timelines.Refresh();
+        }
+
         #region Timeline Method Helpers
 
         /// <summary>
         /// Gets the indexes of the selected event in the selected timeline
         /// </summary>
-        private void SetSelectedTimelineEvent(TimeLineEvent clickedEvent)
+        private void GetSelectedTimelineEvent(TimeLineEvent clickedEvent)
         {
             // Finding the selected timeline event 
             foreach (var timeline in Timelines)
@@ -573,8 +654,24 @@ namespace RobotInterface.ViewModels
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Gets the index of selected timeline
+        /// </summary>
+        private void GetSelectedTimeline(TimeLine clickedTimeline)
+        {
+            // Finding the selected timeline event 
+            foreach (var timeline in Timelines)
+            {
+                if( timeline == clickedTimeline)
+                {
+                    SelectedTimeLine = timeline;
+                    TimeLineIdx = Timelines.IndexOf(timeline);
+                }
+            }
+        }
 
+
+        #endregion
 
         #endregion
 
@@ -643,10 +740,7 @@ namespace RobotInterface.ViewModels
             Mouse.OverrideCursor = desired_cursor;
         }
 
-
         #endregion
-
-        
 
         #region Handlers
 

@@ -7,10 +7,9 @@
              xmlns:help="clr-namespace:RobotInterface.Helpers"
              xmlns:converters="clr-namespace:RobotInterface.Converters"
              xmlns:cal="http://www.caliburnproject.org"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              cal:Message.Attach="
              [Event MouseLeftButtonUp] = [Action MouseLeftUp]"
-             
              d:DesignHeight="1080" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -46,26 +45,39 @@
                         <ColumnDefinition Width="5"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="10"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
-                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="1"  Grid.Column="1" >
-                        <StackPanel  Margin="0 5">
-                            <DockPanel>
-                                <Label DockPanel.Dock="Left" Content="0"></Label>
-                                <Label DockPanel.Dock="Right" Content="10" HorizontalAlignment="Right"></Label>
-                            </DockPanel>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Mouse position" VerticalAlignment="Center"></Label>
-                            <TextBlock Text="{Binding GridMousePosX}"  VerticalAlignment="Center"></TextBlock>
-                        </StackPanel>
-                        <Canvas Grid.Row="1" Grid.Column="1" Width="650" MaxWidth="650" Height="90" 
+                    <Grid Grid.Row="1"  Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="10"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" 
+                                   Text="{Binding Timelines[0].Name, FallbackValue=Focus}"
+                                   FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" 
+                                   Text="{Binding Timelines[1].Name, FallbackValue=Zoom}"
+                                   FontWeight="Bold"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" 
+                                   Text="{Binding Timelines[2].Name, FallbackValue=Output}"
+                                   FontWeight="Bold"/>
+                        
+                        <Canvas Grid.Column="2" Grid.RowSpan="3"
+                            Width="650" MaxWidth="650" Height="90" 
                             Background="Gray" HorizontalAlignment="Left" x:Name="Canvas"
                             cal:Message.Attach = "
                                 [Event MouseLeftButtonUp] = [Action MouseLeftUp];
@@ -79,13 +91,20 @@
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <Grid x:Name="EventContainer" Height="30"  Width="650" Background="gray"
-                                                               cal:Message.Attach = "[Event MouseLeftButtonUp] = [Action MouseLeftUp]" />
+                                                              Tag="{Binding DataContext, ElementName=TL}" 
+                                                              cal:Message.Attach = "[Event MouseLeftButtonUp] = [Action MouseLeftUp]">
+                                                            <Grid.ContextMenu>
+                                                                <ContextMenu cal:Action.TargetWithoutContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                                                    <MenuItem Header="Add Event" cal:Message.Attach="AddEventToTimeLine($source)"/>
+                                                                </ContextMenu>
+                                                            </Grid.ContextMenu>
+                                                        </Grid>
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0 1">
-                                                            <Rectangle Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
+                                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
                                                                        Stroke="LightGray" StrokeThickness="3"
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
                                                                        cal:Message.Attach = "
@@ -159,9 +178,17 @@
                                 <Path Stroke="Black" StrokeThickness="1" Data="M 0,-66 h 650" />
                             </StackPanel>
                         </Canvas>
+                    </Grid>
+                    <!--<StackPanel  Margin="0 5">
+                            <DockPanel>
+                                <Label DockPanel.Dock="Left" Content="0"></Label>
+                                <Label DockPanel.Dock="Right" Content="10" HorizontalAlignment="Right"></Label>
+                            </DockPanel>
+                        </StackPanel>-->
 
+                    <StackPanel Grid.Row="2" Grid.Column="1">
                         <!--<Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>-->
-                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5 10 0 5">
+                        <StackPanel Orientation="Horizontal" Margin="5 10 0 5">
                             <Button Name="StartButton" Style="{DynamicResource ButtonStyle1}">Start</Button>
                             <Button Name="PauseButton" Style="{DynamicResource ButtonStyle1}">Pause</Button>
                             <Button Name="ResumeButton" Style="{DynamicResource ButtonStyle1}">Resume</Button>
@@ -170,14 +197,18 @@
                         </StackPanel>
 
                         <!-- Debug row-->
-                        <GroupBox Header="Status console" Grid.Row="3"  BorderThickness="1" BorderBrush="DimGray">
-                            <Grid  Grid.Row="3">
+                        <GroupBox Header="Status console" BorderThickness="1" BorderBrush="DimGray">
+                            <Grid >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Mouse position" VerticalAlignment="Center"></Label>
+                                        <TextBlock Text="{Binding GridMousePosX}"  VerticalAlignment="Center"></TextBlock>
+                                    </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Label Content="Mouse status: "></Label>
                                         <TextBlock Text="{Binding MouseStatus, FallbackValue=0}" VerticalAlignment="Center" ></TextBlock>
@@ -231,12 +262,11 @@
                                 </StackPanel>
                             </Grid>
                         </GroupBox>
-                        <Button Grid.Row="4" x:Name="FeedTimelines" 
+                        <Button x:Name="FeedTimelines" 
                                 Content="Feed Timeline"  
                                 Style="{DynamicResource ButtonStyle1}">
                         </Button>
                     </StackPanel>
-                    
                     <Grid.Triggers>
                         <EventTrigger SourceName="StartButton" RoutedEvent="Button.Click">
                             <StopStoryboard BeginStoryboardName="TheTimelineStoryboard" />

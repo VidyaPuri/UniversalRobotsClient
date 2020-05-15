@@ -11,7 +11,7 @@
         WindowState="{Binding WindowState}"
         WindowStyle="None"
         FontSize="12"
-        Title="TCP Client" Width="1240" Height="1080"  MinHeight="800" MinWidth="540" MaxWidth="1240" MaxHeight="1080" Background="#2B2F3D">
+        Title="TCP Client" Width="1440" Height="1080"  MinHeight="800" MinWidth="540" MaxWidth="1440" MaxHeight="1080" Background="#2B2F3D">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
