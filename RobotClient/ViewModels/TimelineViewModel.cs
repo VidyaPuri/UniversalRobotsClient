@@ -11,6 +11,7 @@ using RobotInterface.Helpers;
 using System.Windows.Documents;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using static RobotInterface.Helpers.ResizerHelper;
 
 namespace RobotInterface.ViewModels
 {
@@ -28,6 +29,7 @@ namespace RobotInterface.ViewModels
             // Timeline initialisatiors
             FloaterPos = 0;
             TimeDuration();
+            FeedTimelines();
         }
 
         #region Private Members
@@ -55,17 +57,23 @@ namespace RobotInterface.ViewModels
         private double _MouseCurrentPosX;
         private Duration _StoryDuration;
         private bool _MouseClickedEvent;
+        public int TimelineWidth = 650;
         private double _GridMousePosX;
+        private string _CurrentTime;
         private string _DebugString;
         private int _FloaterPos = 0;
         private int _MousePosX = 0;
-        private Clock _Clock;
+        private int TLEventIdx = 0;
+        private Point LastPoint;
 
+        private HitType MouseHitType { get; set; }
         public bool LeftButtonDown { get; set; }
         public int TimeLineIdx { get; set; }
         public int TimeLineEventIdx { get; set; }
         public TimeSpan mouseDownStartTime { get; set; }
         public double mouseDownX { get; set; }
+        public double mouseDownRightX { get; set; }
+        private double PixelsPerSecond { get; set; }
 
         /// <summary>
         /// FLoater position
@@ -117,16 +125,6 @@ namespace RobotInterface.ViewModels
             set => Set(ref _StoryDuration, value);
         }
 
-        /// <summary>
-        /// Clock object
-        /// </summary>
-        public Clock Clock
-        {
-            get { return _Clock; }
-            set { _Clock = value; }
-        }
-
-        private string _CurrentTime;
 
         /// <summary>
         /// Current time 
@@ -212,7 +210,6 @@ namespace RobotInterface.ViewModels
             set => Set(ref _SelectedTimeLine, value);
         }
 
-
         /// <summary>
         /// Mouse moved in seconds
         /// </summary>
@@ -295,8 +292,8 @@ namespace RobotInterface.ViewModels
 
             if (MouseStatus)
             {
-                if (MousePosX > 650)
-                    MousePosX = 650;
+                if (MousePosX > TimelineWidth)
+                    MousePosX = TimelineWidth;
                 if (MousePosX < 0)
                     MousePosX = 0;
 
@@ -314,7 +311,7 @@ namespace RobotInterface.ViewModels
             double totTime = totalTime.TotalMilliseconds;
             if (FloaterPos != 0)
             {
-                totTime -= (totTime * FloaterPos / 650);
+                totTime -= (totTime * FloaterPos / TimelineWidth);
             }
 
             StoryDuration = new Duration(TimeSpan.FromMilliseconds(totTime));
@@ -329,7 +326,7 @@ namespace RobotInterface.ViewModels
             TimeSpan curTime = new TimeSpan();
             if (FloaterPos != 0)
             {
-                curTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(totTime * FloaterPos / 650));
+                curTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(totTime * FloaterPos / TimelineWidth));
                 CurrentTimeStr = curTime.ToString();
             }
             else if (FloaterPos == 0)
@@ -401,7 +398,7 @@ namespace RobotInterface.ViewModels
 
             // Set the change type
             MouseHitType = SetHitType(selectedRect, rectParent);
-            SetMouseCursor();
+            Mouse.OverrideCursor = ResizerHelper.SetMouseCursor(MouseHitType);
 
             if (MouseHitType == HitType.Left || MouseHitType == HitType.Right)
             {
@@ -422,9 +419,25 @@ namespace RobotInterface.ViewModels
             if (!(source is Grid timelineGrid))
                 return;
 
-            TimeLine clickedTimeline = timelineGrid.DataContext as TimeLine;
+            mouseDownRightX = Mouse.GetPosition(timelineGrid).X;
 
+            TimeLine clickedTimeline = timelineGrid.DataContext as TimeLine;
             GetSelectedTimeline(clickedTimeline);
+        }
+
+
+        /// <summary>
+        /// Right button on timeline event
+        /// </summary>
+        /// <param name="source"></param>
+        public void TimeLineEventRightDown(object source)
+        {
+            if (!(source is Rectangle selectedRect))
+                return;
+
+            TimeLineEvent clickedTimeLineEvent = selectedRect.DataContext as TimeLineEvent;
+            GetSelectedTimelineEvent(clickedTimeLineEvent);
+
         }
 
         /// <summary>
@@ -443,7 +456,6 @@ namespace RobotInterface.ViewModels
                 return;
 
             // Pixel / Seconds constant make width a variable TO-DO
-            double pixelsPerSecond = 650 / Timelines[TimeLineIdx].Duration.TotalSeconds;
 
             switch (RectangleChangeType)
             {
@@ -472,27 +484,22 @@ namespace RobotInterface.ViewModels
                     if ((new_width > 0))
                     {
                         //double distanceMoved = thisX - mouseDownX;
-                        TimeSpan newStart = TimeSpan.FromSeconds(new_x / pixelsPerSecond);
-                        TimeSpan newDuration = TimeSpan.FromSeconds(new_width / pixelsPerSecond);
+                        TimeSpan newStart = TimeSpan.FromSeconds(new_x / PixelsPerSecond);
+                        TimeSpan newDuration = TimeSpan.FromSeconds(new_width / PixelsPerSecond);
 
                         // Update the rectangle.
                         SelectedEventRectangle.Width = new_width;
                         SelectedEventRectangle.Margin = new Thickness(new_x);
 
-                        // Checking if Resizing of event would go outside of timeline scope
+                        // Checking if Resizing of event would go outside of timeline scope 
                         if (newStart < new TimeSpan(0, 0, 0))
-                        {
                             newStart = new TimeSpan(0, 0, 0);
-                        }
                         else if (Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start + newDuration > Timelines[TimeLineIdx].Duration)
-                        {
                             newDuration = Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration;
-                        }
+                        else if (newDuration < new TimeSpan(0, 0, 0, 1)) // Event can't be shorter than 1 second
+                            newDuration = Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration;
                         else
-                        {
-                            Timelines[TimeLineIdx].Events[TimeLineEventIdx].Start = newStart;
                             Timelines[TimeLineIdx].Events[TimeLineEventIdx].Duration = newDuration;
-                        }
 
                         // Save the mouse's new location.
                         LastPoint.X = thisX;
@@ -502,7 +509,7 @@ namespace RobotInterface.ViewModels
                     MouseCurrentPosX = thisX;
                     double distanceMoved = thisX - mouseDownX;
 
-                    TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / pixelsPerSecond);
+                    TimeSpan timeMoved = TimeSpan.FromSeconds(distanceMoved / PixelsPerSecond);
 
                     MouseMovedInSeconds = timeMoved;
                     //SelectedTimeLineEvent.Start = mouseDownStartTime + timeMoved;
@@ -555,7 +562,7 @@ namespace RobotInterface.ViewModels
             Grid rectParent = selectedRect.Parent as Grid;
 
             MouseHitType = SetHitType(selectedRect, rectParent);
-            SetMouseCursor();
+            Mouse.OverrideCursor = SetMouseCursor(MouseHitType);
         }
 
         /// <summary>
@@ -573,50 +580,61 @@ namespace RobotInterface.ViewModels
             Grid rectParent = selectedRect.Parent as Grid;
 
             MouseHitType = SetHitType(selectedRect, rectParent);
-            SetMouseCursor();
+            Mouse.OverrideCursor = SetMouseCursor(MouseHitType);
         }
-
-        
 
         #endregion
 
+        #region Timeline Control
 
         /// <summary>
         /// Method for feeding the timeline with dummy data
         /// </summary>
-        
         public void FeedTimelines()
         {
             Timelines.Clear();
-            TimeLine first = new TimeLine();
-            first.Name = "Focus";
+            TimeLine first = new TimeLine
+            {
+                Name = "Focus"
+            };
             first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 1), Duration = new TimeSpan(0, 0, 2), Name = "Vskok1" });
             //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 4), Duration = new TimeSpan(0, 0, 5), Name = "Vskok2" });
             //first.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 13), Duration = new TimeSpan(0, 0, 3), Name = "Vskok3" });
             Timelines.Add(first);
 
-            TimeLine second = new TimeLine();
-            second.Name = "Zoom";
+            TimeLine second = new TimeLine
+            {
+                Name = "Zoom"
+            };
             second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Visje1" });
             second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 6), Duration = new TimeSpan(0, 0, 1), Name = "Visje2" });
             second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 10, 5), Duration = new TimeSpan(0, 0, 0, 4, 5), Name = "Visje3" });
             second.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 14), Duration = new TimeSpan(0, 0, 3), Name = "Visje4" });
             Timelines.Add(second);
 
-            TimeLine third = new TimeLine();
-            third.Name = "Outputs";
+            TimeLine third = new TimeLine
+            {
+                Name = "Outputs",
+            };
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 2), Duration = new TimeSpan(0, 0, 3), Name = "Buksy1" });
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 7), Duration = new TimeSpan(0, 0, 1), Name = "Buksy2" });
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 0, 8, 5), Duration = new TimeSpan(0, 0, 0, 2, 5), Name = "Buksy2" });
             third.Events.Add(new TimeLineEvent() { Start = new TimeSpan(0, 0, 16), Duration = new TimeSpan(0, 0, 3), Name = "Buksy2" });
             Timelines.Add(third);
+
+            PixelsPerSecond = TimelineWidth / Timelines[TimeLineIdx].Duration.TotalSeconds;
         }
 
-
+        /// <summary>
+        /// Add new event to the timeline
+        /// </summary>
+        /// <param name="source"></param>
         public void AddEventToTimeLine(object source)
         {
             if (!(source is MenuItem timelineMenuItem))
                 return;
+
+            TimeSpan newStart = TimeSpan.FromSeconds(mouseDownRightX / PixelsPerSecond);
 
             TimeLine clickedTimeline = timelineMenuItem.DataContext as TimeLine;
 
@@ -624,13 +642,24 @@ namespace RobotInterface.ViewModels
             Timelines[TimeLineIdx].Events.Add(
                 new TimeLineEvent()
                 {
-                    Start = new TimeSpan(0, 0, 4),
-                    Duration = new TimeSpan(0, 0, 1),
-                    Name = "Žlikrof"
+                    Start = newStart,
+                    Duration = new TimeSpan(0, 0, 0, 1, 500),
+                    Name = $"Event {TLEventIdx}"
                 });
-
+            TLEventIdx++;
             Timelines.Refresh();
         }
+
+        /// <summary>
+        /// Remove the selected event from timeline
+        /// </summary>
+        /// <param name="source"></param>
+        public void RemoveEventFromTimeLine(object source)
+        {
+            Timelines[TimeLineIdx].Events.RemoveAt(TimeLineEventIdx);
+        }
+
+        #endregion
 
         #region Timeline Method Helpers
 
@@ -670,77 +699,13 @@ namespace RobotInterface.ViewModels
             }
         }
 
-
         #endregion
 
         #endregion
 
         #endregion
 
-        #region Tests
 
-        public HitType MouseHitType { get; set; }
-        private Point LastPoint;
-
-        public enum HitType
-        {
-            None,
-            Body,
-            Left,
-            Right
-        };
-
-        public HitType SetHitType(Rectangle rect, Grid parent)
-        {
-            //var directParent = SelectedEventRectangle.Parent as Grid;
-
-            Point p = rect.TranslatePoint(new Point(0, 0), parent);
-            Point pos = Mouse.GetPosition(parent);
-
-            double left = p.X;
-            double point = pos.X;
-            double right = left + rect.Width;
-            if (point < left) return HitType.None;
-            if (point > right) return HitType.None;
-
-            const double GAP = 10;
-            if (point - left < GAP)
-            {
-                // Left edge.
-                return HitType.Left;
-            }
-            else if (right - point < GAP)
-            {
-                // Right edge.
-                return HitType.Right;
-            }
-
-            return HitType.Body;
-        }
-
-        //Set a mouse cursor appropriate for the current hit type.
-        public void SetMouseCursor()
-        {
-            // See what cursor we should display.
-            Cursor desired_cursor = Cursors.Arrow;
-            switch (MouseHitType)
-            {
-                case HitType.None:
-                    desired_cursor = Cursors.Arrow;
-                    break;
-                case HitType.Body:
-                    desired_cursor = Cursors.Arrow;
-                    break;
-                case HitType.Left:
-                case HitType.Right:
-                    desired_cursor = Cursors.SizeWE;
-                    break;
-            }
-            // Display the desired cursor.
-            Mouse.OverrideCursor = desired_cursor;
-        }
-
-        #endregion
 
         #region Handlers
 
@@ -754,7 +719,7 @@ namespace RobotInterface.ViewModels
             CurrentTime = message.CurrentTime.ToString();
             var progress = message.CurrentProgress;
             Debug.WriteLine($"Progres: {progress * 100} % ");
-            FloaterPos = Convert.ToInt32(progress * 650);
+            FloaterPos = Convert.ToInt32(progress * TimelineWidth);
         }
         #endregion
 

@@ -92,7 +92,10 @@
                                                     <ItemsPanelTemplate>
                                                         <Grid x:Name="EventContainer" Height="30"  Width="650" Background="gray"
                                                               Tag="{Binding DataContext, ElementName=TL}" 
-                                                              cal:Message.Attach = "[Event MouseLeftButtonUp] = [Action MouseLeftUp]">
+                                                              cal:Message.Attach = "
+                                                              [Event MouseLeftButtonUp] = [Action MouseLeftUp];
+                                                              [Event MouseRightButtonDown] = [Action MouseRightDown($source)]
+                                                              ">
                                                             <Grid.ContextMenu>
                                                                 <ContextMenu cal:Action.TargetWithoutContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                                                                     <MenuItem Header="Add Event" cal:Message.Attach="AddEventToTimeLine($source)"/>
@@ -103,7 +106,7 @@
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Grid Margin="0 1">
+                                                        <Grid Margin="0 1" Tag="{Binding DataContext, ElementName=TL}" >
                                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Left" Panel.ZIndex="4"
                                                                        Stroke="LightGray" StrokeThickness="3"
                                                                        cal:Action.TargetWithoutContext="{Binding Path=DataContext, ElementName=TimeLine}"
@@ -112,7 +115,8 @@
                                                                        [Event MouseLeftButtonUp] = [Action MouseLeftUp];
                                                                        [Event MouseLeave] = [Action MouseRectangleLeave($source)];
                                                                        [Event MouseEnter] = [Action MouseRectangleEnter($source)];
-                                                                       [Event MouseMove] = [Action MouseRectangleMove($source)]
+                                                                       [Event MouseMove] = [Action MouseRectangleMove($source)];
+                                                                       [Event MouseRightButtonDown] = [Action TimeLineEventRightDown($source)]
                                                                        ">
                                                                 <Rectangle.Margin>
                                                                     <MultiBinding Converter="{StaticResource mEventLengthConverter}">
@@ -141,6 +145,11 @@
                                                                     </MultiBinding>
                                                                 </TextBlock.Margin>
                                                             </TextBlock>
+                                                            <Grid.ContextMenu>
+                                                                <ContextMenu cal:Action.TargetWithoutContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                                                    <MenuItem Header="Remove Event" cal:Message.Attach="RemoveEventFromTimeLine($source)" />
+                                                                </ContextMenu>
+                                                            </Grid.ContextMenu>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -179,15 +188,8 @@
                             </StackPanel>
                         </Canvas>
                     </Grid>
-                    <!--<StackPanel  Margin="0 5">
-                            <DockPanel>
-                                <Label DockPanel.Dock="Left" Content="0"></Label>
-                                <Label DockPanel.Dock="Right" Content="10" HorizontalAlignment="Right"></Label>
-                            </DockPanel>
-                        </StackPanel>-->
 
                     <StackPanel Grid.Row="2" Grid.Column="1">
-                        <!--<Slider Value="{Binding FloaterPos}" Width="500" Minimum="0" Maximum="500"></Slider>-->
                         <StackPanel Orientation="Horizontal" Margin="5 10 0 5">
                             <Button Name="StartButton" Style="{DynamicResource ButtonStyle1}">Start</Button>
                             <Button Name="PauseButton" Style="{DynamicResource ButtonStyle1}">Pause</Button>
